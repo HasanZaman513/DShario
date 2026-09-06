@@ -1,10 +1,10 @@
 <!doctype html>
-<!-- DShario BETA STABLE RC18 — RC17 stable baseline + isolated password-recovery UI session guard. -->
+<!-- DShario BETA STABLE RC19 — RC18 stable baseline + isolated received/saved-card consistency fixes. -->
 <html lang="en">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>DShario BETA STABLE RC18</title>
+<title>DShario BETA STABLE RC19</title>
 <meta name="theme-color" content="#ffffff">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
@@ -2576,13 +2576,13 @@ function connectionTraceHtml(c){
   const latest=h.latest;
   const received=latest?.received_at||c.received_at||c.created_at||c.notice_seen_at||null;
   const saved=latest?.saved_at||c.saved_at||null;
-  let html='';
-  if(received||saved){
-    html='<div class="connectionDates">'+
-      (received?'<div>'+escHtml(t("Received"))+': '+escHtml(format12HourDate(received))+'</div>':'')+
-      (saved?'<div>'+escHtml(t("Saved"))+': '+escHtml(format12HourDate(saved))+'</div>':'')+
-      '</div>';
-  }
+  // RC19: keep the trace layout consistent. New saves always get both timestamps from
+  // recordConnectionSave(); older rows that pre-date tracing show a clear dash instead
+  // of silently omitting one or both date rows.
+  let html='<div class="connectionDates">'+
+    '<div>'+escHtml(t("Received"))+': '+escHtml(received?format12HourDate(received):"—")+'</div>'+
+    '<div>'+escHtml(t("Saved"))+': '+escHtml(saved?format12HourDate(saved):"—")+'</div>'+
+    '</div>';
   const prev=Array.isArray(h.previous)?h.previous:[];
   if(prev.length){
     const rows=prev.map(x=>{
@@ -2655,8 +2655,13 @@ async function saveCurrentConnection(){
       // relationship and must supersede any previously saved temporary-share record.
       // Do not return early here when the old row is temporary, otherwise the receiver
       // keeps seeing the revoked temporary trace even after saving a new permanent link.
-      const needsPermanentUpgrade=currentPublicSourceType==="permanent" && existing.source_type==="temporary";
-      if(!needsPermanentUpgrade){
+      const requestedView=activePrivacyView();
+      const existingView=existing.saved_privacy_view||"professional";
+      const samePresentation=existing.source_type===currentPublicSourceType && existingView===requestedView;
+      if(samePresentation){
+        // RC19: even an already-saved presentation gets a trace timestamp when the
+        // receiver deliberately saves/views it again, avoiding blank date rows.
+        recordConnectionSave(currentPublicTargetUserId,requestedView,currentPublicSourceType);
         $("saveConnectionBtn").dataset.saved="1";
         $("saveConnectionBtn").textContent=window.currentLang==="bn"?"My Connections-এ দেখুন":"View in My Connections";
         if($("publicSaveConnectionBtn")) $("publicSaveConnectionBtn").textContent=$("saveConnectionBtn").textContent;
@@ -2665,6 +2670,8 @@ async function saveCurrentConnection(){
         msg(window.currentLang==="bn"?"এই DShario ইতিমধ্যে My Connections-এ সেভ করা আছে।":"This DShario is already saved in My Connections.","ok");
         return true;
       }
+      // A different Temporary/Permanent presentation or privacy view was deliberately
+      // saved, so continue and let that exact received presentation become the active one.
     }
   }catch(e){}
 
@@ -2677,15 +2684,17 @@ async function saveCurrentConnection(){
 
   let primary=await sb.rpc("save_dshario_connection",args);
 
-  // If a permanent link is being saved for someone whose earlier saved relationship
-  // was temporary, make sure the stored connection is actually upgraded to permanent.
-  // Some older backend versions keep the original source_type on conflict, so RC8
-  // replaces only that stale relationship as a compatibility fallback.
-  if(!primary.error && currentPublicSourceType==="permanent"){
+  // RC19 compatibility repair: some older backend conflict paths can retain the prior
+  // source/view. After an explicit save, the active connection must match exactly what
+  // the receiver just saw (Temporary/Permanent + Professional/Business/Social/Full).
+  if(!primary.error){
     try{
       let q=await sb.rpc("get_my_dshario_connections_v2");
       let now=(Array.isArray(q.data)?q.data:[]).find(x=>x.connected_user_id===currentPublicTargetUserId && x.is_saved!==false);
-      if(now?.source_type==="temporary"){
+      const desiredView=args.presented_privacy_view||"professional";
+      const storedView=now?.saved_privacy_view||"professional";
+      const presentationMismatch=!!now && (now.source_type!==currentPublicSourceType || storedView!==desiredView);
+      if(presentationMismatch){
         const oldLabel=now.nickname||null;
         const rm=await sb.rpc("remove_dshario_connection",{target_user_id:currentPublicTargetUserId});
         if(!rm.error){
@@ -2744,7 +2753,7 @@ async function saveCurrentConnection(){
 $("saveConnectionBtn").onclick=saveCurrentConnection;
 
 async function loadSharedCard(token){
-  publicMode=true; pendingSharedAction=savedSharedIntent(); document.body.classList.remove("expiredPublic");
+  publicMode=true; pendingSharedAction=savedSharedIntent(); document.body.classList.remove("expiredPublic"); document.body.classList.add("publicMode");
   if($("simpleShare"))$("simpleShare").style.display="none";
   if($("simpleShare"))$("simpleShare").style.display="none";
   if($("simpleShareLauncher"))$("simpleShareLauncher").style.display="none";
@@ -2900,7 +2909,7 @@ async function loadOwnerCard(){
   currentCard=data||null; $("editTab").textContent=data?"✎ Edit My Card":"✎ Create My DShario"; updateSignedInHandle(); if(data){setForm(data);render(data);$("deleteBtn").style.display="inline-block"} else {setForm({card_color:"#eff6ff",privacy_view:localStorage.getItem("dshario-privacy-view")||"professional"});render(null);$("deleteBtn").style.display="none"}
 }
 async function loadPublicCard(slug){
-  publicMode=true; pendingSharedAction=savedSharedIntent(); document.body.classList.remove("expiredPublic"); $("tabs").style.display="none"; $("publicHeader").style.display="block"; $("accountPill").style.display="none";
+  publicMode=true; pendingSharedAction=savedSharedIntent(); document.body.classList.remove("expiredPublic"); document.body.classList.add("publicMode"); $("tabs").style.display="none"; $("publicHeader").style.display="block"; $("accountPill").style.display="none";
   const {data,error}=await sb.rpc("get_public_card_bilingual",{card_slug:slug});
   const card=Array.isArray(data)?data[0]:data;
   if(error||!card){render(null);msg("This DShario was not found or is private.","err");return}
@@ -4606,6 +4615,7 @@ document.addEventListener("DOMContentLoaded",()=>{
 });
 
 // RC17 owner image download control is intentionally isolated from auth, sharing and connection logic.
+// RC19 only tightens recipient owner-control visibility, saved privacy/source fidelity, and connection timestamp presentation.
 updateShareTypeUI();
 </script>
 
