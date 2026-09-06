@@ -1,10 +1,10 @@
 <!doctype html>
-<!-- DShario BETA STABLE RC17 — RC16 stable baseline + owner downloadable card image control. -->
+<!-- DShario BETA STABLE RC18 — RC17 stable baseline + isolated password-recovery UI session guard. -->
 <html lang="en">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>DShario BETA STABLE RC17</title>
+<title>DShario BETA STABLE RC18</title>
 <meta name="theme-color" content="#ffffff">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
@@ -3263,6 +3263,12 @@ sb.auth.onAuthStateChange(async(event,s)=>{
     try{localStorage.setItem("dshario-password-reset-pending","1")}catch(e){}
     enterPasswordRecoveryUI();
     if($("authStatus")) $("authStatus").textContent="Resetting password for "+(s.user.email||"this DShario account")+".";
+    return;
+  }
+  // RC18: a verified recovery session is temporary authentication, not a normal sign-in.
+  // Keep the user on the new-password screen until they save or cancel the reset.
+  if(passwordRecoveryVerified && s?.user && $("resetPasswordBox")){
+    enterPasswordRecoveryUI();
     return;
   }
   if(publicMode) return;
