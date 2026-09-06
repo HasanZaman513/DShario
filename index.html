@@ -1,10 +1,10 @@
 <!doctype html>
-<!-- DShario BETA STABLE RC19 — RC18 stable baseline + isolated received/saved-card consistency fixes. -->
+<!-- DShario BETA STABLE RC20 — RC19 stable baseline + two isolated Shared Cards/Temporary Share navigation fixes. -->
 <html lang="en">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>DShario BETA STABLE RC19</title>
+<title>DShario BETA STABLE RC20</title>
 <meta name="theme-color" content="#ffffff">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
@@ -3667,7 +3667,6 @@ async function loadShareHistory(){
   for(const r of data){
     let valid=true,expires="";
     if(r.share_type==="temporary"&&r.share_token){const q=await sb.from("share_links").select("expires_at,revoked").eq("token",r.share_token).eq("user_id",user.id).maybeSingle();valid=!!q.data&&!q.data.revoked&&new Date(q.data.expires_at)>new Date();expires=q.data?.expires_at?format12HourDate(q.data.expires_at):""}
-    if(r.share_type==="temporary"&&!valid) continue;
     const who=r.recipient_handle?"@"+r.recipient_handle:(r.channel==="dshario"?"DShario user":"Anyone / Link");
     const it=document.createElement("div");it.className="shareHistoryItem";it.dataset.shareRecordId=r.id;
     it.innerHTML=`<div class="shareHistorySelectWrap"><input class="shareHistorySelect" type="checkbox" aria-label="Select shared card"><div class="shareHistorySelectBody"><div class="shareHistoryTop"><strong>${r.share_type==="temporary"?"Temporary":"Permanent"} • ${escHtml(who)}</strong><span>${escHtml((r.privacy_view||"professional").replace(/^./,x=>x.toUpperCase()))}</span></div><div class="shareHistoryMeta">Shared ${format12HourDate(r.created_at)}${expires?" • Expires "+escHtml(expires):""}${r.share_type==="temporary"?" • "+(valid?"Active":"Expired / revoked"):""}</div><div class="shareHistoryActions"></div></div></div>`;
@@ -3757,7 +3756,7 @@ function updateSharedMemberNav(){
   // The Back control is useful only while a signed-in member is still deciding what to do
   // with a received card. Once that card is saved, "View in My Connections" becomes the
   // single clear navigation action, so the extra Back button is removed.
-  if(nav) nav.style.display=(publicMode&&!!user&&!connectionOnlyMode&&!savedHere)?"flex":"none";
+  if(nav) nav.style.display=(publicMode&&!!user&&!connectionOnlyMode&&!savedHere&&currentPublicSourceType!=="temporary")?"flex":"none";
   refreshAppNav();
 }
 if($("sharedBackBtn")) $("sharedBackBtn").onclick=()=>location.replace(location.origin+location.pathname+"#account");
@@ -4615,7 +4614,7 @@ document.addEventListener("DOMContentLoaded",()=>{
 });
 
 // RC17 owner image download control is intentionally isolated from auth, sharing and connection logic.
-// RC19 only tightens recipient owner-control visibility, saved privacy/source fidelity, and connection timestamp presentation.
+// RC20 only keeps revoked/expired Temporary Share records visible until manual deletion and hides the received-card Back control on Temporary Share cards.
 updateShareTypeUI();
 </script>
 
