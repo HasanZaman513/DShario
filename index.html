@@ -1,5 +1,5 @@
 <!doctype html>
-<!-- DShario WORKING RC25 — RC24 baseline + isolated WhatsApp field in downloaded card image. -->
+<!-- DShario WORKING RC26 — RC25 baseline + isolated printable downloaded-card layout/icons refinement. -->
 <html lang="en">
 <head>
 <meta charset="utf-8">
@@ -3412,65 +3412,64 @@ if($("connectionOnlyVcfBtn")) $("connectionOnlyVcfBtn").onclick=saveCurrentCardT
 function loadImg(src){return new Promise((resolve,reject)=>{const i=new Image();i.onload=()=>resolve(i);i.onerror=reject;i.src=src})}
 async function downloadCurrentCardAsImage(viewOverride){
   const d=currentCard||{}, view=viewOverride||activePrivacyView();
-  const c=document.createElement("canvas"); c.width=1400; c.height=800;
+  // RC26: high-resolution 90:55-style landscape proportion for cleaner screen sharing and standard-card printing.
+  const W=1440,H=880;
+  const c=document.createElement("canvas"); c.width=W; c.height=H;
   const x=c.getContext("2d"), bg=d.card_color||"#eff6ff", fg=contrast(bg), mt=muted(bg);
-  x.fillStyle=bg; x.fillRect(0,0,1400,800); x.strokeStyle="rgba(30,64,175,.16)"; x.lineWidth=3;
-  x.beginPath(); if(x.roundRect)x.roundRect(30,30,1340,740,38); else x.rect(30,30,1340,740); x.stroke();
+  x.fillStyle=bg; x.fillRect(0,0,W,H); x.strokeStyle="rgba(30,64,175,.16)"; x.lineWidth=3;
+  x.beginPath(); if(x.roundRect)x.roundRect(30,30,W-60,H-60,38); else x.rect(30,30,W-60,H-60); x.stroke();
   let hasPhoto=!!d.photo_url;
-  if(hasPhoto){try{const img=await loadImg(d.photo_url);x.save();x.beginPath();if(x.roundRect)x.roundRect(82,82,220,220,32);else x.rect(82,82,220,220);x.clip();const sc=Math.max(220/img.width,220/img.height),w=img.width*sc,h=img.height*sc;x.drawImage(img,82+(220-w)/2,82+(220-h)/2,w,h);x.restore()}catch{hasPhoto=false}}
+  if(hasPhoto){try{const img=await loadImg(d.photo_url);x.save();x.beginPath();if(x.roundRect)x.roundRect(82,76,220,220,32);else x.rect(82,76,220,220);x.clip();const sc=Math.max(220/img.width,220/img.height),w=img.width*sc,h=img.height*sc;x.drawImage(img,82+(220-w)/2,76+(220-h)/2,w,h);x.restore()}catch{hasPhoto=false}}
   function fit(v,maxW,fontSize=22,weight=600){v=String(v||"").trim();if(!v)return "";x.font=`${weight} ${fontSize}px Arial, sans-serif`;if(x.measureText(v).width<=maxW)return v;while(v.length>1&&x.measureText(v+"…").width>maxW)v=v.slice(0,-1);return v+"…"}
   function socialHandle(v){try{const u=new URL(cleanUrl(v));let p=u.pathname.split('/').filter(Boolean),z=p.pop()||u.hostname.replace(/^www\./,'');if(['share','profile.php','people'].includes(z.toLowerCase()))z=u.hostname.replace(/^www\./,'');return z.length>34?z.slice(0,31)+'…':z}catch{return String(v||'').slice(0,34)}}
-  const name=localizedCardText(d,"full_name")||t("My DShario"), tx=hasPhoto?350:88, maxW=hasPhoto?950:1210;
+  function iconCircle(cx,cy,kind){
+    const r=27;x.save();x.lineWidth=2;x.strokeStyle='rgba(30,64,175,.15)';x.fillStyle='rgba(255,255,255,.72)';x.beginPath();x.arc(cx,cy,r,0,Math.PI*2);x.fill();x.stroke();
+    x.textAlign='center';x.textBaseline='middle';x.font='700 27px Arial, sans-serif';
+    if(kind==='linkedin'){x.fillStyle='#0A66C2';x.beginPath();x.arc(cx,cy,23,0,Math.PI*2);x.fill();x.fillStyle='#fff';x.font='800 25px Arial, sans-serif';x.fillText('in',cx,cy+1)}
+    else if(kind==='facebook'){x.fillStyle='#1877F2';x.beginPath();x.arc(cx,cy,23,0,Math.PI*2);x.fill();x.fillStyle='#fff';x.font='900 34px Arial, sans-serif';x.fillText('f',cx,cy+4)}
+    else if(kind==='instagram'){x.strokeStyle='#C13584';x.lineWidth=4;x.beginPath();if(x.roundRect)x.roundRect(cx-16,cy-16,32,32,9);else x.rect(cx-16,cy-16,32,32);x.stroke();x.beginPath();x.arc(cx,cy,8,0,Math.PI*2);x.stroke();x.fillStyle='#C13584';x.beginPath();x.arc(cx+10,cy-10,3,0,Math.PI*2);x.fill()}
+    else if(kind==='whatsapp'){x.fillStyle='#25D366';x.beginPath();x.arc(cx,cy,22,0,Math.PI*2);x.fill();x.strokeStyle='#fff';x.lineWidth=3;x.beginPath();x.arc(cx,cy-1,13,0.45,5.6);x.stroke();x.beginPath();x.moveTo(cx-10,cy+9);x.lineTo(cx-14,cy+17);x.lineTo(cx-5,cy+13);x.stroke();x.fillStyle='#fff';x.font='700 18px Arial, sans-serif';x.fillText('☎',cx+1,cy)}
+    else if(kind==='phone'){x.fillStyle='#2563EB';x.font='700 25px Arial, sans-serif';x.fillText('☎',cx,cy+1)}
+    else if(kind==='email'){x.fillStyle='#DC2626';x.font='700 25px Arial, sans-serif';x.fillText('✉',cx,cy)}
+    else if(kind==='location'){x.fillStyle='#EA4335';x.font='700 28px Arial, sans-serif';x.fillText('●',cx,cy-4);x.beginPath();x.moveTo(cx-8,cy+4);x.lineTo(cx,cy+17);x.lineTo(cx+8,cy+4);x.closePath();x.fill();x.fillStyle='#fff';x.beginPath();x.arc(cx,cy-4,4,0,Math.PI*2);x.fill()}
+    else if(kind==='website'){x.fillStyle='#475569';x.font='700 26px Arial, sans-serif';x.fillText('◎',cx,cy)}
+    x.restore();
+  }
+  const name=localizedCardText(d,"full_name")||t("My DShario"), tx=hasPhoto?350:88, maxW=hasPhoto?980:1240;
   const nameFs=name.length>30?42:name.length>22?47:(hasPhoto?51:58);
-  x.textAlign="left";x.textBaseline="top";x.fillStyle=fg;x.font=`900 ${nameFs}px Arial, sans-serif`;x.fillText(fit(name,maxW,nameFs,900),tx,86);
-  let y=86+nameFs+17;
+  x.textAlign="left";x.textBaseline="top";x.fillStyle=fg;x.font=`900 ${nameFs}px Arial, sans-serif`;x.fillText(fit(name,maxW,nameFs,900),tx,82);
+  let y=82+nameFs+17;
   if(view!=="social"){
     const lines=[[localizedCardText(d,"job_title"),29,mt,700],[localizedCardText(d,"company"),28,fg,800],[localizedCardText(d,"description"),22,mt,500]];
     for(const [v,fs,col,w] of lines){if(v){x.fillStyle=col;x.font=`${w} ${fs}px Arial, sans-serif`;x.fillText(fit(v,maxW,fs,w),tx,y);y+=fs+14}}
   }
   const direct=view==="business"||view==="full", items=[];
-  if(d.location&&direct)items.push([t("Location"),d.location]);
-  if(d.phone&&direct&&d.show_phone!==false)items.push([window.currentLang==="bn"?"মোবাইল":"Mobile",d.phone]);
-  if(d.email&&direct&&d.show_email!==false)items.push([t("Email"),d.email]);
-  if(d.whatsapp&&(view==="professional"||view==="business"||view==="full")){
-    const wa=whatsappContactData(d.whatsapp);
-    if(wa.display) items.push(["WhatsApp",wa.display]);
-  }
-  if(d.website&&(view==="professional"||view==="business"||view==="full"))items.push([t("Website"),(()=>{try{return new URL(cleanUrl(d.website)).hostname.replace(/^www\./,'')}catch{return d.website}})()]);
-  if(d.linkedin_url)items.push([t("LinkedIn"),socialHandle(d.linkedin_url)]);
-  if(d.facebook_url&&(view==="social"||view==="full"))items.push([t("Facebook"),socialHandle(d.facebook_url)]);
-  if(d.instagram_url&&(view==="social"||view==="full"))items.push([t("Instagram"),socialHandle(d.instagram_url)]);
+  if(d.location&&direct)items.push([t("Location"),d.location,'location']);
+  if(d.phone&&direct&&d.show_phone!==false)items.push([window.currentLang==="bn"?"মোবাইল":"Mobile",d.phone,'phone']);
+  if(d.email&&direct&&d.show_email!==false)items.push([t("Email"),d.email,'email']);
+  if(d.whatsapp&&(view==="professional"||view==="business"||view==="full")){const wa=whatsappContactData(d.whatsapp);if(wa.display)items.push(["WhatsApp",wa.display,'whatsapp'])}
+  if(d.website&&(view==="professional"||view==="business"||view==="full"))items.push([t("Website"),(()=>{try{return new URL(cleanUrl(d.website)).hostname.replace(/^www\./,'')}catch{return d.website}})(),'website']);
+  if(d.linkedin_url)items.push([t("LinkedIn"),socialHandle(d.linkedin_url),'linkedin']);
+  if(d.facebook_url&&(view==="social"||view==="full"))items.push([t("Facebook"),socialHandle(d.facebook_url),'facebook']);
+  if(d.instagram_url&&(view==="social"||view==="full"))items.push([t("Instagram"),socialHandle(d.instagram_url),'instagram']);
 
-  // Content-aware layout. Social deliberately uses a larger QR and a compact information block.
-  const isSparseSocial=view==="social" && items.length<=3;
-  const qrSize=isSparseSocial?250:180, qrX=isSparseSocial?1040:1125, qrY=isSparseSocial?335:515;
-  if(isSparseSocial){
-    // Sparse Social view: centre the small social block vertically and increase readability.
-    const sx=hasPhoto?350:88, sy=hasPhoto?285:270, rowH=88, valFs=27;
-    items.forEach((it,i)=>{const yy=sy+i*rowH;x.fillStyle=mt;x.font="700 17px Arial, sans-serif";x.fillText(it[0],sx,yy);x.fillStyle=fg;x.font=`700 ${valFs}px Arial, sans-serif`;x.fillText(fit(it[1],hasPhoto?610:760,valFs,700),sx,yy+25)});
-  }else{
-    const rows=Math.ceil(items.length/2), colX=[88,610], colW=430;
-    // Balance the information vertically instead of leaving a large unused middle area.
-    // With fewer rows we can breathe more; with more rows we tighten automatically.
-    const minStart=hasPhoto?Math.max(350,y+24):Math.max(285,y+30);
-    const rowH=rows<=2?96:rows===3?88:rows===4?72:60;
-    const valueFs=items.length>6?19:21;
-    const maxBlockH=Math.max(0,(rows-1)*rowH);
-    const startY=Math.min(minStart,610-maxBlockH);
-    items.forEach((it,i)=>{
-      const col=i%2,row=Math.floor(i/2),xx=colX[col],yy=startY+row*rowH;
-      if(yy+46>665)return;
-      x.fillStyle=mt;x.font="700 15px Arial, sans-serif";x.fillText(it[0],xx,yy);
-      x.fillStyle=fg;x.font=`600 ${valueFs}px Arial, sans-serif`;x.fillText(fit(it[1],colW,valueFs,600),xx,yy+22)
-    });
-  }
-  const qrTarget=publicMode
-    ? ((currentPublicSourceType==="temporary"&&currentPublicShareToken)
-        ? location.origin+location.pathname+"?share="+encodeURIComponent(currentPublicShareToken)
-        : shareUrl(d))
-    : (d?.slug?location.origin+location.pathname+"?card="+encodeURIComponent(d.slug)+"&view=full":shareUrl(d));
-  try{const holder=document.createElement('div');holder.style.cssText='position:fixed;left:-9999px;top:-9999px;background:#fff';document.body.appendChild(holder);new QRCode(holder,{text:qrTarget,width:qrSize,height:qrSize,colorDark:'#000000',colorLight:'#ffffff',correctLevel:QRCode.CorrectLevel.M});await new Promise(r=>setTimeout(r,80));const q=holder.querySelector('canvas');if(q){const pad=14;x.fillStyle='#fff';x.fillRect(qrX-pad,qrY-pad,qrSize+pad*2,qrSize+58);x.drawImage(q,qrX,qrY,qrSize,qrSize);x.fillStyle='#334155';x.textAlign='center';x.font='700 16px Arial, sans-serif';x.fillText(window.currentLang==="bn"?"লাইভ DShario খুলুন":"Open live DShario",qrX+qrSize/2,qrY+qrSize+24)}holder.remove()}catch(e){console.warn('QR render failed',e)}
-  x.textAlign="left";x.fillStyle=fg;x.font="900 30px Arial, sans-serif";x.fillText("DS",82,716);x.fillStyle=mt;x.font="20px Arial, sans-serif";x.fillText(window.currentLang==="bn"?"যোগাযোগ রাখুন।":"Keep in touch.",140,720);
+  const isSparseSocial=view==="social"&&items.length<=3;
+  const qrSize=isSparseSocial?250:190, qrX=isSparseSocial?1080:1160, qrY=isSparseSocial?370:570;
+  const rows=Math.ceil(items.length/2), colX=[92,625], colW=410;
+  const minStart=hasPhoto?Math.max(350,y+25):Math.max(285,y+30);
+  const rowH=rows<=2?108:rows===3?94:rows===4?82:70;
+  const valueFs=items.length>6?19:22;
+  const maxBlockH=Math.max(0,(rows-1)*rowH), startY=isSparseSocial?Math.max(320,minStart):Math.min(minStart,680-maxBlockH);
+  items.forEach((it,i)=>{
+    const col=i%2,row=Math.floor(i/2),baseX=colX[col],yy=startY+row*rowH,icx=baseX+27,icy=yy+30,txtX=baseX+72;
+    if(yy+58>745)return;
+    iconCircle(icx,icy,it[2]);
+    x.textAlign='left';x.textBaseline='top';x.fillStyle=mt;x.font='700 15px Arial, sans-serif';x.fillText(it[0],txtX,yy+4);
+    x.fillStyle=fg;x.font=`600 ${valueFs}px Arial, sans-serif`;x.fillText(fit(it[1],colW,valueFs,600),txtX,yy+27);
+  });
+  const qrTarget=publicMode?((currentPublicSourceType==="temporary"&&currentPublicShareToken)?location.origin+location.pathname+"?share="+encodeURIComponent(currentPublicShareToken):shareUrl(d)):(d?.slug?location.origin+location.pathname+"?card="+encodeURIComponent(d.slug)+"&view=full":shareUrl(d));
+  try{const holder=document.createElement('div');holder.style.cssText='position:fixed;left:-9999px;top:-9999px;background:#fff';document.body.appendChild(holder);new QRCode(holder,{text:qrTarget,width:qrSize,height:qrSize,colorDark:'#000000',colorLight:'#ffffff',correctLevel:QRCode.CorrectLevel.M});await new Promise(r=>setTimeout(r,80));const q=holder.querySelector('canvas');if(q){const pad=14;x.fillStyle='#fff';x.fillRect(qrX-pad,qrY-pad,qrSize+pad*2,qrSize+58);x.drawImage(q,qrX,qrY,qrSize,qrSize);x.fillStyle='#334155';x.textAlign='center';x.textBaseline='top';x.font='700 16px Arial, sans-serif';x.fillText(window.currentLang==="bn"?"লাইভ DShario খুলুন":"Open live DShario",qrX+qrSize/2,qrY+qrSize+24)}holder.remove()}catch(e){console.warn('QR render failed',e)}
+  x.textAlign="left";x.textBaseline='top';x.fillStyle=fg;x.font="900 30px Arial, sans-serif";x.fillText("DS",82,794);x.fillStyle=mt;x.font="20px Arial, sans-serif";x.fillText(window.currentLang==="bn"?"যোগাযোগ রাখুন।":"Keep in touch.",140,798);
   c.toBlob(b=>{if(b)downloadBlob(b,safeName(name||d.full_name||"dshario")+"-"+view+"-card.png")},"image/png");
 }
 if($("pngBtn")) $("pngBtn").onclick=()=>downloadCurrentCardAsImage();
@@ -4679,6 +4678,7 @@ document.addEventListener("DOMContentLoaded",()=>{
 // RC22 adds one isolated usability action: a visible address/location row opens that address in Google Maps.
 // RC23 adds one isolated WhatsApp contact improvement: visible in Professional/Business/Full, with optional username support stored compatibly in the existing WhatsApp field.
 // RC25 adds WhatsApp to the downloaded card image in Professional/Business/Full only; no other feature logic changed.
+// RC26 changes only the downloaded PNG presentation: 90:55-style proportion, clearer contact/social icons, spacing and QR placement.
 updateShareTypeUI();
 </script>
 
