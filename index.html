@@ -3385,7 +3385,24 @@ $("shareBtn").onclick=async()=>{
 $("waBtn").onclick=async()=>{const u=await ensureShareUrl();if(!u)return;const c=currentCard||{},t=encodeURIComponent(([c.full_name,c.job_title,c.company].filter(Boolean).join(" • ")||"View my DShario")+"\n"+u);window.open("https://wa.me/?text="+t,"_blank")};
 $("qrBtn").onclick=async()=>{if(!publicMode){const u=await ensureShareUrl();if(!u)return;setLocalQr("qrImg",u);$("qrText").textContent=u}$("qrPanel").classList.toggle("show")};
 
-function downloadBlob(blob,name){const a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download=name;document.body.appendChild(a);a.click();setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove()},1000)}
+function downloadBlob(blob,name){
+  // RC29: Messenger/Facebook/Instagram in-app browsers can ignore the HTML download attribute.
+  // Keep the normal browser download path unchanged, but open the generated PNG directly
+  // in those webviews so the user can save/share it from the phone viewer.
+  const ua=navigator.userAgent||"";
+  const inApp=/FBAN|FBAV|Messenger|Instagram|FB_IAB/i.test(ua);
+  const url=URL.createObjectURL(blob);
+  if(inApp){
+    const w=window.open(url,"_blank");
+    if(!w){ location.href=url; }
+    // Delay revocation because the in-app viewer needs time to load the Blob URL.
+    setTimeout(()=>URL.revokeObjectURL(url),60000);
+    msg(window.currentLang==="bn"?"ছবিটি খুলেছে। ফোনের মেনু থেকে Save/Download করুন।":"Image opened. Use your phone menu to Save/Download it.","info");
+    return;
+  }
+  const a=document.createElement("a");a.href=url;a.download=name;document.body.appendChild(a);a.click();
+  setTimeout(()=>{URL.revokeObjectURL(url);a.remove()},1500);
+}
 function saveCurrentCardToContacts(){
   const d=currentCard||{}; if(!d.full_name)return;
   const view=activePrivacyView();
