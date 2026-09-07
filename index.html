@@ -1,10 +1,10 @@
 <!doctype html>
-<!-- DShario WORKING RC24 — RC23 baseline + isolated clearer social/contact brand icons. -->
+<!-- DShario WORKING RC25 — RC24 baseline + isolated WhatsApp field in downloaded card image. -->
 <html lang="en">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>DShario WORKING RC23</title>
+<title>DShario WORKING RC25</title>
 <meta name="theme-color" content="#ffffff">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
@@ -3432,6 +3432,10 @@ async function downloadCurrentCardAsImage(viewOverride){
   if(d.location&&direct)items.push([t("Location"),d.location]);
   if(d.phone&&direct&&d.show_phone!==false)items.push([window.currentLang==="bn"?"মোবাইল":"Mobile",d.phone]);
   if(d.email&&direct&&d.show_email!==false)items.push([t("Email"),d.email]);
+  if(d.whatsapp&&(view==="professional"||view==="business"||view==="full")){
+    const wa=whatsappContactData(d.whatsapp);
+    if(wa.display) items.push(["WhatsApp",wa.display]);
+  }
   if(d.website&&(view==="professional"||view==="business"||view==="full"))items.push([t("Website"),(()=>{try{return new URL(cleanUrl(d.website)).hostname.replace(/^www\./,'')}catch{return d.website}})()]);
   if(d.linkedin_url)items.push([t("LinkedIn"),socialHandle(d.linkedin_url)]);
   if(d.facebook_url&&(view==="social"||view==="full"))items.push([t("Facebook"),socialHandle(d.facebook_url)]);
@@ -4674,6 +4678,7 @@ document.addEventListener("DOMContentLoaded",()=>{
 // RC21 stabilizes received-card context through sign-in: Save resumes in place, and Exchange no longer redirects away before the received card can be saved.
 // RC22 adds one isolated usability action: a visible address/location row opens that address in Google Maps.
 // RC23 adds one isolated WhatsApp contact improvement: visible in Professional/Business/Full, with optional username support stored compatibly in the existing WhatsApp field.
+// RC25 adds WhatsApp to the downloaded card image in Professional/Business/Full only; no other feature logic changed.
 updateShareTypeUI();
 </script>
 
