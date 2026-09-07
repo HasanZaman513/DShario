@@ -1,10 +1,10 @@
 <!doctype html>
-<!-- DShario WORKING RC21 — RC20 baseline + isolated received-card state stabilization for Save/Exchange through authentication. -->
+<!-- DShario WORKING RC22 — RC21 baseline + isolated Google Maps action for shared address/location. -->
 <html lang="en">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>DShario WORKING RC21</title>
+<title>DShario WORKING RC22</title>
 <meta name="theme-color" content="#ffffff">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
@@ -2868,6 +2868,16 @@ function render(card){
   ["pRole","pTagline"].forEach(id=>$(id).style.color=muted(bg));
   $("pPhoto").src=c.photo_url||""; $("pPhoto").style.display=c.photo_url?"block":"none";
   $("pLocation").textContent=c.location||""; $("locRow").style.display=c.location?"flex":"none";
+  // RC22: when an address is visible in the selected privacy view, tapping its row opens Google Maps.
+  if($("locRow")){
+    const mapAddress=(c.location||"").trim();
+    $("locRow").style.cursor=mapAddress?"pointer":"";
+    $("locRow").setAttribute("role",mapAddress?"link":"");
+    $("locRow").tabIndex=mapAddress?0:-1;
+    $("locRow").title=mapAddress?"Open in Google Maps":"";
+    $("locRow").onclick=mapAddress?()=>window.open("https://www.google.com/maps/search/?api=1&query="+encodeURIComponent(mapAddress),"_blank","noopener"):null;
+    $("locRow").onkeydown=mapAddress?(e)=>{if(e.key==="Enter"||e.key===" "){e.preventDefault();$("locRow").click();}}:null;
+  }
   const phone=c.phone||""; $("pPhone").textContent=phone; $("phoneRow").href=phone?"tel:"+phone.replace(/[^+\d]/g,""):"#"; $("phoneRow").style.display=phone?"flex":"none"; $("callBtn").href=$("phoneRow").href; $("callBtn").style.display=phone?"flex":"none";
   const email=c.email||""; $("pEmail").textContent=email; $("emailRow").href=email?"mailto:"+email:"#"; $("emailRow").style.display=email?"flex":"none"; $("emailBtn").href=$("emailRow").href; $("emailBtn").style.display=email?"flex":"none";
   const links=[["webRow",c.website],["liRow",c.linkedin_url],["fbRow",c.facebook_url],["igRow",c.instagram_url]];
@@ -4623,6 +4633,7 @@ document.addEventListener("DOMContentLoaded",()=>{
 // RC17 owner image download control is intentionally isolated from auth, sharing and connection logic.
 // RC20 keeps revoked/expired Temporary Share records visible until manual deletion and hides the received-card Back control on Temporary Share cards.
 // RC21 stabilizes received-card context through sign-in: Save resumes in place, and Exchange no longer redirects away before the received card can be saved.
+// RC22 adds one isolated usability action: a visible address/location row opens that address in Google Maps.
 updateShareTypeUI();
 </script>
 
