@@ -1,10 +1,10 @@
 <!doctype html>
-<!-- DShario BETA STABLE RC20 — RC19 stable baseline + two isolated Shared Cards/Temporary Share navigation fixes. -->
+<!-- DShario WORKING RC21 — RC20 baseline + isolated received-card state stabilization for Save/Exchange through authentication. -->
 <html lang="en">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>DShario BETA STABLE RC20</title>
+<title>DShario WORKING RC21</title>
 <meta name="theme-color" content="#ffffff">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
@@ -3191,17 +3191,16 @@ $("authSubmit").onclick=async()=>{
         await resumeSharedIntentAfterLoad();
         return;
       }
-      // Keep the already-tested save flow unchanged: return to the exact permanent/temporary URL, then complete the save.
-      const back=savedSharedReturnUrl();
-      if(back){
-        location.replace(back);
-        return;
-      }
+      // RC21 stabilization: Save uses the same in-place received-card continuation as Exchange.
+      // Do not reload or enter the owner's area after authentication; currentCard must remain
+      // the sender's received card until the pending Save has completed.
       setView("card");
       normalizeReceiverActions();
       updateSaveConnectionButton();
       updateSharedMemberNav();
-      msg("Signed in successfully. The shared DShario is still open.","ok");
+      msg(intendedAction==="save"
+        ? "Signed in successfully. Saving the received DShario to My Connections…"
+        : "Signed in successfully. The shared DShario is still open.","ok");
       await resumeSharedIntentAfterLoad();
     }else{
       await refreshAuth(true);
@@ -3909,12 +3908,20 @@ async function sendMyDsharioBack(){
   if(!nav){
     nav=document.createElement("div");
     nav.className="actions afterSendNav";
-    nav.innerHTML='<button id="afterSendMyCard" class="mini" type="button">My Card</button><button id="afterSendAccount" class="mini" type="button">Account / My Connections</button>';
+    nav.innerHTML='<button id="afterExchangeSaveReceived" class="mini" type="button">Save to My Connections</button><button id="afterSendAccount" class="mini" type="button">Account / My Connections</button>';
     $("exchangeSentSummary").appendChild(nav);
-    $("afterSendMyCard").onclick=()=>ownArea("mycard");
+    $("afterExchangeSaveReceived").onclick=async()=>{
+      const ok=await saveCurrentConnection();
+      if(ok) $("afterExchangeSaveReceived").textContent="View in My Connections";
+    };
     $("afterSendAccount").onclick=()=>ownArea("account");
   }
-  msg("✓ Card sent. It will appear as New in the other user’s My Connections.","ok"); setTimeout(()=>location.replace(location.origin+location.pathname+"#account"),450);
+  // RC21 stabilization: Exchange must not discard the received-card context.
+  // Stay on the sender's card so Exchange and Save remain independent actions.
+  normalizeReceiverActions();
+  updateSaveConnectionButton();
+  updateSharedMemberNav();
+  msg("✓ Card sent. You can still save this received DShario to My Connections.","ok");
 }
 if($("sendMyDsharioBackBtn")) $("sendMyDsharioBackBtn").onclick=sendMyDsharioBack;
 
@@ -4614,7 +4621,8 @@ document.addEventListener("DOMContentLoaded",()=>{
 });
 
 // RC17 owner image download control is intentionally isolated from auth, sharing and connection logic.
-// RC20 only keeps revoked/expired Temporary Share records visible until manual deletion and hides the received-card Back control on Temporary Share cards.
+// RC20 keeps revoked/expired Temporary Share records visible until manual deletion and hides the received-card Back control on Temporary Share cards.
+// RC21 stabilizes received-card context through sign-in: Save resumes in place, and Exchange no longer redirects away before the received card can be saved.
 updateShareTypeUI();
 </script>
 
