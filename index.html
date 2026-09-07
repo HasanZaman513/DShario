@@ -1,10 +1,10 @@
 <!doctype html>
-<!-- DShario WORKING RC22 — RC21 baseline + isolated Google Maps action for shared address/location. -->
+<!-- DShario WORKING RC23 — RC22 baseline + isolated WhatsApp contact display/username support. -->
 <html lang="en">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>DShario WORKING RC22</title>
+<title>DShario WORKING RC23</title>
 <meta name="theme-color" content="#ffffff">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
@@ -1708,6 +1708,7 @@ QRCodeCore.createBytes = function(buffer, rsBlocks) {
       <div id="locRow" class="contact"><span class="icon">⌖</span><span id="pLocation" class="ct">Location</span></div>
       <a id="phoneRow" class="contact" href="#" style="display:none"><span class="icon">☎</span><span id="pPhone" class="ct"></span></a>
       <a id="emailRow" class="contact" href="#" style="display:none"><span class="icon">✉</span><span id="pEmail" class="ct"></span></a>
+      <a id="whatsappRow" class="contact" href="#" target="_blank" rel="noopener" style="display:none"><span class="icon">◉</span><span id="pWhatsapp" class="ct"></span></a>
       <a id="webRow" class="contact" href="#" target="_blank" rel="noopener" style="display:none"><span class="icon">↗</span><span class="ct">Website</span></a>
       <a id="liRow" class="contact" href="#" target="_blank" rel="noopener" style="display:none"><span class="icon">in</span><span class="ct">LinkedIn</span></a>
       <a id="fbRow" class="contact" href="#" target="_blank" rel="noopener" style="display:none"><span class="icon">f</span><span class="ct">Facebook</span></a>
@@ -1835,7 +1836,7 @@ QRCodeCore.createBytes = function(buffer, rsBlocks) {
           <option value="social">Social</option>
           <option value="full">Full</option>
         </select>
-        <div id="wizPrivacyHelp">Professional — name, role, company, LinkedIn and website; no direct phone/email.</div>
+        <div id="wizPrivacyHelp">Professional — name, role, company, WhatsApp, LinkedIn and website; phone/email remain hidden.</div>
       </div>
 
       <div id="wizTemp" class="wizTemp">
@@ -1993,6 +1994,7 @@ QRCodeCore.createBytes = function(buffer, rsBlocks) {
       <div class="field"><label>Mobile number</label><input id="phone" placeholder="+61..."><label class="check"><input id="show_phone" type="checkbox" checked> Show on public DShario</label></div>
       <div class="field"><label>Email address</label><input id="email" type="email" placeholder="you@example.com"><label class="check"><input id="show_email" type="checkbox" checked> Show on public DShario</label></div>
       <div class="field"><label>WhatsApp number</label><input id="whatsapp" placeholder="+61..."></div>
+      <div class="field"><label>WhatsApp username</label><input id="whatsapp_username" placeholder="@username"></div>
       <div class="field"><label>Website</label><input id="website" placeholder="https://..."></div>
     </div></div>
   </details>
@@ -2008,7 +2010,7 @@ QRCodeCore.createBytes = function(buffer, rsBlocks) {
 
   <details class="editSection">
     <summary>4. Privacy</summary>
-    <div class="editSectionBody"><div class="field"><label>Default Privacy View</label><select id="privacy_view"><option value="professional">Professional — name, role, company, LinkedIn, website</option><option value="business">Business — professional + phone, email, WhatsApp</option><option value="social">Social — name + selected social links</option><option value="full">Full — all details you choose to add</option></select><span class="hint">You can change this again before creating each share link.</span></div></div>
+    <div class="editSectionBody"><div class="field"><label>Default Privacy View</label><select id="privacy_view"><option value="professional">Professional — name, role, company, WhatsApp, LinkedIn, website</option><option value="business">Business — professional + phone, email, WhatsApp</option><option value="social">Social — name + selected social links</option><option value="full">Full — all details you choose to add</option></select><span class="hint">You can change this again before creating each share link.</span></div></div>
   </details>
 
   <details class="editSection" style="display:none">
@@ -2794,8 +2796,38 @@ function setView(name){
   if($("accountLead")) $("accountLead").style.display=user?"none":"block";
   window.scrollTo({top:0,behavior:"smooth"});
 }
+function parseWhatsappValue(raw){
+  const value=(raw||"").toString().trim();
+  if(!value) return {number:"",username:""};
+  if(value.startsWith("wa2:")){
+    try{
+      const data=JSON.parse(decodeURIComponent(value.slice(4)));
+      return {number:(data.number||"").toString().trim(),username:(data.username||"").toString().trim()};
+    }catch(e){}
+  }
+  if(value.startsWith("@")) return {number:"",username:value};
+  return {number:value,username:""};
+}
+function packWhatsappValue(number,username){
+  const n=(number||"").toString().trim();
+  let u=(username||"").toString().trim();
+  if(u && !u.startsWith("@")) u="@"+u;
+  if(!u) return n; // preserve the existing plain-number format when no username is used
+  return "wa2:"+encodeURIComponent(JSON.stringify({number:n,username:u}));
+}
+function whatsappContactData(raw){
+  const w=parseWhatsappValue(raw);
+  const username=(w.username||"").replace(/^@/,"");
+  const digits=(w.number||"").replace(/[^\d]/g,"");
+  const href=username ? "https://wa.me/"+encodeURIComponent(username) : (digits ? "https://wa.me/"+digits : "");
+  const display=[w.username,w.number].filter(Boolean).join(" • ");
+  return {...w,href,display};
+}
 function setForm(card={}){
   formIds.forEach(id=>{ if($(id)) $(id).value = card[id] ?? (id==="card_color"?"#eff6ff":""); });
+  const wa=parseWhatsappValue(card.whatsapp);
+  if($("whatsapp")) $("whatsapp").value=wa.number;
+  if($("whatsapp_username")) $("whatsapp_username").value=wa.username;
   $("show_phone").checked=card.show_phone!==false; $("show_email").checked=card.show_email!==false;
   const pv=card.privacy_view||localStorage.getItem("dshario-privacy-view")||"professional";
   $("privacy_view").value=pv; if($("shareView")) $("shareView").value=pv; if($("ownerDownloadView")) $("ownerDownloadView").value=pv;
@@ -2803,6 +2835,7 @@ function setForm(card={}){
 }
 function getForm(){
   const o={}; formIds.forEach(id=>o[id]=$(id).value.trim());
+  o.whatsapp=packWhatsappValue($("whatsapp")?.value,$("whatsapp_username")?.value);
   o.slug=slugify(o.slug); o.show_phone=$("show_phone").checked; o.show_email=$("show_email").checked; o.photo_url=photoData||null; o.is_public=true; o.privacy_view=$("privacy_view").value||"professional";
   return o;
 }
@@ -2845,6 +2878,8 @@ function applyPrivacyView(c){
   show("callBtn", false);
   show("emailRow", !!c.email && direct && c.show_email!==false);
   show("emailBtn", false);
+  const wa=whatsappContactData(c.whatsapp);
+  show("whatsappRow", !!wa.display && (view==="professional"||view==="business"||view==="full"));
   show("waBtn", false);
 
   const labels={professional:"Professional view",business:"Business view",social:"Social view",full:"Full view"};
@@ -2880,6 +2915,9 @@ function render(card){
   }
   const phone=c.phone||""; $("pPhone").textContent=phone; $("phoneRow").href=phone?"tel:"+phone.replace(/[^+\d]/g,""):"#"; $("phoneRow").style.display=phone?"flex":"none"; $("callBtn").href=$("phoneRow").href; $("callBtn").style.display=phone?"flex":"none";
   const email=c.email||""; $("pEmail").textContent=email; $("emailRow").href=email?"mailto:"+email:"#"; $("emailRow").style.display=email?"flex":"none"; $("emailBtn").href=$("emailRow").href; $("emailBtn").style.display=email?"flex":"none";
+  const wa=whatsappContactData(c.whatsapp);
+  if($("pWhatsapp")) $("pWhatsapp").textContent=wa.display;
+  if($("whatsappRow")){ $("whatsappRow").href=wa.href||"#"; $("whatsappRow").style.display=wa.display?"flex":"none"; }
   const links=[["webRow",c.website],["liRow",c.linkedin_url],["fbRow",c.facebook_url],["igRow",c.instagram_url]];
   links.forEach(([id,v])=>{ $(id).href=cleanUrl(v)||"#"; $(id).style.display=v?"flex":"none"; });
   const u=publicMode?location.href:(currentShareUrl||shareUrl(c)); setLocalQr("qrImg",u); $("qrText").textContent=u;
@@ -3548,7 +3586,7 @@ if($("closeNotificationsBtn"))$("closeNotificationsBtn").onclick=()=>$("notifica
 
 
 const wizPrivacyHelpText={
-  professional:"Professional — name, role, company, introduction, website and LinkedIn. Direct phone/email, location and Facebook/Instagram are hidden.",
+  professional:"Professional — name, role, company, introduction, WhatsApp, website and LinkedIn. Direct phone/email, location and Facebook/Instagram are hidden.",
   business:"Business — professional details plus location and your allowed phone/email contact details. Facebook/Instagram stay hidden.",
   social:"Social — name and social links (LinkedIn, Facebook and Instagram where added). Role, company, introduction and direct contact details are hidden.",
   full:"Full — all information you chose to add, subject to your phone and email visibility settings."
@@ -3558,7 +3596,7 @@ function updateWizPrivacyHelp(){
   if(!box)return;
   const en=wizPrivacyHelpText[v]||wizPrivacyHelpText.professional;
   const bn={
-    professional:"প্রফেশনাল — নাম, পদবি, প্রতিষ্ঠান, পরিচিতি, ওয়েবসাইট ও LinkedIn। সরাসরি ফোন/ইমেইল, অবস্থান এবং Facebook/Instagram লুকানো থাকবে।",
+    professional:"প্রফেশনাল — নাম, পদবি, প্রতিষ্ঠান, পরিচিতি, WhatsApp, ওয়েবসাইট ও LinkedIn। সরাসরি ফোন/ইমেইল, অবস্থান এবং Facebook/Instagram লুকানো থাকবে।",
     business:"বিজনেস — প্রফেশনাল তথ্যের সঙ্গে অবস্থান এবং আপনার অনুমোদিত ফোন/ইমেইল দেখাবে। Facebook/Instagram লুকানো থাকবে।",
     social:"সোশ্যাল — নাম ও যোগ করা সামাজিক লিংক দেখাবে। পদবি, প্রতিষ্ঠান, পরিচিতি এবং সরাসরি যোগাযোগের তথ্য লুকানো থাকবে।",
     full:"সম্পূর্ণ — আপনি যে তথ্য যোগ করেছেন তার সবকিছু, ফোন ও ইমেইল দৃশ্যমানতার সেটিং অনুযায়ী।"
@@ -4535,7 +4573,7 @@ window.bnText = {
   "Your DShario is saved online to your account. Edit it only when your details change.":"আপনার DShario আপনার অ্যাকাউন্টে অনলাইনে সেভ থাকে। তথ্য পরিবর্তন হলে এডিট করুন।",
   "Personal DShario name *":"ব্যক্তিগত DShario নাম *",
   "Default Privacy View":"ডিফল্ট প্রাইভেসি ভিউ",
-  "Professional — name, role, company, LinkedIn, website":"প্রফেশনাল — নাম, পদবি, প্রতিষ্ঠান, LinkedIn, ওয়েবসাইট",
+  "Professional — name, role, company, WhatsApp, LinkedIn, website":"প্রফেশনাল — নাম, পদবি, প্রতিষ্ঠান, WhatsApp, LinkedIn, ওয়েবসাইট",
   "Business — professional + phone, email, WhatsApp":"বিজনেস — প্রফেশনাল তথ্য + ফোন, ইমেইল, WhatsApp",
   "Social — name + selected social links":"সোশ্যাল — নাম + নির্বাচিত সোশ্যাল লিংক",
   "Full — all details you choose to add":"সম্পূর্ণ — আপনার যোগ করা সব নির্বাচিত তথ্য",
@@ -4552,6 +4590,7 @@ window.bnText = {
   "Mobile number":"মোবাইল নম্বর",
   "Email address":"ইমেইল ঠিকানা",
   "WhatsApp number":"WhatsApp নম্বর",
+  "WhatsApp username":"WhatsApp ইউজারনেম",
   "LinkedIn":"লিংকডইন",
   "Facebook":"ফেসবুক",
   "Instagram":"ইনস্টাগ্রাম",
@@ -4634,6 +4673,7 @@ document.addEventListener("DOMContentLoaded",()=>{
 // RC20 keeps revoked/expired Temporary Share records visible until manual deletion and hides the received-card Back control on Temporary Share cards.
 // RC21 stabilizes received-card context through sign-in: Save resumes in place, and Exchange no longer redirects away before the received card can be saved.
 // RC22 adds one isolated usability action: a visible address/location row opens that address in Google Maps.
+// RC23 adds one isolated WhatsApp contact improvement: visible in Professional/Business/Full, with optional username support stored compatibly in the existing WhatsApp field.
 updateShareTypeUI();
 </script>
 
