@@ -6,7 +6,8 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>DShario WORKING RC25</title>
 <meta name="theme-color" content="#ffffff">
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2">// RC32.3 purpose state fix: exact per-share purpose mapping; stale purpose cache no longer leaks between shares.
+</script>
 <style>
 :root{--navy:#123a78;--blue:#3478ee;--ink:#0f172a;--muted:#64748b;--line:#dbe5f2;--soft:#f8fbff;--green:#16a34a;--shadow:0 12px 32px rgba(15,23,42,.10)}
 *{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;font-family:Inter,"Noto Sans Bengali","Nirmala UI","Vrinda",system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;color:var(--ink);background:#fff}
@@ -2376,6 +2377,15 @@ let currentShareUrl = "", currentShareToken = "", publicShareView = "", publicSh
 let currentPublicTargetUserId = null, currentPublicSourceType = "permanent", currentPublicShareToken = "", currentPublicMessage = "", currentPublicPurpose = "";
 let pendingMemberExchange = false;
 let shareStatusState = {kind:"idle", choice:null};
+try{
+  if(localStorage.getItem("dshario-purpose-cache-v3-cleaned")!=="1"){
+    for(let i=localStorage.length-1;i>=0;i--){
+      const k=localStorage.key(i)||"";
+      if(k.startsWith("dshario-connection-purpose:")||k.startsWith("dshario-received-purpose:")||k.startsWith("dshario-share-purpose-log:")) localStorage.removeItem(k);
+    }
+    localStorage.setItem("dshario-purpose-cache-v3-cleaned","1");
+  }
+}catch(e){}
 try{ localStorage.setItem("dshario-lang","en"); }catch(e){}
 // RC30.1: English-only product. Keep language state immutable so old browser
 // preferences or stale Bangla state cannot re-activate translated labels.
@@ -2641,7 +2651,7 @@ function markSharedReceivedNow(targetId){
 function normalisePurpose(p){return ["business","career","networking","social"].includes((p||"").toLowerCase())?(p||"").toLowerCase():""}
 function purposeLabel(p){const x=normalisePurpose(p);return x?({business:"💼 Business",career:"👔 Career",networking:"🤝 Networking",social:"👥 Social"}[x]||""):""}
 function connectionPurposeKey(targetId){return user?.id&&targetId?"dshario-connection-purpose:"+user.id+":"+targetId:""}
-function writeConnectionPurpose(targetId,purpose){try{const k=connectionPurposeKey(targetId),p=normalisePurpose(purpose);if(k&&p)localStorage.setItem(k,p)}catch(e){}}
+function writeConnectionPurpose(targetId,purpose){try{const k=connectionPurposeKey(targetId),p=normalisePurpose(purpose);if(!k)return;if(p)localStorage.setItem(k,p);else localStorage.removeItem(k)}catch(e){}}
 function readConnectionPurpose(targetId){try{return normalisePurpose(localStorage.getItem(connectionPurposeKey(targetId))||"")}catch(e){return ""}}
 function receivedPurposeKey(targetId){return targetId?"dshario-received-purpose:"+targetId:""}
 function rememberReceivedPurpose(targetId,purpose){
@@ -2668,19 +2678,10 @@ function addSharePurposeLog(entry){
 }
 function matchSharePurpose(r){
   try{
-    const byId=normalisePurpose(localStorage.getItem("dshario-share-purpose:"+user.id+":"+r.id)||"");
-    if(byId)return byId;
-    const arr=readSharePurposeLog();
-    let candidates=arr.filter(x=>x.share_type===r.share_type&&(x.privacy_view||"professional")===(r.privacy_view||"professional")&&(x.channel||"link")===(r.channel||"link"));
-    if(r.share_token)candidates=candidates.filter(x=>x.share_token===r.share_token);
-    else if(r.recipient_handle)candidates=candidates.filter(x=>(x.recipient_handle||"")===r.recipient_handle);
-    if(!candidates.length)return "";
-    const rt=new Date(r.created_at).getTime();
-    candidates.sort((a,b)=>Math.abs(new Date(a.saved_at).getTime()-rt)-Math.abs(new Date(b.saved_at).getTime()-rt));
-    const best=candidates[0];
-    return Math.abs(new Date(best.saved_at).getTime()-rt)<=180000?normalisePurpose(best.purpose):"";
+    return normalisePurpose(localStorage.getItem("dshario-share-purpose:"+user.id+":"+r.id)||"");
   }catch(e){return ""}
 }
+
 function recordConnectionSave(targetId,view,source){
   if(!user||!targetId)return;
   const h=readConnectionHistory(targetId), now=new Date().toISOString();
@@ -2891,7 +2892,7 @@ async function loadSharedCard(token){
   publicShareView=link.privacy_view||"professional";
   currentPublicPurpose=normalisePurpose(new URLSearchParams(location.search).get("purpose"));
   currentPublicTargetUserId=link.user_id||null;
-  if(currentPublicPurpose)rememberReceivedPurpose(currentPublicTargetUserId,currentPublicPurpose);else currentPublicPurpose=restoreReceivedPurpose(currentPublicTargetUserId);
+  if(currentPublicPurpose) rememberReceivedPurpose(currentPublicTargetUserId,currentPublicPurpose);
   showReceivedPurpose();
   markSharedReceivedNow(currentPublicTargetUserId);
   currentPublicSourceType="temporary";
@@ -3093,7 +3094,7 @@ async function loadPublicCard(slug){
   currentPublicSourceType="permanent";
   currentPublicShareToken="";
   currentPublicPurpose=normalisePurpose(new URLSearchParams(location.search).get("purpose"));
-  if(currentPublicPurpose)rememberReceivedPurpose(currentPublicTargetUserId,currentPublicPurpose);else currentPublicPurpose=restoreReceivedPurpose(currentPublicTargetUserId);
+  if(currentPublicPurpose) rememberReceivedPurpose(currentPublicTargetUserId,currentPublicPurpose);
   showReceivedPurpose();
   hideReceiverMessage();
   render(card); setView("card");
@@ -3789,15 +3790,23 @@ $("wizTemporary").onclick=()=>chooseWiz("temporary");
 if($("wizAddPdfBtn"))$("wizAddPdfBtn").onclick=async()=>{await uploadDocument("wizPdfUpload");renderWizDocs()};
 
 async function recordShare({share_type,recipient_user_id=null,recipient_handle=null,privacy_view,share_token=null,channel="link"}){
+  const purposeNow=normalisePurpose(wizPurpose);
   try{
     const payload={owner_user_id:user.id,share_type,recipient_user_id,recipient_handle,privacy_view,share_token,channel};
     const q=await sb.from("share_records").insert(payload).select("id").maybeSingle();
-    addSharePurposeLog({share_type,recipient_handle,privacy_view,share_token,channel});
-    if(q?.data?.id&&wizPurpose) localStorage.setItem("dshario-share-purpose:"+user.id+":"+q.data.id,normalisePurpose(wizPurpose));
-  }catch(e){
-    addSharePurposeLog({share_type,recipient_handle,privacy_view,share_token,channel});
-  }
+    let recordId=q?.data?.id||null;
+    if(!recordId){
+      let latest=sb.from("share_records").select("id").eq("owner_user_id",user.id).eq("share_type",share_type).eq("privacy_view",privacy_view).eq("channel",channel);
+      if(share_token) latest=latest.eq("share_token",share_token);
+      else if(recipient_handle) latest=latest.eq("recipient_handle",recipient_handle);
+      else latest=latest.is("recipient_handle",null);
+      const z=await latest.order("created_at",{ascending:false}).limit(1).maybeSingle();
+      recordId=z?.data?.id||null;
+    }
+    if(recordId&&purposeNow) localStorage.setItem("dshario-share-purpose:"+user.id+":"+recordId,purposeNow);
+  }catch(e){}
 }
+
 
 async function makeWizTemp(recipient=null){
   const token=crypto.randomUUID().replace(/-/g,"");
