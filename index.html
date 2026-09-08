@@ -6,7 +6,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>DShario WORKING RC25</title>
 <meta name="theme-color" content="#ffffff">
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2">// RC32.3 purpose state fix: exact per-share purpose mapping; stale purpose cache no longer leaks between shares.
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2">// RC32.5 simplified five share types: Business/Career/Networking/Social/Full; privacy selector removed from share flow. RC32.4 base: purpose survives received-card render/auth/save/reopen; My Contacts explanation collapsible.
 </script>
 <style>
 :root{--navy:#123a78;--blue:#3478ee;--ink:#0f172a;--muted:#64748b;--line:#dbe5f2;--soft:#f8fbff;--green:#16a34a;--shadow:0 12px 32px rgba(15,23,42,.10)}
@@ -137,7 +137,7 @@ button,input,textarea{font:inherit}button{cursor:pointer}.app{max-width:980px;ma
 #shareViewBox,#actionGrid{display:none!important}
 .simpleShare{margin-top:16px;text-align:center}.shareWizard{display:none;margin-top:12px;padding:14px;border:1px solid #dbe5f2;border-radius:16px;background:#fff}.shareWizard.show{display:block}.wizStep{display:none}.wizStep.show{display:block}.wizChoices{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-top:10px}.wizChoice{min-height:60px;border:1px solid #cfdced;border-radius:14px;background:#f8fbff;font-weight:850}.wizActions{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin-top:12px}.wizTemp{display:none;margin-top:10px;text-align:left}.wizTemp.show{display:block}
 .infoToggle{border:0;background:transparent;color:#1d4ed8;font-weight:850;padding:2px 6px;cursor:pointer;font-size:16px!important;vertical-align:middle}.optionalExplain{display:none;margin-top:7px}.optionalExplain.show{display:block}.purposeBadge{display:none;margin:0 0 10px;padding:5px 9px;border-radius:999px;background:#f1f5f9;color:#334155;font-size:12px;font-weight:800}.purposeBadge.show{display:inline-flex}
-.purposePrompt{margin-bottom:14px}.purposeChoices{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-top:10px}.purposeChoice{min-height:62px;border:1px solid #cfdced;border-radius:14px;background:#f8fbff;color:#173d7d;font-weight:850;font-size:15px;display:flex;align-items:center;justify-content:center;gap:7px;padding:9px}.purposeChoice.active{border:2px solid #175fc0;background:#eef6ff;box-shadow:0 0 0 2px rgba(23,95,192,.08)}.purposeHint{margin-top:8px;font-size:12px;color:#64748b;line-height:1.4}.audienceBlock{margin-top:15px;padding-top:13px;border-top:1px solid #e3ebf5}.audienceBlock.disabled{opacity:.5;pointer-events:none}
+.purposePrompt{margin-bottom:14px}.purposeChoices{display:grid;grid-template-columns:repeat(2,1fr);gap:9px;margin-top:10px}.shareTypeHead{display:flex;align-items:center;justify-content:space-between;gap:8px}.shareTypeInfo{display:none;margin-top:8px;padding:10px 12px;border:1px solid #d9e5f3;border-radius:12px;background:#f8fbff;color:#52637a;font-size:12px;line-height:1.5}.shareTypeInfo.show{display:block}.purposeChoice{min-height:62px;border:1px solid #cfdced;border-radius:14px;background:#f8fbff;color:#173d7d;font-weight:850;font-size:15px;display:flex;align-items:center;justify-content:center;gap:7px;padding:9px}.purposeChoice.active{border:2px solid #175fc0;background:#eef6ff;box-shadow:0 0 0 2px rgba(23,95,192,.08)}.purposeHint{margin-top:8px;font-size:12px;color:#64748b;line-height:1.4}.audienceBlock{margin-top:15px;padding-top:13px;border-top:1px solid #e3ebf5}.audienceBlock.disabled{opacity:.5;pointer-events:none}
 #savedSearchRow{display:flex;gap:8px;align-items:center}.searchIcon{min-width:46px;font-size:18px}
 #forgotPasswordBtn{border:0;background:transparent;color:#175fc0;font-weight:800;padding:7px 0;cursor:pointer;text-decoration:underline}
 #resetPasswordBox{display:none;margin-top:12px}.cardUpdateTag{display:inline-block;margin-top:6px;padding:4px 9px;border-radius:999px;background:#dcfce7;color:#166534;font-size:12px;font-weight:900}
@@ -1864,14 +1864,16 @@ QRCodeCore.createBytes = function(buffer, rsBlocks) {
   <div id="shareWizard" class="shareWizard">
     <div id="wiz1" class="wizStep show">
       <div class="purposePrompt">
-        <strong>What is the purpose of this connection?</strong>
+        <div class="shareTypeHead"><strong>Choose share type</strong><button id="shareTypeInfoBtn" class="infoToggle" type="button" aria-label="About share types">ⓘ</button></div>
+        <div id="shareTypeInfo" class="shareTypeInfo">Business shares business and direct contact details. Career shares your professional profile. Networking shares a lighter professional profile. Social shares your social links. Full shares all details you have added, subject to your phone and email visibility settings.</div>
         <div class="purposeChoices">
           <button id="purposeBusiness" class="purposeChoice" type="button">💼 Business</button>
           <button id="purposeCareer" class="purposeChoice" type="button">👔 Career</button>
           <button id="purposeNetworking" class="purposeChoice" type="button">🤝 Networking</button>
           <button id="purposeSocial" class="purposeChoice" type="button">👥 Social</button>
+          <button id="purposeFull" class="purposeChoice" type="button">🔓 Full</button>
         </div>
-        <div id="purposeHint" class="purposeHint">Choose a purpose. DShario will recommend a privacy view, which you can change before sharing.</div>
+        <div id="purposeHint" class="purposeHint">Select a share type to see exactly what information the card will carry.</div>
       </div>
       <div id="wizAudienceBlock" class="audienceBlock disabled">
         <strong>Share with</strong>
@@ -1889,16 +1891,14 @@ QRCodeCore.createBytes = function(buffer, rsBlocks) {
       </div>
     </div>
     <div id="wiz3" class="wizStep">
-      <div id="wizPrivacyWrap">
-        <label style="font-weight:850">Privacy view</label>
-        <div id="wizPurposeSummary" class="purposeHint" style="margin:4px 0 7px">Recommended from your sharing purpose.</div>
+      <div id="wizPrivacyWrap" style="display:none!important" aria-hidden="true">
         <select id="wizView">
           <option value="professional">Professional</option>
           <option value="business">Business</option>
           <option value="social">Social</option>
           <option value="full">Full</option>
         </select>
-        <div id="wizPrivacyHelp">Professional — name, role, company, WhatsApp, LinkedIn and website; phone/email remain hidden.</div>
+        <div id="wizPurposeSummary"></div><div id="wizPrivacyHelp"></div>
       </div>
 
       <div id="wizTemp" class="wizTemp">
@@ -2179,9 +2179,11 @@ QRCodeCore.createBytes = function(buffer, rsBlocks) {
     </div>
 
     <div id="receivedContactsPanel" style="display:none;margin-top:20px">
-      <h2 style="font-size:20px">My Contacts</h2>
-      <div class="hint">For people without DShario. Maximum 10 pending contacts.</div>
-      <p class="lead">Save useful contacts to your phone or another suitable place, then delete them from DShario to make room.</p>
+      <h2 style="font-size:20px">My Contacts <button class="infoToggle" type="button" data-info-target="myContactsExplain" aria-label="About My Contacts">ⓘ</button></h2>
+      <div id="myContactsExplain" class="optionalExplain">
+        <div class="hint">For people without DShario. Maximum 10 pending contacts.</div>
+        <p class="lead">Save useful contacts to your phone or another suitable place, then delete them from DShario to make room.</p>
+      </div>
       <button id="refreshContactsBtn" class="btn secondary" type="button">Refresh contacts</button>
       <div id="receivedContactsCount" class="receivedCount">0 / 10 contacts</div>
       <div id="receivedContactsList" class="receivedList"></div>
@@ -2210,7 +2212,7 @@ QRCodeCore.createBytes = function(buffer, rsBlocks) {
     </div>
     <div class="helpSteps">
       <div class="helpStep"><strong id="hs1">1. Create your card</strong><span id="hb1">Add the professional and contact information you want to use. Keep optional details blank when you do not need them.</span></div>
-      <div class="helpStep"><strong id="hs2">2. Choose a sharing purpose and privacy view</strong><span id="hb2">Choose Business, Career, Networking or Social. DShario recommends a suitable privacy view, and you can change it before sharing.</span></div>
+      <div class="helpStep"><strong id="hs2">2. Choose a share type</strong><span id="hb2">Choose Business, Career, Networking, Social or Full. The selected share type determines what information the card will carry.</span></div>
       <div class="helpStep"><strong id="hs3">3. Choose how to share</strong><span id="hb3">My DShario Link is your permanent card address. Temporary Share lasts 24 hours, 7 days or 30 days and can be revoked early.</span></div>
       <div class="helpStep"><strong id="hs4">4. Add PDFs to Temporary Share</strong><span id="hb4">Add an optional message and upload up to 2 PDFs, maximum 2 MB each. The message and PDFs stay available only while the Temporary Share is valid. Expiry or revocation stops future DShario access, but cannot remove a copy already downloaded by the recipient.</span></div>
       <div class="helpStep"><strong id="hs5">5. Share, QR and download</strong><span id="hb5">Send a link or QR. You can also download a digital-card image; its QR returns to the live DShario card.</span></div>
@@ -2648,8 +2650,8 @@ function markSharedReceivedNow(targetId){
   if(!targetId)return;
   try{const k="dshario-received-at:"+targetId;if(!sessionStorage.getItem(k))sessionStorage.setItem(k,new Date().toISOString())}catch(e){}
 }
-function normalisePurpose(p){return ["business","career","networking","social"].includes((p||"").toLowerCase())?(p||"").toLowerCase():""}
-function purposeLabel(p){const x=normalisePurpose(p);return x?({business:"💼 Business",career:"👔 Career",networking:"🤝 Networking",social:"👥 Social"}[x]||""):""}
+function normalisePurpose(p){return ["business","career","networking","social","full"].includes((p||"").toLowerCase())?(p||"").toLowerCase():""}
+function purposeLabel(p){const x=normalisePurpose(p);return x?({business:"💼 Business",career:"👔 Career",networking:"🤝 Networking",social:"👥 Social",full:"🔓 Full"}[x]||""):""}
 function connectionPurposeKey(targetId){return user?.id&&targetId?"dshario-connection-purpose:"+user.id+":"+targetId:""}
 function writeConnectionPurpose(targetId,purpose){try{const k=connectionPurposeKey(targetId),p=normalisePurpose(purpose);if(!k)return;if(p)localStorage.setItem(k,p);else localStorage.removeItem(k)}catch(e){}}
 function readConnectionPurpose(targetId){try{return normalisePurpose(localStorage.getItem(connectionPurposeKey(targetId))||"")}catch(e){return ""}}
@@ -2663,7 +2665,7 @@ function restoreReceivedPurpose(targetId){
 function showReceivedPurpose(){
   const b=$("receivedPurposeBadge");if(!b)return;
   const p=normalisePurpose(currentPublicPurpose);
-  if(publicMode&&p){b.textContent="Shared for: "+purposeLabel(p);b.classList.add("show")}
+  if(publicMode&&p){b.textContent="Shared as: "+purposeLabel(p);b.classList.add("show")}
   else{b.textContent="";b.classList.remove("show")}
 }
 function sharePurposeLogKey(){return user?.id?"dshario-share-purpose-log:"+user.id:""}
@@ -2750,6 +2752,10 @@ async function openSavedConnectionList(){
 }
 
 async function saveCurrentConnection(){
+  if(currentPublicTargetUserId){
+    const restoredPurpose=normalisePurpose(currentPublicPurpose)||restoreReceivedPurpose(currentPublicTargetUserId);
+    if(restoredPurpose) currentPublicPurpose=restoredPurpose;
+  }
   if($("saveConnectionBtn")?.dataset.saved==="1" && user){
     await openSavedConnectionList();
     return true;
@@ -2890,10 +2896,9 @@ async function loadSharedCard(token){
   const link=Array.isArray(data)?data[0]:data;
   if(error||!link){showExpiredShareLink();return}
   publicShareView=link.privacy_view||"professional";
-  currentPublicPurpose=normalisePurpose(new URLSearchParams(location.search).get("purpose"));
   currentPublicTargetUserId=link.user_id||null;
+  currentPublicPurpose=normalisePurpose(new URLSearchParams(location.search).get("purpose"))||restoreReceivedPurpose(currentPublicTargetUserId);
   if(currentPublicPurpose) rememberReceivedPurpose(currentPublicTargetUserId,currentPublicPurpose);
-  showReceivedPurpose();
   markSharedReceivedNow(currentPublicTargetUserId);
   currentPublicSourceType="temporary";
   currentPublicShareToken=token;
@@ -2906,6 +2911,7 @@ async function loadSharedCard(token){
   const card=Array.isArray(cardData)?cardData[0]:cardData;
   if(cardError||!card){render(null);setView("card");msg("This DShario is no longer available.","err");return}
   render(card); setView("card");
+  showReceivedPurpose();
   showReceiverMessage(link.message||"",token);
   await refreshPublicReceiverSession();
   applyConnectionOnlyMode();
@@ -3093,11 +3099,11 @@ async function loadPublicCard(slug){
   markSharedReceivedNow(currentPublicTargetUserId);
   currentPublicSourceType="permanent";
   currentPublicShareToken="";
-  currentPublicPurpose=normalisePurpose(new URLSearchParams(location.search).get("purpose"));
+  currentPublicPurpose=normalisePurpose(new URLSearchParams(location.search).get("purpose"))||restoreReceivedPurpose(currentPublicTargetUserId);
   if(currentPublicPurpose) rememberReceivedPurpose(currentPublicTargetUserId,currentPublicPurpose);
-  showReceivedPurpose();
   hideReceiverMessage();
   render(card); setView("card");
+  showReceivedPurpose();
   await refreshPublicReceiverSession();
   applyConnectionOnlyMode();
   normalizeReceiverActions();
@@ -3284,7 +3290,7 @@ function updateHelpLanguage(){
   $("helpIntro").textContent="A quick guide to sharing the right information safely.";
   const x=[
     ["1. Create your card","Add the professional and contact information you want to use. Keep optional details blank when you do not need them."],
-    ["2. Choose a privacy view","Professional, Business, Social or Full controls what the recipient can see."],
+    ["2. Choose a share type","Business, Career, Networking, Social or Full determines what information the recipient can see."],
     ["3. Choose how to share","My DShario Link is your permanent card address. Temporary Share lasts 24 hours, 7 days or 30 days and can be revoked early."],
     ["4. Add PDFs to Temporary Share","Add an optional message and upload up to 2 PDFs, maximum 2 MB each. The message and PDFs stay available only while the Temporary Share is valid. Expiry or revocation stops future DShario access, but cannot remove a copy already downloaded by the recipient."],
     ["5. Share, QR and download","Send a link or QR. You can also download a digital-card image; its QR returns to the live DShario card."],
@@ -3748,20 +3754,26 @@ function updateWizPrivacyHelp(){
 if($("wizView")) $("wizView").addEventListener("change",()=>{updateWizPrivacyHelp();if(wizPurpose&&$("wizPurposeSummary")){const vv=$("wizView").value;$("wizPurposeSummary").textContent=`Sharing purpose: ${wizPurposeLabel[wizPurpose]}. Privacy view manually set to ${vv[0].toUpperCase()+vv.slice(1)}.`+(vv==="full"?" Full View shares all the details you have added to your card.":"");}});
 
 let wizAudience="",wizType="",wizRecipients=[],wizPurpose="";
-const wizPurposeMap={business:"business",career:"professional",networking:"professional",social:"social"};
-const wizPurposeLabel={business:"Business",career:"Career",networking:"Networking",social:"Social"};
+const wizPurposeMap={business:"business",career:"professional",networking:"professional",social:"social",full:"full"};
+const wizPurposeLabel={business:"Business",career:"Career",networking:"Networking",social:"Social",full:"Full"};
 function wizStep(id){["wiz1","wiz2","wiz3"].forEach(x=>$(x)?.classList.remove("show"));$(id)?.classList.add("show")}
 function setWizPurpose(p){
   wizPurpose=p;
-  ["business","career","networking","social"].forEach(x=>$("purpose"+x[0].toUpperCase()+x.slice(1))?.classList.toggle("active",x===p));
+  ["business","career","networking","social","full"].forEach(x=>$("purpose"+x[0].toUpperCase()+x.slice(1))?.classList.toggle("active",x===p));
   const v=wizPurposeMap[p]||"professional";
   if($("wizView"))$("wizView").value=v;
-  updateWizPrivacyHelp();
   if($("wizAudienceBlock"))$("wizAudienceBlock").classList.remove("disabled");
-  if($("purposeHint"))$("purposeHint").textContent=`${wizPurposeLabel[p]} selected — recommended ${v[0].toUpperCase()+v.slice(1)} privacy view. You can change it before sharing.`;
-  if($("wizPurposeSummary"))$("wizPurposeSummary").textContent=`Sharing purpose: ${wizPurposeLabel[p]}. Recommended view selected; you remain in control.`;
+  const descriptions={
+    business:"Business — professional details plus location and your allowed phone/email contact details. Facebook/Instagram stay hidden.",
+    career:"Career — name, role, company, introduction, WhatsApp, website and LinkedIn. Direct phone/email, location and Facebook/Instagram are hidden.",
+    networking:"Networking — name, role, company, introduction, WhatsApp, website and LinkedIn. Direct phone/email, location and Facebook/Instagram are hidden.",
+    social:"Social — name and social links (LinkedIn, Facebook and Instagram where added). Role, company, introduction and direct contact details are hidden.",
+    full:"Full — all information you chose to add, subject to your phone and email visibility settings."
+  };
+  if($("purposeHint"))$("purposeHint").textContent=descriptions[p]||"";
 }
-[["purposeBusiness","business"],["purposeCareer","career"],["purposeNetworking","networking"],["purposeSocial","social"]].forEach(([id,p])=>{if($(id))$(id).onclick=()=>setWizPurpose(p)});
+[["purposeBusiness","business"],["purposeCareer","career"],["purposeNetworking","networking"],["purposeSocial","social"],["purposeFull","full"]].forEach(([id,p])=>{if($(id))$(id).onclick=()=>setWizPurpose(p)});
+if($("shareTypeInfoBtn"))$("shareTypeInfoBtn").onclick=()=>$("shareTypeInfo")?.classList.toggle("show");
 function renderWizDocs(){
   const b=$("wizDocs");if(!b)return;b.innerHTML="";
   if(!ownerDocuments?.length){b.innerHTML='<div class="hint">No PDFs uploaded.</div>';return}
@@ -3773,7 +3785,7 @@ function renderWizDocs(){
     row.appendChild(rm);b.appendChild(row);
   });
 }
-$("openShareWizardBtn").onclick=async()=>{await loadOwnerDocuments();renderWizDocs();wizRecipients=[];renderWizRecipients();wizPurpose="";wizAudience="";wizType="";["purposeBusiness","purposeCareer","purposeNetworking","purposeSocial"].forEach(id=>$(id)?.classList.remove("active"));if($("wizAudienceBlock"))$("wizAudienceBlock").classList.add("disabled");if($("purposeHint"))$("purposeHint").textContent="Choose a purpose. DShario will recommend a privacy view, which you can change before sharing.";$("shareWizard").classList.add("show");wizStep("wiz1");updateWizPrivacyHelp();loadShareHistory()};
+$("openShareWizardBtn").onclick=async()=>{await loadOwnerDocuments();renderWizDocs();wizRecipients=[];renderWizRecipients();wizPurpose="";wizAudience="";wizType="";["purposeBusiness","purposeCareer","purposeNetworking","purposeSocial","purposeFull"].forEach(id=>$(id)?.classList.remove("active"));if($("wizAudienceBlock"))$("wizAudienceBlock").classList.add("disabled");if($("purposeHint"))$("purposeHint").textContent="Select a share type to see exactly what information the card will carry.";if($("shareTypeInfo"))$("shareTypeInfo").classList.remove("show");$("shareWizard").classList.add("show");wizStep("wiz1");updateWizPrivacyHelp();loadShareHistory()};
 $("wizClose").onclick=()=>$("shareWizard").classList.remove("show");
 $("wizAnyone").onclick=()=>{if(!wizPurpose)return;wizAudience="anyone";wizStep("wiz2")};
 $("wizMember").onclick=()=>{if(!wizPurpose)return;wizAudience="member";wizStep("wiz2")};
@@ -3886,7 +3898,7 @@ async function loadShareHistory(){
     if(r.share_type==="temporary"&&r.share_token){const q=await sb.from("share_links").select("expires_at,revoked").eq("token",r.share_token).eq("user_id",user.id).maybeSingle();valid=!!q.data&&!q.data.revoked&&new Date(q.data.expires_at)>new Date();expires=q.data?.expires_at?format12HourDate(q.data.expires_at):""}
     const who=r.recipient_handle?"@"+r.recipient_handle:(r.channel==="dshario"?"DShario user":"Anyone / Link");
     const histPurpose=matchSharePurpose(r);
-    const purposeMeta=histPurpose?" • Purpose: "+purposeLabel(histPurpose):"";
+    const purposeMeta=histPurpose?" • Share type: "+purposeLabel(histPurpose):"";
     const it=document.createElement("div");it.className="shareHistoryItem";it.dataset.shareRecordId=r.id;
     it.innerHTML=`<div class="shareHistorySelectWrap"><input class="shareHistorySelect" type="checkbox" aria-label="Select shared card"><div class="shareHistorySelectBody"><div class="shareHistoryTop"><strong>${r.share_type==="temporary"?"Temporary":"Permanent"} • ${escHtml(who)}</strong><span>${escHtml((r.privacy_view||"professional").replace(/^./,x=>x.toUpperCase()))}</span></div><div class="shareHistoryMeta">Shared ${format12HourDate(r.created_at)}${purposeMeta}${expires?" • Expires "+escHtml(expires):""}${r.share_type==="temporary"?" • "+(valid?"Active":"Expired / revoked"):""}</div><div class="shareHistoryActions"></div></div></div>`;
     const checkbox=it.querySelector(".shareHistorySelect");checkbox.onchange=updateShareHistoryBulkState;
@@ -4293,7 +4305,7 @@ function connectionItem(c,isNew){
     }
     if(c.card_slug){
       const view=document.createElement("button");view.className="mini";view.textContent=t("View Card");
-      view.onclick=()=>{const u=c.source_type==="temporary"&&c.source_share_token?location.origin+location.pathname+"?share="+encodeURIComponent(c.source_share_token)+"&connection=1":location.origin+location.pathname+"?card="+encodeURIComponent(c.card_slug)+"&view="+encodeURIComponent(c.saved_privacy_view||"professional")+"&connection=1";location.href=u;};
+      view.onclick=()=>{const savedP=readConnectionPurpose(c.connected_user_id);const purposeQ=savedP?"&purpose="+encodeURIComponent(savedP):"";const u=c.source_type==="temporary"&&c.source_share_token?location.origin+location.pathname+"?share="+encodeURIComponent(c.source_share_token)+"&connection=1"+purposeQ:location.origin+location.pathname+"?card="+encodeURIComponent(c.card_slug)+"&view="+encodeURIComponent(c.saved_privacy_view||"professional")+"&connection=1"+purposeQ;location.href=u;};
       acts.appendChild(view);
     }
     const save=document.createElement("button");save.className="mini";save.textContent=t("Save Connection");save.onclick=()=>saveIncomingConnection(c,null);
@@ -4306,16 +4318,16 @@ function connectionItem(c,isNew){
   const summaryBits=[handle,metaInfo.category].filter(Boolean).map(escHtml).join(' • ');
   const note=metaInfo.note?`<div class="connectionNote compact">📝 ${escHtml(metaInfo.note)}</div>`:"";
   const savedPurpose=readConnectionPurpose(c.connected_user_id);
-  const purposeLine=savedPurpose?`<div class="connectionContext compact">Purpose: ${escHtml(purposeLabel(savedPurpose))}</div>`:"";
+  const purposeLine=savedPurpose?`<div class="connectionContext compact">Share type: ${escHtml(purposeLabel(savedPurpose))}</div>`:"";
   const howMet=metaInfo.howMet?`<div class="connectionContext compact">🤝 ${escHtml(metaInfo.howMet)}</div>`:"";
   let reminder="";
   if(metaInfo.reminderAt){const rd=new Date(metaInfo.reminderAt);const overdue=!metaInfo.reminderDone&&rd.getTime()<Date.now();const cls=metaInfo.reminderDone?" done":(overdue?" overdue":"");reminder=`<div class="connectionReminder compact${cls}">⏰ ${metaInfo.reminderDone?"Completed: ":"Follow up: "}${escHtml(format12HourDate(metaInfo.reminderAt))}</div>`;}
 
-  item.innerHTML=`${badge}<div class="connectionTop"><div class="connectionInfo"><div class="connectionNameRow"><div class="connectionName">${escHtml(name)}</div>${favouriteMark}</div>${summaryBits?`<div class="connectionSummaryLine">${summaryBits}</div>`:""}${nick}${note}${purposeLine}${howMet}${reminder}</div></div>${updated}${expiredText}<div class="connectionActions"></div><div class="connectionManagePanel"><div class="connectionManageHead"><strong>Manage Connection</strong><button class="mini closeManageBtn" type="button">Close</button></div><div class="connectionManageMeta">${savedPurpose?`Shared purpose: ${escHtml(purposeLabel(savedPurpose))}`:""}</div><div class="connectionOrganiseEditor"><div class="organiseGrid"><div class="field"><label>Private label</label><input class="organiseLabel" maxlength="80" placeholder="e.g. Hasan – Adelaide meeting"></div><div class="field"><label>Category</label><select class="organiseCategory">${connectionCategories.map(x=>`<option value="${escHtml(x)}">${escHtml(x||"No category")}</option>`).join("")}</select></div><div class="field"><label>How we connected</label><select class="organiseHowMet">${howMetOptions.map(x=>`<option value="${escHtml(x)}">${escHtml(x||"Not specified")}</option>`).join("")}</select></div><div class="field"><label>Follow-up reminder</label><input class="organiseReminder" type="datetime-local"><div class="hint">Optional.</div></div><div class="field organiseFull"><label>Private note</label><textarea class="organiseNote" maxlength="300" placeholder="e.g. Discussed quotation — send details next week"></textarea><div class="hint">Only you can see this note.</div></div></div><div class="connectionOrganiseActions"><button class="mini saveOrganiseBtn" type="button">Save Changes</button><button class="mini deleteNoteManageBtn" type="button">🗑 Delete Note</button><button class="mini reminderDoneManageBtn" type="button">✓ Reminder Done</button><button class="mini clearReminderManageBtn" type="button">Clear Reminder</button></div></div><div class="connectionManageMeta connectionTraceWrap">${connectionTraceHtml(c)}</div><div class="connectionManageActions"><button class="mini manageFavouriteBtn" type="button">${metaInfo.favorite?"★ Remove Favourite":"☆ Add Favourite"}</button><button class="mini removeConnectionBtn" type="button">🗑 Remove Connection</button></div></div>`;
+  item.innerHTML=`${badge}<div class="connectionTop"><div class="connectionInfo"><div class="connectionNameRow"><div class="connectionName">${escHtml(name)}</div>${favouriteMark}</div>${summaryBits?`<div class="connectionSummaryLine">${summaryBits}</div>`:""}${nick}${note}${purposeLine}${howMet}${reminder}</div></div>${updated}${expiredText}<div class="connectionActions"></div><div class="connectionManagePanel"><div class="connectionManageHead"><strong>Manage Connection</strong><button class="mini closeManageBtn" type="button">Close</button></div><div class="connectionManageMeta">${savedPurpose?`Share type: ${escHtml(purposeLabel(savedPurpose))}`:""}</div><div class="connectionOrganiseEditor"><div class="organiseGrid"><div class="field"><label>Private label</label><input class="organiseLabel" maxlength="80" placeholder="e.g. Hasan – Adelaide meeting"></div><div class="field"><label>Category</label><select class="organiseCategory">${connectionCategories.map(x=>`<option value="${escHtml(x)}">${escHtml(x||"No category")}</option>`).join("")}</select></div><div class="field"><label>How we connected</label><select class="organiseHowMet">${howMetOptions.map(x=>`<option value="${escHtml(x)}">${escHtml(x||"Not specified")}</option>`).join("")}</select></div><div class="field"><label>Follow-up reminder</label><input class="organiseReminder" type="datetime-local"><div class="hint">Optional.</div></div><div class="field organiseFull"><label>Private note</label><textarea class="organiseNote" maxlength="300" placeholder="e.g. Discussed quotation — send details next week"></textarea><div class="hint">Only you can see this note.</div></div></div><div class="connectionOrganiseActions"><button class="mini saveOrganiseBtn" type="button">Save Changes</button><button class="mini deleteNoteManageBtn" type="button">🗑 Delete Note</button><button class="mini reminderDoneManageBtn" type="button">✓ Reminder Done</button><button class="mini clearReminderManageBtn" type="button">Clear Reminder</button></div></div><div class="connectionManageMeta connectionTraceWrap">${connectionTraceHtml(c)}</div><div class="connectionManageActions"><button class="mini manageFavouriteBtn" type="button">${metaInfo.favorite?"★ Remove Favourite":"☆ Add Favourite"}</button><button class="mini removeConnectionBtn" type="button">🗑 Remove Connection</button></div></div>`;
 
   const acts=item.querySelector(".connectionActions");
   if(!expired&&c.card_slug){
-    const view=document.createElement("button");view.className="mini";view.textContent=t("View Card");view.onclick=async()=>{if(c.connection_update_at)await sb.rpc("mark_connection_update_seen",{target_user_id:c.connected_user_id,update_at:c.connection_update_at});const u=c.source_type==="temporary"&&c.source_share_token?location.origin+location.pathname+"?share="+encodeURIComponent(c.source_share_token)+"&connection=1":location.origin+location.pathname+"?card="+encodeURIComponent(c.card_slug)+"&view="+encodeURIComponent(c.saved_privacy_view||"professional")+"&connection=1";location.href=u;};acts.appendChild(view);
+    const view=document.createElement("button");view.className="mini";view.textContent=t("View Card");view.onclick=async()=>{if(c.connection_update_at)await sb.rpc("mark_connection_update_seen",{target_user_id:c.connected_user_id,update_at:c.connection_update_at});const savedP=readConnectionPurpose(c.connected_user_id);const purposeQ=savedP?"&purpose="+encodeURIComponent(savedP):"";const u=c.source_type==="temporary"&&c.source_share_token?location.origin+location.pathname+"?share="+encodeURIComponent(c.source_share_token)+"&connection=1"+purposeQ:location.origin+location.pathname+"?card="+encodeURIComponent(c.card_slug)+"&view="+encodeURIComponent(c.saved_privacy_view||"professional")+"&connection=1"+purposeQ;location.href=u;};acts.appendChild(view);
   }
   if(!expired){
     const manage=document.createElement("button");manage.className="mini manageConnectionBtn";manage.textContent="Manage ›";acts.appendChild(manage);
