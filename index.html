@@ -265,6 +265,23 @@ body,button,input,textarea,select,.tab,.mini,.btn,.actionBtn,.accountPill,.lead,
 .publicMode #ownerDownloadBox,.connectionOnlyMode #ownerDownloadBox,.expiredPublic #ownerDownloadBox{display:none!important}
 @media(max-width:520px){.ownerDownloadBox{display:grid;grid-template-columns:1fr}.ownerDownloadBox label{text-align:center}.ownerDownloadBox select,.ownerDownloadBox .btn{width:100%}}
 
+
+/* RC31: lightweight Connection Memory controls */
+.headerQuickBtn{display:none;min-width:44px;padding:9px 10px;font-size:18px;line-height:1}
+.headerQuickBtn.show{display:inline-flex;align-items:center;justify-content:center}
+#savedSearchRow .favoriteSearchBtn{min-width:46px;font-size:19px}
+#savedSearchRow .favoriteSearchBtn.active{background:#fff7d6;border-color:#e6b800;color:#8a6400}
+.connectionContext{margin-top:6px;color:#52637a;font-size:12px;font-weight:750}
+.connectionReminder{margin-top:6px;padding:6px 9px;border-radius:10px;background:#f8fbff;border:1px solid #dbe5f2;font-size:12px;font-weight:800;color:#334155}
+.connectionReminder.overdue{background:#fff1f2;border-color:#fecdd3;color:#9f1239}
+.connectionReminder.done{background:#f0fdf4;border-color:#bbf7d0;color:#166534;text-decoration:line-through}
+#notesPanel,#remindersPanel{display:none;position:fixed;z-index:121;right:16px;top:82px;width:min(420px,calc(100vw - 32px));max-height:68vh;overflow:auto;background:#fff;border:1px solid #dbe5f2;border-radius:18px;box-shadow:0 18px 55px rgba(15,23,42,.22);padding:14px}
+#notesPanel.show,#remindersPanel.show{display:block}
+.quickPanelHead{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:10px}.quickPanelHead strong{font-size:18px}
+.quickPanelItem{border:1px solid #e2e8f0;border-radius:13px;padding:11px;margin-top:8px;background:#f8fbff}.quickPanelItem strong{display:block}.quickPanelItem .hint{margin-top:4px}.quickPanelEmpty{padding:16px 4px;color:#64748b;text-align:center}
+.reminderActions{display:flex;gap:7px;flex-wrap:wrap;margin-top:8px}
+@media(max-width:520px){.header{gap:6px}.header .brand{font-size:24px}.headerQuickBtn{padding:8px;min-width:40px}}
+
 </style>
 <script>
 /* Built-in QR generator: no external CDN request. */
@@ -1676,7 +1693,7 @@ QRCodeCore.createBytes = function(buffer, rsBlocks) {
 <div class="app">
 <header class="header">
   <div class="brand"><span class="brandIcon">DS</span><span>DShario</span></div>
-  <div style="display:flex;align-items:center;gap:8px"><button id="helpBtn" class="accountPill helpPill" type="button" aria-label="Help">?</button><button id="accountPill" class="accountPill">Sign in</button></div>
+  <div style="display:flex;align-items:center;gap:8px"><button id="notesBtn" class="accountPill headerQuickBtn" type="button" aria-label="Connection notes" title="Connection notes">📝</button><button id="remindersBtn" class="accountPill headerQuickBtn" type="button" aria-label="Follow-up reminders" title="Follow-up reminders">⏰</button><button id="helpBtn" class="accountPill helpPill" type="button" aria-label="Help">?</button><button id="accountPill" class="accountPill">Sign in</button></div>
 </header>
 
 <div id="tabs" class="tabs">
@@ -1690,6 +1707,8 @@ QRCodeCore.createBytes = function(buffer, rsBlocks) {
   <div class="notificationHead"><strong>Notifications</strong><button id="closeNotificationsBtn" class="mini" type="button">Close</button></div>
   <div id="notificationList"></div>
 </div>
+<div id="notesPanel" aria-live="polite"><div class="quickPanelHead"><strong>📝 Connection Notes</strong><button id="closeNotesBtn" class="mini" type="button">Close</button></div><div class="hint">Private notes you saved for your connections.</div><div id="notesList"></div></div>
+<div id="remindersPanel" aria-live="polite"><div class="quickPanelHead"><strong>⏰ Follow-up Reminders</strong><button id="closeRemindersBtn" class="mini" type="button">Close</button></div><div class="hint">Upcoming and overdue follow-ups for your connections.</div><div id="remindersList"></div></div>
 <div id="messagePopup" class="messagePopup" role="dialog" aria-live="polite">
   <h3 id="messagePopupTitle">Message from sender</h3>
   <p id="messagePopupText"></p>
@@ -2122,7 +2141,7 @@ QRCodeCore.createBytes = function(buffer, rsBlocks) {
 
       <div class="connectionSection">
         <div class="connectionSectionTitle">Saved Connections</div>
-        <div id="savedSearchRow"><input id="savedConnectionsSearch" placeholder="Search name, @DShario, label, category or note"><button id="savedSearchIcon" class="mini searchIcon" type="button">🔍</button></div><div class="hint" style="margin-top:7px">Favourite, category and private note are visible only to you. During beta they are stored on this browser/device.</div>
+        <div id="savedSearchRow"><input id="savedConnectionsSearch" placeholder="Search name, @DShario, category, note or how you met"><button id="savedFavouriteFilter" class="mini favoriteSearchBtn" type="button" title="Show favourites only" aria-label="Show favourites only">☆</button><button id="savedSearchIcon" class="mini searchIcon" type="button">🔍</button></div><div class="hint" style="margin-top:7px">Favourite, category and private note are visible only to you. During beta they are stored on this browser/device.</div>
         <div id="savedConnectionsList" class="connectionsList"></div>
       </div>
     </div>
@@ -3001,6 +3020,7 @@ async function refreshAuth(loadCard=false){
   } else {
     currentCard=null; if($("signedInHandle"))$("signedInHandle").textContent=""; if($("receivedContactsPanel")) $("receivedContactsPanel").style.display="none"; if($("myConnectionsPanel")) $("myConnectionsPanel").style.display="none"; if($("sendMyDsharioPanel")) $("sendMyDsharioPanel").style.display="none";
   }
+  updateHeaderConnectionTools();
 }
 
 function showUpdateNotifyBar(){ if(!publicMode&&$("updateNotifyBar")) $("updateNotifyBar").classList.add("show"); }
@@ -3601,6 +3621,7 @@ function renderNotifications(){
   });
 }
 function toggleNotifications(){
+  closeQuickPanels("notifications");
   const p=$("notificationPanel");if(!p)return;
   p.classList.toggle("show");
   if(p.classList.contains("show")) loadNotifications();
@@ -4094,7 +4115,7 @@ function writeConnectionMetaStore(store){
 }
 function getConnectionMeta(targetId){
   const m=readConnectionMetaStore()[targetId]||{};
-  return {favorite:!!m.favorite,category:String(m.category||""),note:String(m.note||"")};
+  return {favorite:!!m.favorite,category:String(m.category||""),note:String(m.note||""),howMet:String(m.howMet||""),reminderAt:String(m.reminderAt||""),reminderDone:!!m.reminderDone};
 }
 function setConnectionMeta(targetId,patch){
   if(!targetId)return;const store=readConnectionMetaStore();
@@ -4105,6 +4126,8 @@ function removeConnectionMeta(targetId){
   if(!targetId)return;const store=readConnectionMetaStore();delete store[targetId];writeConnectionMetaStore(store);
 }
 const connectionCategories=["","Work","Client","Supplier","Colleague","Recruiter","Networking","Business","Other"];
+const howMetOptions=["","Work","Business meeting","Conference / Event","Client meeting","Supplier meeting","Recruitment","Online","Referral","Networking","Other"];
+let favouriteConnectionsOnly=false;
 
 async function saveIncomingConnection(c,label){
   const {error}=await sb.rpc("save_incoming_dshario",{target_user_id:c.connected_user_id,private_label:label||null});
@@ -4121,7 +4144,8 @@ function connectionItem(c,isNew){
   const expired=c.source_type==="temporary"&&!c.temporary_share_valid;
   const item=document.createElement("div");item.className="connectionItem";
   const metaInfo=getConnectionMeta(c.connected_user_id);
-  item.dataset.searchtext=[c.card_slug,c.nickname,c.full_name,c.full_name_bn,metaInfo.category,metaInfo.note].filter(Boolean).join(" ").toLowerCase();
+  item.dataset.searchtext=[c.card_slug,c.nickname,c.full_name,c.full_name_bn,metaInfo.category,metaInfo.note,metaInfo.howMet].filter(Boolean).join(" ").toLowerCase();
+  item.dataset.favorite=metaInfo.favorite?"1":"0";
   item.dataset.expired=expired?"1":"0";
 
   const name=c.full_name||t("DShario connection");
@@ -4134,8 +4158,11 @@ function connectionItem(c,isNew){
   const favouriteTag=(!isNew&&metaInfo.favorite)?`<span class="connectionTag">★ Favourite</span>`:"";
   const tags=(categoryTag||favouriteTag)?`<div class="connectionTags">${favouriteTag}${categoryTag}</div>`:"";
   const note=(!isNew&&metaInfo.note)?`<div class="connectionNote">📝 ${escHtml(metaInfo.note)}</div>`:"";
+  const howMet=(!isNew&&metaInfo.howMet)?`<div class="connectionContext">🤝 How we connected: ${escHtml(metaInfo.howMet)}</div>`:"";
+  let reminder="";
+  if(!isNew&&metaInfo.reminderAt){const rd=new Date(metaInfo.reminderAt);const overdue=!metaInfo.reminderDone&&rd.getTime()<Date.now();const cls=metaInfo.reminderDone?" done":(overdue?" overdue":"");reminder=`<div class="connectionReminder${cls}">⏰ ${metaInfo.reminderDone?"Completed: ":"Follow up: "}${escHtml(format12HourDate(metaInfo.reminderAt))}</div>`;}
 
-  item.innerHTML=`${badge}<div class="connectionTop"><div class="connectionInfo"><div class="connectionName">${escHtml(name)}</div><div class="connectionHandle">${escHtml(handle)}</div>${nick}${tags}${note}${!isNew?connectionTraceHtml(c):""}</div></div>${updated}${expiredText}<div class="connectionActions"></div>${!isNew?`<div class="connectionOrganiseEditor"><div class="organiseGrid"><div class="field"><label>Private label</label><input class="organiseLabel" maxlength="80" placeholder="e.g. Hasan – Adelaide meeting"></div><div class="field"><label>Category</label><select class="organiseCategory">${connectionCategories.map(x=>`<option value="${escHtml(x)}">${escHtml(x||"No category")}</option>`).join("")}</select></div><div class="field organiseFull"><label>Private note</label><textarea class="organiseNote" maxlength="300" placeholder="e.g. Met at supplier meeting — follow up about quotation"></textarea><div class="hint">Only you can see this note.</div></div></div><div class="connectionOrganiseActions"><button class="mini saveOrganiseBtn" type="button">Save</button><button class="mini cancelOrganiseBtn" type="button">Cancel</button></div></div>`:""}`;
+  item.innerHTML=`${badge}<div class="connectionTop"><div class="connectionInfo"><div class="connectionName">${escHtml(name)}</div><div class="connectionHandle">${escHtml(handle)}</div>${nick}${tags}${note}${howMet}${reminder}${!isNew?connectionTraceHtml(c):""}</div></div>${updated}${expiredText}<div class="connectionActions"></div>${!isNew?`<div class="connectionOrganiseEditor"><div class="organiseGrid"><div class="field"><label>Private label</label><input class="organiseLabel" maxlength="80" placeholder="e.g. Hasan – Adelaide meeting"></div><div class="field"><label>Category</label><select class="organiseCategory">${connectionCategories.map(x=>`<option value="${escHtml(x)}">${escHtml(x||"No category")}</option>`).join("")}</select></div><div class="field"><label>How we connected</label><select class="organiseHowMet">${howMetOptions.map(x=>`<option value="${escHtml(x)}">${escHtml(x||"Not specified")}</option>`).join("")}</select></div><div class="field"><label>Follow-up reminder</label><input class="organiseReminder" type="datetime-local"><div class="hint">Optional. Stored privately on this device during beta.</div></div><div class="field organiseFull"><label>Private note</label><textarea class="organiseNote" maxlength="300" placeholder="e.g. Discussed quotation — send details next week"></textarea><div class="hint">Only you can see this note.</div></div></div><div class="connectionOrganiseActions"><button class="mini saveOrganiseBtn" type="button">Save</button><button class="mini cancelOrganiseBtn" type="button">Cancel</button></div></div>`:""}`;
 
   const acts=item.querySelector(".connectionActions");
 
@@ -4199,6 +4226,8 @@ function connectionItem(c,isNew){
       ed.querySelector(".organiseLabel").value=c.nickname||"";
       ed.querySelector(".organiseCategory").value=connectionCategories.includes(m.category)?m.category:"Other";
       ed.querySelector(".organiseNote").value=m.note||"";
+      ed.querySelector(".organiseHowMet").value=howMetOptions.includes(m.howMet)?m.howMet:"Other";
+      ed.querySelector(".organiseReminder").value=m.reminderAt?toLocalDateTimeInput(m.reminderAt):"";
       ed.classList.toggle("show");
       if(ed.classList.contains("show"))ed.querySelector(".organiseLabel").focus();
     };
@@ -4210,9 +4239,12 @@ function connectionItem(c,isNew){
       const label=ed.querySelector(".organiseLabel").value.trim()||null;
       const category=ed.querySelector(".organiseCategory").value||"";
       const note=ed.querySelector(".organiseNote").value.trim().slice(0,300);
+      const howMet=ed.querySelector(".organiseHowMet").value||"";
+      const reminderRaw=ed.querySelector(".organiseReminder").value;
+      const reminderAt=reminderRaw?new Date(reminderRaw).toISOString():"";
       const {error}=await sb.rpc("set_connection_nickname",{target_user_id:c.connected_user_id,new_nickname:label});
       if(error){msg(error.message,"err");return}
-      setConnectionMeta(c.connected_user_id,{category,note});
+      setConnectionMeta(c.connected_user_id,{category,note,howMet,reminderAt,reminderDone:reminderAt===getConnectionMeta(c.connected_user_id).reminderAt?getConnectionMeta(c.connected_user_id).reminderDone:false});
       msg("Connection details saved.","ok");loadMyConnections();
     };
   }
@@ -4232,8 +4264,11 @@ function filterSavedConnections(){
   document.querySelectorAll("#savedConnectionsList .connectionItem").forEach(item=>{
     const hay=(item.dataset.searchtext||"").replace(/@/g,"");
     const expired=item.dataset.expired==="1";
-    item.style.display=!q?(expired?"none":""):(hay.includes(q)?"":"none");
+    const favouriteOk=!favouriteConnectionsOnly||item.dataset.favorite==="1";
+    const textOk=!q||hay.includes(q);
+    item.style.display=(!expired&&favouriteOk&&textOk)?"":"none";
   });
+  if($("savedFavouriteFilter")){ $("savedFavouriteFilter").classList.toggle("active",favouriteConnectionsOnly); $("savedFavouriteFilter").textContent=favouriteConnectionsOnly?"★":"☆"; }
 }
 
 async function loadMyConnections(){
@@ -4273,9 +4308,40 @@ if($("savedConnectionsSearch")) $("savedConnectionsSearch").oninput=()=>{
   if($("savedConnectionsSearch").value.trim()) savedSearchTimer=setTimeout(loadMyConnections,350);
 };
 if($("savedSearchIcon")) $("savedSearchIcon").onclick=loadMyConnections;
+if($("savedFavouriteFilter")) $("savedFavouriteFilter").onclick=()=>{favouriteConnectionsOnly=!favouriteConnectionsOnly;filterSavedConnections();};
 
 
 
+function toLocalDateTimeInput(v){
+  try{const d=new Date(v);const pad=n=>String(n).padStart(2,"0");return `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}`;}catch(e){return ""}
+}
+function closeQuickPanels(except){
+  [["notesPanel","notes"],["remindersPanel","reminders"],["notificationPanel","notifications"]].forEach(([id,key])=>{if(key!==except)$(id)?.classList.remove("show")});
+}
+async function connectionRowsForQuickPanels(){
+  if(!user)return [];
+  const {data,error}=await sb.rpc("get_my_dshario_connections_v2");
+  if(error)return [];
+  return (Array.isArray(data)?data:[]).filter(c=>c.is_saved!==false);
+}
+async function renderConnectionNotes(){
+  const list=$("notesList");if(!list)return;list.innerHTML='<div class="quickPanelEmpty">Loading…</div>';
+  const rows=await connectionRowsForQuickPanels();const withNotes=rows.map(c=>({c,m:getConnectionMeta(c.connected_user_id)})).filter(x=>x.m.note).sort((a,b)=>String(a.c.full_name||a.c.card_slug||"").localeCompare(String(b.c.full_name||b.c.card_slug||"")));
+  list.innerHTML="";if(!withNotes.length){list.innerHTML='<div class="quickPanelEmpty">No connection notes yet.</div>';return}
+  withNotes.forEach(({c,m})=>{const el=document.createElement("div");el.className="quickPanelItem";el.innerHTML=`<strong>${escHtml(c.full_name||c.card_slug||"Connection")}</strong><div class="hint">${escHtml(m.category||m.howMet||"Saved connection")}</div><div style="margin-top:7px">📝 ${escHtml(m.note)}</div>`;list.appendChild(el)});
+}
+async function renderReminders(){
+  const list=$("remindersList");if(!list)return;list.innerHTML='<div class="quickPanelEmpty">Loading…</div>';
+  const rows=await connectionRowsForQuickPanels();const items=rows.map(c=>({c,m:getConnectionMeta(c.connected_user_id)})).filter(x=>x.m.reminderAt).sort((a,b)=>{if(a.m.reminderDone!==b.m.reminderDone)return a.m.reminderDone?1:-1;return new Date(a.m.reminderAt)-new Date(b.m.reminderAt)});
+  list.innerHTML="";if(!items.length){list.innerHTML='<div class="quickPanelEmpty">No follow-up reminders yet.</div>';return}
+  items.forEach(({c,m})=>{const overdue=!m.reminderDone&&new Date(m.reminderAt).getTime()<Date.now();const el=document.createElement("div");el.className="quickPanelItem";el.innerHTML=`<strong>${escHtml(c.full_name||c.card_slug||"Connection")}</strong><div class="hint">${m.reminderDone?"Completed":(overdue?"Overdue":"Upcoming")} • ${escHtml(format12HourDate(m.reminderAt))}</div>${m.note?`<div style="margin-top:6px">📝 ${escHtml(m.note)}</div>`:""}<div class="reminderActions"></div>`;const a=el.querySelector(".reminderActions");const done=document.createElement("button");done.className="mini";done.textContent=m.reminderDone?"Mark active":"✓ Mark done";done.onclick=()=>{setConnectionMeta(c.connected_user_id,{reminderDone:!m.reminderDone});renderReminders();loadMyConnections();};const clear=document.createElement("button");clear.className="mini";clear.textContent="Clear";clear.onclick=()=>{setConnectionMeta(c.connected_user_id,{reminderAt:"",reminderDone:false});renderReminders();loadMyConnections();};a.append(done,clear);list.appendChild(el)});
+}
+if($("notesBtn")) $("notesBtn").onclick=async()=>{closeQuickPanels("notes");$("notesPanel").classList.toggle("show");if($("notesPanel").classList.contains("show"))await renderConnectionNotes();};
+if($("remindersBtn")) $("remindersBtn").onclick=async()=>{closeQuickPanels("reminders");$("remindersPanel").classList.toggle("show");if($("remindersPanel").classList.contains("show"))await renderReminders();};
+if($("closeNotesBtn")) $("closeNotesBtn").onclick=()=>$("notesPanel").classList.remove("show");
+if($("closeRemindersBtn")) $("closeRemindersBtn").onclick=()=>$("remindersPanel").classList.remove("show");
+
+function updateHeaderConnectionTools(){const show=!!user&&!publicMode;$("notesBtn")?.classList.toggle("show",show);$("remindersBtn")?.classList.toggle("show",show);if(!show){$("notesPanel")?.classList.remove("show");$("remindersPanel")?.classList.remove("show");}}
 
 function updateAccountSendType(){
   const temp=$("accountSendType")?.value==="temporary";
