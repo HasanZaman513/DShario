@@ -6,7 +6,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>DShario WORKING RC25</title>
 <meta name="theme-color" content="#ffffff">
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2">// RC32.5 simplified five share types: Business/Career/Networking/Social/Full; privacy selector removed from share flow. RC32.4 base: purpose survives received-card render/auth/save/reopen; My Contacts explanation collapsible.
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2">// RC32.6 fixes share-type persistence so a fresh Full/Career/etc share cannot inherit an older type from the same sender. Adds three optional owner download-card templates without changing shared information.
 </script>
 <style>
 :root{--navy:#123a78;--blue:#3478ee;--ink:#0f172a;--muted:#64748b;--line:#dbe5f2;--soft:#f8fbff;--green:#16a34a;--shadow:0 12px 32px rgba(15,23,42,.10)}
@@ -263,7 +263,7 @@ body,button,input,textarea,select,.tab,.mini,.btn,.actionBtn,.accountPill,.lead,
 /* BETA STABLE RC17: owner card image download — isolated from sharing/auth flows */
 .ownerDownloadBox{display:flex;align-items:center;justify-content:center;gap:10px;flex-wrap:wrap;margin:16px auto 0;padding:12px;border:1px solid #dbe5f2;border-radius:16px;background:#f8fbff;width:min(100%,560px)}
 .ownerDownloadBox label{font-weight:850;color:#334155}
-.ownerDownloadBox select{min-width:170px;border:1px solid #cbd8ea;border-radius:11px;padding:10px 12px;background:#fff;color:#0f172a}
+.ownerDownloadBox select{min-width:170px;border:1px solid #cbd8ea;border-radius:11px;padding:10px 12px;background:#fff;color:#0f172a}.ownerDownloadField{display:flex;align-items:center;gap:8px;flex-wrap:wrap}.ownerDownloadField label{margin:0}
 .ownerDownloadBox .btn{min-height:46px}
 .publicMode #ownerDownloadBox,.connectionOnlyMode #ownerDownloadBox,.expiredPublic #ownerDownloadBox{display:none!important}
 @media(max-width:520px){.ownerDownloadBox{display:grid;grid-template-columns:1fr}.ownerDownloadBox label{text-align:center}.ownerDownloadBox select,.ownerDownloadBox .btn{width:100%}}
@@ -1850,13 +1850,19 @@ QRCodeCore.createBytes = function(buffer, rsBlocks) {
   
 </div>
 <div id="ownerDownloadBox" class="ownerDownloadBox ownerOnly">
-  <label for="ownerDownloadView">Download card view</label>
+  <div class="ownerDownloadField"><label for="ownerDownloadView">Download card view</label>
   <select id="ownerDownloadView">
     <option value="professional">Professional</option>
     <option value="business">Business</option>
     <option value="social">Social</option>
     <option value="full">Full</option>
-  </select>
+  </select></div>
+  <div class="ownerDownloadField"><label for="ownerDownloadTemplate">Card template</label>
+  <select id="ownerDownloadTemplate">
+    <option value="classic">Classic</option>
+    <option value="clean">Clean</option>
+    <option value="modern">Modern</option>
+  </select></div>
   <button id="ownerDownloadBtn" class="btn secondary" type="button">⇩ Download as Image</button>
 </div>
 
@@ -2215,7 +2221,7 @@ QRCodeCore.createBytes = function(buffer, rsBlocks) {
       <div class="helpStep"><strong id="hs2">2. Choose a share type</strong><span id="hb2">Choose Business, Career, Networking, Social or Full. The selected share type determines what information the card will carry.</span></div>
       <div class="helpStep"><strong id="hs3">3. Choose how to share</strong><span id="hb3">My DShario Link is your permanent card address. Temporary Share lasts 24 hours, 7 days or 30 days and can be revoked early.</span></div>
       <div class="helpStep"><strong id="hs4">4. Add PDFs to Temporary Share</strong><span id="hb4">Add an optional message and upload up to 2 PDFs, maximum 2 MB each. The message and PDFs stay available only while the Temporary Share is valid. Expiry or revocation stops future DShario access, but cannot remove a copy already downloaded by the recipient.</span></div>
-      <div class="helpStep"><strong id="hs5">5. Share, QR and download</strong><span id="hb5">Send a link or QR. You can also download a digital-card image; its QR returns to the live DShario card.</span></div>
+      <div class="helpStep"><strong id="hs5">5. Share, QR and download</strong><span id="hb5">Send a link or QR. You can also download a digital-card image, choose a card template, and use its QR to return to the live DShario card.</span></div>
       <div class="helpStep"><strong id="hs6">6. Save a received DShario</strong><span id="hb6">From a permanent or valid Temporary Share, choose Save to My Connections. If sign-in is required, DShario returns to the received card and completes the save. Once saved, View in My Connections becomes the single navigation action and opens your saved connections directly.</span></div>
       <div class="helpStep"><strong id="hs7">7. Exchange with my DShario</strong><span id="hb7">A DShario member can sign in, choose the privacy view they want to send, and exchange their existing DShario with the sender. People who do not use DShario can use the separate contact-return option when it is available.</span></div>
       <div class="helpStep"><strong id="hs8">8. My Connections and history</strong><span id="hb8">One sender appears as one active connection. Saving a newer view from the same sender makes it the current saved card. Earlier cards remain only as a lightweight history trace, without keeping the old card details. Received and Saved date/time help you track when the connection happened.</span></div>
@@ -2753,8 +2759,12 @@ async function openSavedConnectionList(){
 
 async function saveCurrentConnection(){
   if(currentPublicTargetUserId){
-    const restoredPurpose=normalisePurpose(currentPublicPurpose)||restoreReceivedPurpose(currentPublicTargetUserId);
-    if(restoredPurpose) currentPublicPurpose=restoredPurpose;
+    // RC32.6: the currently opened share is authoritative. Do not inherit an older
+    // share type from the same sender. Saved-connection URLs and sign-in return URLs
+    // already carry the sharetype/purpose query parameter explicitly.
+    const qp=new URLSearchParams(location.search);
+    const exactType=normalisePurpose(qp.get("sharetype")||qp.get("purpose"));
+    if(exactType) currentPublicPurpose=exactType;
   }
   if($("saveConnectionBtn")?.dataset.saved==="1" && user){
     await openSavedConnectionList();
@@ -2897,7 +2907,7 @@ async function loadSharedCard(token){
   if(error||!link){showExpiredShareLink();return}
   publicShareView=link.privacy_view||"professional";
   currentPublicTargetUserId=link.user_id||null;
-  currentPublicPurpose=normalisePurpose(new URLSearchParams(location.search).get("purpose"))||restoreReceivedPurpose(currentPublicTargetUserId);
+  {const qp=new URLSearchParams(location.search);currentPublicPurpose=normalisePurpose(qp.get("sharetype")||qp.get("purpose"));}
   if(currentPublicPurpose) rememberReceivedPurpose(currentPublicTargetUserId,currentPublicPurpose);
   markSharedReceivedNow(currentPublicTargetUserId);
   currentPublicSourceType="temporary";
@@ -3099,7 +3109,7 @@ async function loadPublicCard(slug){
   markSharedReceivedNow(currentPublicTargetUserId);
   currentPublicSourceType="permanent";
   currentPublicShareToken="";
-  currentPublicPurpose=normalisePurpose(new URLSearchParams(location.search).get("purpose"))||restoreReceivedPurpose(currentPublicTargetUserId);
+  {const qp=new URLSearchParams(location.search);currentPublicPurpose=normalisePurpose(qp.get("sharetype")||qp.get("purpose"));}
   if(currentPublicPurpose) rememberReceivedPurpose(currentPublicTargetUserId,currentPublicPurpose);
   hideReceiverMessage();
   render(card); setView("card");
@@ -3293,7 +3303,7 @@ function updateHelpLanguage(){
     ["2. Choose a share type","Business, Career, Networking, Social or Full determines what information the recipient can see."],
     ["3. Choose how to share","My DShario Link is your permanent card address. Temporary Share lasts 24 hours, 7 days or 30 days and can be revoked early."],
     ["4. Add PDFs to Temporary Share","Add an optional message and upload up to 2 PDFs, maximum 2 MB each. The message and PDFs stay available only while the Temporary Share is valid. Expiry or revocation stops future DShario access, but cannot remove a copy already downloaded by the recipient."],
-    ["5. Share, QR and download","Send a link or QR. You can also download a digital-card image; its QR returns to the live DShario card."],
+    ["5. Share, QR and download","Send a link or QR. You can also download a digital-card image, choose a card template, and use its QR to return to the live DShario card."],
     ["6. Save a received DShario","From a permanent or valid Temporary Share, choose Save to My Connections. If sign-in is required, DShario returns to the received card and completes the save. Once saved, View in My Connections becomes the single navigation action and opens your saved connections directly."],
     ["7. Exchange with my DShario","A DShario member can sign in, choose the privacy view they want to send, and exchange their existing DShario with the sender. People who do not use DShario can use the separate contact-return option when it is available."],
     ["8. My Connections and history","One sender appears as one active connection. Saving a newer view from the same sender makes it the current saved card. Earlier cards remain only as a lightweight history trace. Received and Saved date/time help you track when the connection happened."],
@@ -3553,15 +3563,27 @@ if($("publicVcfBtn")) $("publicVcfBtn").onclick=saveCurrentCardToContacts;
 if($("connectionOnlyVcfBtn")) $("connectionOnlyVcfBtn").onclick=saveCurrentCardToContacts;
 
 function loadImg(src){return new Promise((resolve,reject)=>{const i=new Image();i.onload=()=>resolve(i);i.onerror=reject;i.src=src})}
-async function downloadCurrentCardAsImage(viewOverride){
-  const d=currentCard||{}, view=viewOverride||activePrivacyView();
+async function downloadCurrentCardAsImage(viewOverride,templateOverride){
+  const d=currentCard||{}, view=viewOverride||activePrivacyView(), template=templateOverride||"classic";
   // RC27: preserve RC26 high-resolution 90:55 layout; refine only the downloaded WhatsApp icon.
   // RC26: high-resolution 90:55-style landscape proportion for cleaner screen sharing and standard-card printing.
   const W=1440,H=880;
   const c=document.createElement("canvas"); c.width=W; c.height=H;
-  const x=c.getContext("2d"), bg=d.card_color||"#eff6ff", fg=contrast(bg), mt=muted(bg);
-  x.fillStyle=bg; x.fillRect(0,0,W,H); x.strokeStyle="rgba(30,64,175,.16)"; x.lineWidth=3;
-  x.beginPath(); if(x.roundRect)x.roundRect(30,30,W-60,H-60,38); else x.rect(30,30,W-60,H-60); x.stroke();
+  const accent=d.card_color||"#eff6ff";
+  let bg=accent,fg=contrast(bg),mt=muted(bg);
+  const x=c.getContext("2d");
+  if(template==="clean"){
+    bg="#ffffff";fg="#0f172a";mt="#64748b";x.fillStyle=bg;x.fillRect(0,0,W,H);
+    x.fillStyle=accent;x.fillRect(0,0,W,18);
+    x.strokeStyle="rgba(15,23,42,.14)";x.lineWidth=3;x.beginPath();if(x.roundRect)x.roundRect(30,30,W-60,H-60,38);else x.rect(30,30,W-60,H-60);x.stroke();
+  }else if(template==="modern"){
+    bg="#ffffff";fg="#0f172a";mt="#64748b";x.fillStyle=bg;x.fillRect(0,0,W,H);
+    const g=x.createLinearGradient(0,0,W,0);g.addColorStop(0,accent);g.addColorStop(1,"#ffffff");x.fillStyle=g;x.fillRect(0,0,W,86);
+    x.fillStyle=accent;x.fillRect(0,0,22,H);
+    x.strokeStyle="rgba(15,23,42,.12)";x.lineWidth=3;x.beginPath();if(x.roundRect)x.roundRect(30,30,W-60,H-60,38);else x.rect(30,30,W-60,H-60);x.stroke();
+  }else{
+    x.fillStyle=bg;x.fillRect(0,0,W,H);x.strokeStyle="rgba(30,64,175,.16)";x.lineWidth=3;x.beginPath();if(x.roundRect)x.roundRect(30,30,W-60,H-60,38);else x.rect(30,30,W-60,H-60);x.stroke();
+  }
   let hasPhoto=!!d.photo_url;
   if(hasPhoto){try{const img=await loadImg(d.photo_url);x.save();x.beginPath();if(x.roundRect)x.roundRect(82,76,220,220,32);else x.rect(82,76,220,220);x.clip();const sc=Math.max(220/img.width,220/img.height),w=img.width*sc,h=img.height*sc;x.drawImage(img,82+(220-w)/2,76+(220-h)/2,w,h);x.restore()}catch{hasPhoto=false}}
   function fit(v,maxW,fontSize=22,weight=600){v=String(v||"").trim();if(!v)return "";x.font=`${weight} ${fontSize}px Arial, sans-serif`;if(x.measureText(v).width<=maxW)return v;while(v.length>1&&x.measureText(v+"…").width>maxW)v=v.slice(0,-1);return v+"…"}
@@ -3614,13 +3636,14 @@ async function downloadCurrentCardAsImage(viewOverride){
   const qrTarget=publicMode?((currentPublicSourceType==="temporary"&&currentPublicShareToken)?location.origin+location.pathname+"?share="+encodeURIComponent(currentPublicShareToken):shareUrl(d)):(d?.slug?location.origin+location.pathname+"?card="+encodeURIComponent(d.slug)+"&view=full":shareUrl(d));
   try{const holder=document.createElement('div');holder.style.cssText='position:fixed;left:-9999px;top:-9999px;background:#fff';document.body.appendChild(holder);new QRCode(holder,{text:qrTarget,width:qrSize,height:qrSize,colorDark:'#000000',colorLight:'#ffffff',correctLevel:QRCode.CorrectLevel.M});await new Promise(r=>setTimeout(r,80));const q=holder.querySelector('canvas');if(q){const pad=14;x.fillStyle='#fff';x.fillRect(qrX-pad,qrY-pad,qrSize+pad*2,qrSize+58);x.drawImage(q,qrX,qrY,qrSize,qrSize);x.fillStyle='#334155';x.textAlign='center';x.textBaseline='top';x.font='700 16px Arial, sans-serif';x.fillText(window.currentLang==="bn"?"লাইভ DShario খুলুন":"Open live DShario",qrX+qrSize/2,qrY+qrSize+24)}holder.remove()}catch(e){console.warn('QR render failed',e)}
   x.textAlign="left";x.textBaseline='top';x.fillStyle=fg;x.font="900 30px Arial, sans-serif";x.fillText("DS",82,794);x.fillStyle=mt;x.font="20px Arial, sans-serif";x.fillText(window.currentLang==="bn"?"যোগাযোগ রাখুন।":"Keep in touch.",140,798);
-  c.toBlob(b=>{if(b)downloadBlob(b,safeName(name||d.full_name||"dshario")+"-"+view+"-card.png")},"image/png");
+  c.toBlob(b=>{if(b)downloadBlob(b,safeName(name||d.full_name||"dshario")+"-"+view+"-"+template+"-card.png")},"image/png");
 }
 if($("pngBtn")) $("pngBtn").onclick=()=>downloadCurrentCardAsImage();
 if($("ownerDownloadBtn")) $("ownerDownloadBtn").onclick=()=>{
   if(!currentCard?.slug){msg(window.currentLang==="bn"?"প্রথমে আপনার DShario কার্ড তৈরি ও সেভ করুন।":"Create and save your DShario card first.","info");return;}
   const selected=$("ownerDownloadView")?.value||$("privacy_view")?.value||"full";
-  downloadCurrentCardAsImage(selected);
+  const template=$("ownerDownloadTemplate")?.value||"classic";
+  downloadCurrentCardAsImage(selected,template);
 };
 
 
@@ -3827,11 +3850,11 @@ async function makeWizTemp(recipient=null){
   const ids=[...document.querySelectorAll(".wizDoc:checked")].map(x=>x.value);
   if(ids.length){r=await sb.from("share_link_documents").insert(ids.map(document_id=>({share_token:token,document_id})));if(r.error){await sb.from("share_links").update({revoked:true}).eq("token",token);throw r.error}}
   await recordShare({share_type:"temporary",recipient_user_id:recipient?.user_id||null,recipient_handle:recipient?.card_slug||null,privacy_view:$("wizView").value,share_token:token,channel:recipient?"dshario":"link"});
-  return {token,url:location.origin+location.pathname+"?share="+token+(wizPurpose?"&purpose="+encodeURIComponent(wizPurpose):"")};
+  return {token,url:location.origin+location.pathname+"?share="+token+(wizPurpose?"&sharetype="+encodeURIComponent(wizPurpose)+"&purpose="+encodeURIComponent(wizPurpose):"")};
 }
 async function wizPermanentUrl(){
   const v=$("wizView").value||"professional";
-  const u=location.origin+location.pathname+"?card="+encodeURIComponent(currentCard.slug)+"&view="+encodeURIComponent(v)+(wizPurpose?"&purpose="+encodeURIComponent(wizPurpose):"");
+  const u=location.origin+location.pathname+"?card="+encodeURIComponent(currentCard.slug)+"&view="+encodeURIComponent(v)+(wizPurpose?"&sharetype="+encodeURIComponent(wizPurpose)+"&purpose="+encodeURIComponent(wizPurpose):"");
   await recordShare({share_type:"permanent",privacy_view:v,channel:"link"});
   return u;
 }
@@ -4305,7 +4328,7 @@ function connectionItem(c,isNew){
     }
     if(c.card_slug){
       const view=document.createElement("button");view.className="mini";view.textContent=t("View Card");
-      view.onclick=()=>{const savedP=readConnectionPurpose(c.connected_user_id);const purposeQ=savedP?"&purpose="+encodeURIComponent(savedP):"";const u=c.source_type==="temporary"&&c.source_share_token?location.origin+location.pathname+"?share="+encodeURIComponent(c.source_share_token)+"&connection=1"+purposeQ:location.origin+location.pathname+"?card="+encodeURIComponent(c.card_slug)+"&view="+encodeURIComponent(c.saved_privacy_view||"professional")+"&connection=1"+purposeQ;location.href=u;};
+      view.onclick=()=>{const savedP=readConnectionPurpose(c.connected_user_id);const purposeQ=savedP?"&sharetype="+encodeURIComponent(savedP)+"&purpose="+encodeURIComponent(savedP):"";const u=c.source_type==="temporary"&&c.source_share_token?location.origin+location.pathname+"?share="+encodeURIComponent(c.source_share_token)+"&connection=1"+purposeQ:location.origin+location.pathname+"?card="+encodeURIComponent(c.card_slug)+"&view="+encodeURIComponent(c.saved_privacy_view||"professional")+"&connection=1"+purposeQ;location.href=u;};
       acts.appendChild(view);
     }
     const save=document.createElement("button");save.className="mini";save.textContent=t("Save Connection");save.onclick=()=>saveIncomingConnection(c,null);
@@ -4327,7 +4350,7 @@ function connectionItem(c,isNew){
 
   const acts=item.querySelector(".connectionActions");
   if(!expired&&c.card_slug){
-    const view=document.createElement("button");view.className="mini";view.textContent=t("View Card");view.onclick=async()=>{if(c.connection_update_at)await sb.rpc("mark_connection_update_seen",{target_user_id:c.connected_user_id,update_at:c.connection_update_at});const savedP=readConnectionPurpose(c.connected_user_id);const purposeQ=savedP?"&purpose="+encodeURIComponent(savedP):"";const u=c.source_type==="temporary"&&c.source_share_token?location.origin+location.pathname+"?share="+encodeURIComponent(c.source_share_token)+"&connection=1"+purposeQ:location.origin+location.pathname+"?card="+encodeURIComponent(c.card_slug)+"&view="+encodeURIComponent(c.saved_privacy_view||"professional")+"&connection=1"+purposeQ;location.href=u;};acts.appendChild(view);
+    const view=document.createElement("button");view.className="mini";view.textContent=t("View Card");view.onclick=async()=>{if(c.connection_update_at)await sb.rpc("mark_connection_update_seen",{target_user_id:c.connected_user_id,update_at:c.connection_update_at});const savedP=readConnectionPurpose(c.connected_user_id);const purposeQ=savedP?"&sharetype="+encodeURIComponent(savedP)+"&purpose="+encodeURIComponent(savedP):"";const u=c.source_type==="temporary"&&c.source_share_token?location.origin+location.pathname+"?share="+encodeURIComponent(c.source_share_token)+"&connection=1"+purposeQ:location.origin+location.pathname+"?card="+encodeURIComponent(c.card_slug)+"&view="+encodeURIComponent(c.saved_privacy_view||"professional")+"&connection=1"+purposeQ;location.href=u;};acts.appendChild(view);
   }
   if(!expired){
     const manage=document.createElement("button");manage.className="mini manageConnectionBtn";manage.textContent="Manage ›";acts.appendChild(manage);
