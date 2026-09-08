@@ -49,7 +49,7 @@ button,input,textarea{font:inherit}button{cursor:pointer}.app{max-width:980px;ma
 
 .exchangeBox{margin-top:16px;padding:16px;border:1px solid #dbe5f2;border-radius:16px;background:#f8fbff}.exchangeBox h3{margin:0 0 7px}.exchangeBox p{margin:0 0 12px;color:#64748b;line-height:1.45}.exchangeChoices{display:grid;grid-template-columns:1fr 1fr;gap:9px}.exchangeForm{display:none;margin-top:13px}.exchangeForm.show{display:block}.exchangeCore{display:grid;grid-template-columns:1fr 1fr;gap:10px}.exchangeMore{margin-top:10px;border-top:1px solid #e4ebf5;padding-top:10px}.exchangeMore summary{cursor:pointer;font-weight:800;color:#1d4ed8;font-size:13px;list-style:none}.exchangeMore summary::-webkit-details-marker{display:none}.exchangeMore summary:after{content:" +"}.exchangeMore[open] summary:after{content:" −"}.exchangeMoreGrid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:10px}.exchangeConsent{display:flex;align-items:flex-start;gap:9px;margin-top:12px;font-size:12px;color:#475569;line-height:1.45}.exchangeConsent input{width:18px;height:18px;flex:0 0 auto}.receivedList{display:grid;gap:9px;margin-top:12px}.receivedCount{font-size:12px;color:#64748b;margin-top:9px}.receivedItem{border:1px solid #dbe5f2;border-radius:14px;background:#fff;overflow:hidden}.receivedSummary{padding:13px;cursor:pointer;display:flex;align-items:center;justify-content:space-between;gap:10px}.receivedSummary strong{display:block;font-size:15px}.receivedMeta{font-size:12px;color:#64748b;line-height:1.45;margin-top:3px}.receivedDetails{display:none;border-top:1px solid #e8eef6;padding:13px;background:#fbfdff}.receivedItem.open .receivedDetails{display:block}.detailRow{display:grid;grid-template-columns:90px 1fr;gap:8px;padding:4px 0;font-size:13px}.detailLabel{font-weight:800;color:#475569}.receivedActions{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}.guestUpsell{display:none;margin-top:12px;padding:13px;border-radius:13px;background:#ecfdf5;color:#166534}.guestUpsell.show{display:block}.exchangeSentSummary{display:none;margin-top:12px;padding:13px;border-radius:13px;background:#ecfdf5;color:#166534}.exchangeSentSummary.show{display:block}.exchangeSentSummary button{margin-top:9px;background:transparent;border:0;padding:0;color:#1d4ed8;font-weight:800;cursor:pointer}.sentReadOnly{display:none;margin-top:10px;padding-top:9px;border-top:1px solid #bbf7d0;color:#334155}.sentReadOnly.show{display:block}.sentReadOnly .detailRow{padding:3px 0}.sentReadOnly .detailLabel{color:#166534}.memberHint{font-size:12px;color:#64748b;margin-top:7px}@media(max-width:520px){.exchangeChoices,.exchangeCore,.exchangeMoreGrid{grid-template-columns:1fr}.detailRow{grid-template-columns:78px 1fr}}
 
-.helpPill{min-width:42px}.helpSteps{display:grid;gap:12px;margin-top:16px}.helpStep{padding:13px;border:1px solid #dbe5f2;border-radius:13px;background:#f8fbff}.helpStep strong{display:block;margin-bottom:4px}.docBox{margin-top:18px;padding:16px;border:1px solid #dbe5f2;border-radius:16px;background:#f8fbff}.docList{display:grid;gap:9px;margin-top:10px}.docItem{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:11px;border:1px solid #dbe5f2;border-radius:12px;background:#fff}.docMeta{min-width:0}.docName{font-weight:850;overflow-wrap:anywhere}.docSize{font-size:11px;color:#64748b;margin-top:2px}.docPublic{margin-top:16px}.docPublic a,.docPublic button{width:100%;margin-top:8px}.docCheck{display:flex;align-items:center;gap:8px;font-size:13px}.docCheck input{width:18px;height:18px}.docHint{font-size:12px;color:#64748b;line-height:1.45;margin-top:7px}
+.helpPill{min-width:42px}.helpVideo{margin:14px 0 18px;padding:12px;border:1px solid #dbe5f2;border-radius:16px;background:#f8fbff}.helpVideo video{display:block;width:100%;max-height:62vh;border-radius:12px;background:#0f172a}.helpVideoTitle{font-weight:850;margin:0 0 8px}.helpVideoHint{font-size:12px;color:#64748b;margin-top:8px;line-height:1.4}.helpSteps{display:grid;gap:12px;margin-top:16px}.helpStep{padding:13px;border:1px solid #dbe5f2;border-radius:13px;background:#f8fbff}.helpStep strong{display:block;margin-bottom:4px}.docBox{margin-top:18px;padding:16px;border:1px solid #dbe5f2;border-radius:16px;background:#f8fbff}.docList{display:grid;gap:9px;margin-top:10px}.docItem{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:11px;border:1px solid #dbe5f2;border-radius:12px;background:#fff}.docMeta{min-width:0}.docName{font-weight:850;overflow-wrap:anywhere}.docSize{font-size:11px;color:#64748b;margin-top:2px}.docPublic{margin-top:16px}.docPublic a,.docPublic button{width:100%;margin-top:8px}.docCheck{display:flex;align-items:center;gap:8px;font-size:13px}.docCheck input{width:18px;height:18px}.docHint{font-size:12px;color:#64748b;line-height:1.45;margin-top:7px}
 
 .editSection{border:1px solid #dbe5f2;border-radius:18px;margin:14px 0;background:#fff;overflow:hidden}
 .editSection summary{cursor:pointer;list-style:none;padding:16px 18px;font-weight:900;font-size:18px;color:#132238;display:flex;justify-content:space-between;align-items:center}
@@ -1669,6 +1669,18 @@ QRCodeCore.createBytes = function(buffer, rsBlocks) {
 .connectionOrganiseEditor .organiseFull{grid-column:1/-1}
 .connectionOrganiseActions{display:flex;gap:7px;flex-wrap:wrap;margin-top:8px}
 .favoriteBtn.isFavorite{font-weight:900}
+/* RC31.2: keep saved-connection cards compact; detailed controls live behind Manage. */
+.connectionNameRow{display:flex;align-items:flex-start;gap:7px;justify-content:space-between}
+.connectionFavouriteMark{font-size:18px;line-height:1;flex:0 0 auto;color:#334155}
+.connectionSummaryLine{font-size:12px;color:#64748b;margin-top:3px;overflow-wrap:anywhere}
+.connectionNote.compact{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.connectionContext.compact,.connectionReminder.compact{font-size:12px;margin-top:6px;line-height:1.4}
+.connectionManagePanel{display:none;margin-top:10px;padding:11px;border:1px solid #dbe3ef;border-radius:12px;background:#f8fafc}
+.connectionManagePanel.show{display:block}
+.connectionManageHead{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:8px}
+.connectionManageMeta{font-size:12px;color:#64748b;line-height:1.5;margin-top:8px}
+.connectionManageActions{display:flex;gap:7px;flex-wrap:wrap;margin-top:10px;padding-top:9px;border-top:1px solid #e2e8f0}
+.connectionManagePanel .connectionOrganiseEditor{display:block;margin-top:8px}
 @media(max-width:560px){.connectionOrganiseEditor .organiseGrid{grid-template-columns:1fr}}
 .sendDsharioBox{margin-top:18px;padding:14px;border:1px solid #dbe5f2;border-radius:16px;background:#f8fbff}
 .sendDsharioBox h3{margin:0 0 5px}
@@ -2171,6 +2183,14 @@ QRCodeCore.createBytes = function(buffer, rsBlocks) {
     <button id="helpClose" class="modalClose" type="button">Close</button>
     <h1 id="helpTitle">How DShario works</h1>
     <p id="helpIntro">A quick guide to sharing the right information safely.</p>
+    <div class="helpVideo">
+      <div class="helpVideoTitle">▶ Quick DShario video guide</div>
+      <video controls preload="metadata" playsinline>
+        <source src="dshario-user-guide.mp4" type="video/mp4">
+        Your browser does not support the video player.
+      </video>
+      <div class="helpVideoHint">About 1 minute. The written guide remains below for quick reference.</div>
+    </div>
     <div class="helpSteps">
       <div class="helpStep"><strong id="hs1">1. Create your card</strong><span id="hb1">Add the professional and contact information you want to use. Keep optional details blank when you do not need them.</span></div>
       <div class="helpStep"><strong id="hs2">2. Choose a privacy view</strong><span id="hb2">Professional, Business, Social or Full controls what the recipient can see.</span></div>
@@ -2181,7 +2201,7 @@ QRCodeCore.createBytes = function(buffer, rsBlocks) {
       <div class="helpStep"><strong id="hs7">7. Exchange with my DShario</strong><span id="hb7">A DShario member can sign in, choose the privacy view they want to send, and exchange their existing DShario with the sender. People who do not use DShario can use the separate contact-return option when it is available.</span></div>
       <div class="helpStep"><strong id="hs8">8. My Connections and history</strong><span id="hb8">One sender appears as one active connection. Saving a newer view from the same sender makes it the current saved card. Earlier cards remain only as a lightweight history trace, without keeping the old card details. Received and Saved date/time help you track when the connection happened.</span></div>
       <div class="helpStep"><strong id="hs9">9. Temporary Share expiry and revocation</strong><span id="hb9">When a Temporary Share expires or is revoked, its live card actions and temporary details are no longer available. A searchable history trace may remain. If the same sender is later saved through a permanent link, that permanent card becomes the active connection.</span></div>
-      <div class="helpStep"><strong id="hs10">10. Organise professional connections</strong><span id="hb10">In My Connections you can search by name, DShario name, label, category or note. Mark important people as favourites and add a private category or note to remember why the connection matters.</span></div>
+      <div class="helpStep"><strong id="hs10">10. Organise professional connections</strong><span id="hb10">In My Connections you can search for people, mark favourites, add a category, record how you connected, keep a private note and set a follow-up. Use Manage for detailed controls and history. Notes can be edited or deleted without deleting the connection.</span></div>
     </div>
   </div>
 </div>
@@ -4158,116 +4178,54 @@ function connectionItem(c,isNew){
   const badge=isNew?`<div class="connectionBadge">${t("New")}</div>`:"";
   const updated=(!isNew&&c.dshario_updated)?`<div class="connectionStatus updated">↻ ${t("Card updated")}</div>`:"";
   const expiredText=expired?`<div class="connectionStatus expired">${t("Temporary DShario link expired or revoked")}</div>`:"";
-  const categoryTag=(!isNew&&metaInfo.category)?`<span class="connectionTag">${escHtml(metaInfo.category)}</span>`:"";
-  const favouriteTag=(!isNew&&metaInfo.favorite)?`<span class="connectionTag">★ Favourite</span>`:"";
-  const tags=(categoryTag||favouriteTag)?`<div class="connectionTags">${favouriteTag}${categoryTag}</div>`:"";
-  const note=(!isNew&&metaInfo.note)?`<div class="connectionNote">📝 ${escHtml(metaInfo.note)}</div>`:"";
-  const howMet=(!isNew&&metaInfo.howMet)?`<div class="connectionContext">🤝 How we connected: ${escHtml(metaInfo.howMet)}</div>`:"";
-  let reminder="";
-  if(!isNew&&metaInfo.reminderAt){const rd=new Date(metaInfo.reminderAt);const overdue=!metaInfo.reminderDone&&rd.getTime()<Date.now();const cls=metaInfo.reminderDone?" done":(overdue?" overdue":"");reminder=`<div class="connectionReminder${cls}">⏰ ${metaInfo.reminderDone?"Completed: ":"Follow up: "}${escHtml(format12HourDate(metaInfo.reminderAt))}</div>`;}
-
-  item.innerHTML=`${badge}<div class="connectionTop"><div class="connectionInfo"><div class="connectionName">${escHtml(name)}</div><div class="connectionHandle">${escHtml(handle)}</div>${nick}${tags}${note}${howMet}${reminder}${!isNew?connectionTraceHtml(c):""}</div></div>${updated}${expiredText}<div class="connectionActions"></div>${!isNew?`<div class="connectionOrganiseEditor"><div class="organiseGrid"><div class="field"><label>Private label</label><input class="organiseLabel" maxlength="80" placeholder="e.g. Hasan – Adelaide meeting"></div><div class="field"><label>Category</label><select class="organiseCategory">${connectionCategories.map(x=>`<option value="${escHtml(x)}">${escHtml(x||"No category")}</option>`).join("")}</select></div><div class="field"><label>How we connected</label><select class="organiseHowMet">${howMetOptions.map(x=>`<option value="${escHtml(x)}">${escHtml(x||"Not specified")}</option>`).join("")}</select></div><div class="field"><label>Follow-up reminder</label><input class="organiseReminder" type="datetime-local"><div class="hint">Optional. Stored privately on this device during beta.</div></div><div class="field organiseFull"><label>Private note</label><textarea class="organiseNote" maxlength="300" placeholder="e.g. Discussed quotation — send details next week"></textarea><div class="hint">Only you can see this note.</div></div></div><div class="connectionOrganiseActions"><button class="mini saveOrganiseBtn" type="button">Save</button><button class="mini cancelOrganiseBtn" type="button">Cancel</button></div></div>`:""}`;
-
-  const acts=item.querySelector(".connectionActions");
 
   if(isNew){
+    item.innerHTML=`${badge}<div class="connectionTop"><div class="connectionInfo"><div class="connectionName">${escHtml(name)}</div><div class="connectionHandle">${escHtml(handle)}</div>${nick}</div></div>${updated}${expiredText}<div class="connectionActions"></div>`;
+    const acts=item.querySelector(".connectionActions");
     if(expired){
       const del=document.createElement("button");del.className="mini";del.textContent=t("Delete");
       del.onclick=async()=>{if(!confirm(t("Delete this incoming DShario?")))return;const {error}=await sb.rpc("remove_dshario_connection",{target_user_id:c.connected_user_id});if(error)msg(error.message,"err");else loadMyConnections()};
       acts.appendChild(del); return item;
     }
-    if(!expired&&c.card_slug){
+    if(c.card_slug){
       const view=document.createElement("button");view.className="mini";view.textContent=t("View Card");
-      view.onclick=()=>{
-        const u=c.source_type==="temporary"&&c.source_share_token
-          ? location.origin+location.pathname+"?share="+encodeURIComponent(c.source_share_token)+"&connection=1"
-          : location.origin+location.pathname+"?card="+encodeURIComponent(c.card_slug)+"&view="+encodeURIComponent(c.saved_privacy_view||"professional")+"&connection=1";
-        location.href=u;
-      };
+      view.onclick=()=>{const u=c.source_type==="temporary"&&c.source_share_token?location.origin+location.pathname+"?share="+encodeURIComponent(c.source_share_token)+"&connection=1":location.origin+location.pathname+"?card="+encodeURIComponent(c.card_slug)+"&view="+encodeURIComponent(c.saved_privacy_view||"professional")+"&connection=1";location.href=u;};
       acts.appendChild(view);
     }
-    const save=document.createElement("button");save.className="mini";save.textContent=t("Save Connection");
-    save.onclick=()=>saveIncomingConnection(c,null);
-
-    const saveLabel=document.createElement("button");saveLabel.className="mini";saveLabel.textContent=t("Save with Private Label");
-    saveLabel.onclick=async()=>{
-      const label=prompt(t("Private label (only you can see it)"),"");
-      if(label===null)return;
-      await saveIncomingConnection(c,label.trim()||null);
-    };
-
-    const del=document.createElement("button");del.className="mini";del.textContent=t("Delete");
-    del.onclick=async()=>{
-      if(!confirm(t("Delete this incoming DShario?")))return;
-      const {error}=await sb.rpc("remove_dshario_connection",{target_user_id:c.connected_user_id});
-      if(error)msg(error.message,"err");else loadMyConnections();
-    };
-    acts.append(save,saveLabel,del);
-    return item;
+    const save=document.createElement("button");save.className="mini";save.textContent=t("Save Connection");save.onclick=()=>saveIncomingConnection(c,null);
+    const saveLabel=document.createElement("button");saveLabel.className="mini";saveLabel.textContent=t("Save with Private Label");saveLabel.onclick=async()=>{const label=prompt(t("Private label (only you can see it)"),"");if(label===null)return;await saveIncomingConnection(c,label.trim()||null);};
+    const del=document.createElement("button");del.className="mini";del.textContent=t("Delete");del.onclick=async()=>{if(!confirm(t("Delete this incoming DShario?")))return;const {error}=await sb.rpc("remove_dshario_connection",{target_user_id:c.connected_user_id});if(error)msg(error.message,"err");else loadMyConnections();};
+    acts.append(save,saveLabel,del);return item;
   }
 
+  const favouriteMark=metaInfo.favorite?'<span class="connectionFavouriteMark" title="Favourite">★</span>':'';
+  const summaryBits=[handle,metaInfo.category].filter(Boolean).map(escHtml).join(' • ');
+  const note=metaInfo.note?`<div class="connectionNote compact">📝 ${escHtml(metaInfo.note)}</div>`:"";
+  const howMet=metaInfo.howMet?`<div class="connectionContext compact">🤝 ${escHtml(metaInfo.howMet)}</div>`:"";
+  let reminder="";
+  if(metaInfo.reminderAt){const rd=new Date(metaInfo.reminderAt);const overdue=!metaInfo.reminderDone&&rd.getTime()<Date.now();const cls=metaInfo.reminderDone?" done":(overdue?" overdue":"");reminder=`<div class="connectionReminder compact${cls}">⏰ ${metaInfo.reminderDone?"Completed: ":"Follow up: "}${escHtml(format12HourDate(metaInfo.reminderAt))}</div>`;}
+
+  item.innerHTML=`${badge}<div class="connectionTop"><div class="connectionInfo"><div class="connectionNameRow"><div class="connectionName">${escHtml(name)}</div>${favouriteMark}</div>${summaryBits?`<div class="connectionSummaryLine">${summaryBits}</div>`:""}${nick}${note}${howMet}${reminder}</div></div>${updated}${expiredText}<div class="connectionActions"></div><div class="connectionManagePanel"><div class="connectionManageHead"><strong>Manage Connection</strong><button class="mini closeManageBtn" type="button">Close</button></div><div class="connectionManageMeta">Private connection details are visible only to you on this browser/device during beta.</div><div class="connectionOrganiseEditor"><div class="organiseGrid"><div class="field"><label>Private label</label><input class="organiseLabel" maxlength="80" placeholder="e.g. Hasan – Adelaide meeting"></div><div class="field"><label>Category</label><select class="organiseCategory">${connectionCategories.map(x=>`<option value="${escHtml(x)}">${escHtml(x||"No category")}</option>`).join("")}</select></div><div class="field"><label>How we connected</label><select class="organiseHowMet">${howMetOptions.map(x=>`<option value="${escHtml(x)}">${escHtml(x||"Not specified")}</option>`).join("")}</select></div><div class="field"><label>Follow-up reminder</label><input class="organiseReminder" type="datetime-local"><div class="hint">Optional.</div></div><div class="field organiseFull"><label>Private note</label><textarea class="organiseNote" maxlength="300" placeholder="e.g. Discussed quotation — send details next week"></textarea><div class="hint">Only you can see this note.</div></div></div><div class="connectionOrganiseActions"><button class="mini saveOrganiseBtn" type="button">Save Changes</button><button class="mini deleteNoteManageBtn" type="button">🗑 Delete Note</button><button class="mini reminderDoneManageBtn" type="button">✓ Reminder Done</button><button class="mini clearReminderManageBtn" type="button">Clear Reminder</button></div></div><div class="connectionManageMeta connectionTraceWrap">${connectionTraceHtml(c)}</div><div class="connectionManageActions"><button class="mini manageFavouriteBtn" type="button">${metaInfo.favorite?"★ Remove Favourite":"☆ Add Favourite"}</button><button class="mini removeConnectionBtn" type="button">🗑 Remove Connection</button></div></div>`;
+
+  const acts=item.querySelector(".connectionActions");
   if(!expired&&c.card_slug){
-    const view=document.createElement("button");view.className="mini";view.textContent=t("View Card");
-    view.onclick=async()=>{
-      if(c.connection_update_at) await sb.rpc("mark_connection_update_seen",{target_user_id:c.connected_user_id,update_at:c.connection_update_at});
-      const u=c.source_type==="temporary"&&c.source_share_token
-        ? location.origin+location.pathname+"?share="+encodeURIComponent(c.source_share_token)+"&connection=1"
-        : location.origin+location.pathname+"?card="+encodeURIComponent(c.card_slug)+"&view="+encodeURIComponent(c.saved_privacy_view||"professional")+"&connection=1";
-      location.href=u;
-    };
-    acts.appendChild(view);
+    const view=document.createElement("button");view.className="mini";view.textContent=t("View Card");view.onclick=async()=>{if(c.connection_update_at)await sb.rpc("mark_connection_update_seen",{target_user_id:c.connected_user_id,update_at:c.connection_update_at});const u=c.source_type==="temporary"&&c.source_share_token?location.origin+location.pathname+"?share="+encodeURIComponent(c.source_share_token)+"&connection=1":location.origin+location.pathname+"?card="+encodeURIComponent(c.card_slug)+"&view="+encodeURIComponent(c.saved_privacy_view||"professional")+"&connection=1";location.href=u;};acts.appendChild(view);
   }
-
-  const fav=document.createElement("button");fav.className="mini favoriteBtn"+(metaInfo.favorite?" isFavorite":"");fav.textContent=metaInfo.favorite?"★ Favourite":"☆ Favourite";
-  fav.onclick=()=>{setConnectionMeta(c.connected_user_id,{favorite:!metaInfo.favorite});loadMyConnections();};
-  acts.appendChild(fav);
-
-  if(metaInfo.note&&!expired){
-    const editNote=document.createElement("button");editNote.className="mini";editNote.textContent="✏️ Edit Note";
-    editNote.onclick=()=>{const ed=item.querySelector(".connectionOrganiseEditor");const m=getConnectionMeta(c.connected_user_id);ed.querySelector(".organiseLabel").value=c.nickname||"";ed.querySelector(".organiseCategory").value=connectionCategories.includes(m.category)?m.category:"Other";ed.querySelector(".organiseNote").value=m.note||"";ed.querySelector(".organiseHowMet").value=howMetOptions.includes(m.howMet)?m.howMet:"Other";ed.querySelector(".organiseReminder").value=m.reminderAt?toLocalDateTimeInput(m.reminderAt):"";ed.classList.add("show");ed.querySelector(".organiseNote").focus();};
-    const deleteNote=document.createElement("button");deleteNote.className="mini";deleteNote.textContent="🗑 Delete Note";
-    deleteNote.onclick=()=>{if(!confirm("Delete this private note? The connection will be kept."))return;setConnectionMeta(c.connected_user_id,{note:""});msg("Private note deleted. Connection kept.","ok");loadMyConnections();renderConnectionNotes();};
-    acts.append(editNote,deleteNote);
-  }
-
   if(!expired){
-    const organise=document.createElement("button");organise.className="mini";organise.textContent="Organise";
-    organise.onclick=()=>{
-      const ed=item.querySelector(".connectionOrganiseEditor");
-      const m=getConnectionMeta(c.connected_user_id);
-      ed.querySelector(".organiseLabel").value=c.nickname||"";
-      ed.querySelector(".organiseCategory").value=connectionCategories.includes(m.category)?m.category:"Other";
-      ed.querySelector(".organiseNote").value=m.note||"";
-      ed.querySelector(".organiseHowMet").value=howMetOptions.includes(m.howMet)?m.howMet:"Other";
-      ed.querySelector(".organiseReminder").value=m.reminderAt?toLocalDateTimeInput(m.reminderAt):"";
-      ed.classList.toggle("show");
-      if(ed.classList.contains("show"))ed.querySelector(".organiseLabel").focus();
-    };
-    acts.appendChild(organise);
-
-    const ed=item.querySelector(".connectionOrganiseEditor");
-    ed.querySelector(".cancelOrganiseBtn").onclick=()=>ed.classList.remove("show");
-    ed.querySelector(".saveOrganiseBtn").onclick=async()=>{
-      const label=ed.querySelector(".organiseLabel").value.trim()||null;
-      const category=ed.querySelector(".organiseCategory").value||"";
-      const note=ed.querySelector(".organiseNote").value.trim().slice(0,300);
-      const howMet=ed.querySelector(".organiseHowMet").value||"";
-      const reminderRaw=ed.querySelector(".organiseReminder").value;
-      const reminderAt=reminderRaw?new Date(reminderRaw).toISOString():"";
-      const {error}=await sb.rpc("set_connection_nickname",{target_user_id:c.connected_user_id,new_nickname:label});
-      if(error){msg(error.message,"err");return}
-      setConnectionMeta(c.connected_user_id,{category,note,howMet,reminderAt,reminderDone:reminderAt===getConnectionMeta(c.connected_user_id).reminderAt?getConnectionMeta(c.connected_user_id).reminderDone:false});
-      msg("Connection details saved.","ok");loadMyConnections();
-    };
+    const manage=document.createElement("button");manage.className="mini manageConnectionBtn";manage.textContent="Manage ›";acts.appendChild(manage);
+    const panel=item.querySelector(".connectionManagePanel"),ed=item.querySelector(".connectionOrganiseEditor");
+    const fillManage=()=>{const m=getConnectionMeta(c.connected_user_id);ed.querySelector(".organiseLabel").value=c.nickname||"";ed.querySelector(".organiseCategory").value=connectionCategories.includes(m.category)?m.category:"Other";ed.querySelector(".organiseNote").value=m.note||"";ed.querySelector(".organiseHowMet").value=howMetOptions.includes(m.howMet)?m.howMet:"Other";ed.querySelector(".organiseReminder").value=m.reminderAt?toLocalDateTimeInput(m.reminderAt):"";item.querySelector(".reminderDoneManageBtn").style.display=m.reminderAt?"inline-block":"none";item.querySelector(".clearReminderManageBtn").style.display=m.reminderAt?"inline-block":"none";item.querySelector(".deleteNoteManageBtn").style.display=m.note?"inline-block":"none";};
+    manage.onclick=()=>{fillManage();panel.classList.toggle("show");if(panel.classList.contains("show"))panel.scrollIntoView({behavior:"smooth",block:"nearest"});};
+    item.querySelector(".closeManageBtn").onclick=()=>panel.classList.remove("show");
+    item.querySelector(".saveOrganiseBtn").onclick=async()=>{const label=ed.querySelector(".organiseLabel").value.trim()||null;const category=ed.querySelector(".organiseCategory").value||"";const noteVal=ed.querySelector(".organiseNote").value.trim().slice(0,300);const howMetVal=ed.querySelector(".organiseHowMet").value||"";const reminderRaw=ed.querySelector(".organiseReminder").value;const reminderAt=reminderRaw?new Date(reminderRaw).toISOString():"";const previous=getConnectionMeta(c.connected_user_id);const {error}=await sb.rpc("set_connection_nickname",{target_user_id:c.connected_user_id,new_nickname:label});if(error){msg(error.message,"err");return}setConnectionMeta(c.connected_user_id,{category,note:noteVal,howMet:howMetVal,reminderAt,reminderDone:reminderAt===previous.reminderAt?previous.reminderDone:false});msg("Connection details saved.","ok");await loadMyConnections();renderConnectionNotes();renderReminders();};
+    item.querySelector(".deleteNoteManageBtn").onclick=()=>{if(!confirm("Delete this private note? The connection will be kept."))return;setConnectionMeta(c.connected_user_id,{note:""});msg("Private note deleted. Connection kept.","ok");loadMyConnections();renderConnectionNotes();};
+    item.querySelector(".reminderDoneManageBtn").onclick=()=>{const m=getConnectionMeta(c.connected_user_id);setConnectionMeta(c.connected_user_id,{reminderDone:!m.reminderDone});loadMyConnections();renderReminders();};
+    item.querySelector(".clearReminderManageBtn").onclick=()=>{if(!confirm("Clear this follow-up reminder?"))return;setConnectionMeta(c.connected_user_id,{reminderAt:"",reminderDone:false});loadMyConnections();renderReminders();};
+    item.querySelector(".manageFavouriteBtn").onclick=()=>{const m=getConnectionMeta(c.connected_user_id);setConnectionMeta(c.connected_user_id,{favorite:!m.favorite});loadMyConnections();};
+    item.querySelector(".removeConnectionBtn").onclick=async()=>{if(!confirm(t("Remove this DShario from My Connections?")))return;const {error}=await sb.rpc("remove_dshario_connection",{target_user_id:c.connected_user_id});if(error)msg(error.message,"err");else{removeConnectionMeta(c.connected_user_id);loadMyConnections();renderConnectionNotes();renderReminders();}};
+  }else{
+    const remove=document.createElement("button");remove.className="mini";remove.textContent=t("Delete");remove.onclick=async()=>{if(!confirm(t("Remove this DShario from My Connections?")))return;const {error}=await sb.rpc("remove_dshario_connection",{target_user_id:c.connected_user_id});if(error)msg(error.message,"err");else{removeConnectionMeta(c.connected_user_id);loadMyConnections();}};acts.appendChild(remove);
   }
-
-  const remove=document.createElement("button");remove.className="mini";remove.textContent=t("Delete");
-  remove.onclick=async()=>{
-    if(!confirm(t("Remove this DShario from My Connections?")))return;
-    const {error}=await sb.rpc("remove_dshario_connection",{target_user_id:c.connected_user_id});
-    if(error)msg(error.message,"err");else{removeConnectionMeta(c.connected_user_id);loadMyConnections();}
-  };
-  acts.appendChild(remove);
   return item;
 }
 
@@ -4350,15 +4308,30 @@ async function renderConnectionNotes(){
     a.append(view,edit,del);list.appendChild(el);
   });
 }
-function focusConnection(targetId){
+async function openConnectionFromQuickPanel(targetId,mode="view"){
   $("notesPanel")?.classList.remove("show");$("remindersPanel")?.classList.remove("show");$("followupPopup")?.classList.remove("show");
+  if(!user)return;
+  // Notes/reminders live in the global signed-in header, so their actions must work
+  // even while My Card or Edit My Card is the visible area.
+  if(!$("accountView")?.classList.contains("active")){
+    try{history.replaceState(null,"",cleanBase()+"#account");}catch(e){}
+    setView("account");
+  }
+  await loadMyConnections();
   const panel=$("myConnectionsPanel");if(panel)panel.scrollIntoView({behavior:"smooth",block:"start"});
-  setTimeout(()=>{const item=document.querySelector(`#savedConnectionsList .connectionItem[data-connection-id="${CSS.escape(String(targetId))}"]`);if(item){item.scrollIntoView({behavior:"smooth",block:"center"});}},350);
+  setTimeout(()=>{
+    const item=document.querySelector(`#savedConnectionsList .connectionItem[data-connection-id="${CSS.escape(String(targetId))}"]`);
+    if(!item)return;
+    item.scrollIntoView({behavior:"smooth",block:"center"});
+    if(mode==="manage"||mode==="editNote"){
+      const manage=item.querySelector(".manageConnectionBtn");
+      if(manage&&!item.querySelector(".connectionManagePanel")?.classList.contains("show"))manage.click();
+      if(mode==="editNote")setTimeout(()=>item.querySelector(".organiseNote")?.focus(),120);
+    }
+  },120);
 }
-function editConnectionNote(targetId){
-  $("notesPanel")?.classList.remove("show");focusConnection(targetId);
-  setTimeout(()=>{const item=document.querySelector(`#savedConnectionsList .connectionItem[data-connection-id="${CSS.escape(String(targetId))}"]`);const organise=[...item?.querySelectorAll(".connectionActions .mini")||[]].find(b=>b.textContent==="Organise");if(organise)organise.click();setTimeout(()=>item?.querySelector(".organiseNote")?.focus(),80);},450);
-}
+function focusConnection(targetId){ return openConnectionFromQuickPanel(targetId,"view"); }
+function editConnectionNote(targetId){ return openConnectionFromQuickPanel(targetId,"editNote"); }
 
 async function renderReminders(){
   const list=$("remindersList");if(!list)return;list.innerHTML='<div class="quickPanelEmpty">Loading…</div>';
