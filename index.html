@@ -261,14 +261,19 @@ body,button,input,textarea,select,.tab,.mini,.btn,.actionBtn,.accountPill,.lead,
 .shareHistorySelectBody{min-width:0;flex:1}
 
 /* BETA STABLE RC17: owner card image download — isolated from sharing/auth flows */
-.ownerDownloadBox{display:flex;align-items:center;justify-content:center;gap:10px;flex-wrap:wrap;margin:16px auto 0;padding:12px;border:1px solid #dbe5f2;border-radius:16px;background:#f8fbff;width:min(100%,560px)}
+.ownerDownloadBox{margin:16px auto 0;width:min(100%,560px);text-align:center}
+.ownerDownloadBox>button{width:100%;min-height:50px}
+.ownerDownloadOptions{display:none;margin-top:9px;padding:12px;border:1px solid #dbe5f2;border-radius:16px;background:#f8fbff;gap:10px}
+.ownerDownloadOptions.show{display:grid}
 .ownerDownloadBox label{font-weight:850;color:#334155}
-.ownerDownloadBox select{min-width:170px;border:1px solid #cbd8ea;border-radius:11px;padding:10px 12px;background:#fff;color:#0f172a}.ownerDownloadField{display:flex;align-items:center;gap:8px;flex-wrap:wrap}.ownerDownloadField label{margin:0}
-.ownerDownloadBox .btn{min-height:46px}
+.ownerDownloadBox select{width:100%;border:1px solid #cbd8ea;border-radius:11px;padding:10px 12px;background:#fff;color:#0f172a}.ownerDownloadField{display:grid;grid-template-columns:100px 1fr;align-items:center;gap:8px;text-align:left}.ownerDownloadField label{margin:0}
+.ownerTemplateHint{text-align:left;padding:7px 2px 0}.ownerDownloadOptions .btn{min-height:46px;width:100%}
 .publicMode #ownerDownloadBox,.connectionOnlyMode #ownerDownloadBox,.expiredPublic #ownerDownloadBox{display:none!important}
-@media(max-width:520px){.ownerDownloadBox{display:grid;grid-template-columns:1fr}.ownerDownloadBox label{text-align:center}.ownerDownloadBox select,.ownerDownloadBox .btn{width:100%}}
+@media(max-width:520px){.ownerDownloadField{grid-template-columns:1fr}.ownerDownloadBox label{text-align:left}}
 
 
+
+.primaryShareType{display:inline-flex;align-items:center;margin-top:8px;padding:6px 9px;border-radius:999px;background:#eef6ff;border:1px solid #cfe0f7;color:#173d7d;font-size:12px;font-weight:850}
 /* RC31: lightweight Connection Memory controls */
 .headerQuickBtn{display:none;min-width:44px;padding:9px 10px;font-size:18px;line-height:1}
 .headerQuickBtn.show{display:inline-flex;align-items:center;justify-content:center}
@@ -1850,20 +1855,26 @@ QRCodeCore.createBytes = function(buffer, rsBlocks) {
   
 </div>
 <div id="ownerDownloadBox" class="ownerDownloadBox ownerOnly">
-  <div class="ownerDownloadField"><label for="ownerDownloadView">Download card view</label>
-  <select id="ownerDownloadView">
-    <option value="professional">Professional</option>
-    <option value="business">Business</option>
-    <option value="social">Social</option>
-    <option value="full">Full</option>
-  </select></div>
-  <div class="ownerDownloadField"><label for="ownerDownloadTemplate">Card template</label>
-  <select id="ownerDownloadTemplate">
-    <option value="classic">Classic</option>
-    <option value="clean">Clean</option>
-    <option value="modern">Modern</option>
-  </select></div>
-  <button id="ownerDownloadBtn" class="btn secondary" type="button">⇩ Download as Image</button>
+  <button id="ownerDownloadToggleBtn" class="btn secondary" type="button">⇩ Download Image</button>
+  <div id="ownerDownloadOptions" class="ownerDownloadOptions">
+    <div class="ownerDownloadField"><label for="ownerDownloadView">Card view</label>
+      <select id="ownerDownloadView">
+        <option value="professional">Professional</option>
+        <option value="business">Business</option>
+        <option value="social">Social</option>
+        <option value="full">Full</option>
+      </select>
+    </div>
+    <div class="ownerDownloadField"><label for="ownerDownloadTemplate">Template</label>
+      <select id="ownerDownloadTemplate">
+        <option value="classic">Classic</option>
+        <option value="clean">Clean</option>
+        <option value="modern">Modern</option>
+      </select>
+    </div>
+    <div id="ownerTemplateHint" class="hint ownerTemplateHint">Classic — traditional DShario colour card.</div>
+    <button id="ownerDownloadBtn" class="btn secondary" type="button">Create & Download</button>
+  </div>
 </div>
 
 <div id="simpleShare" class="simpleShare"><button id="openShareWizardBtn" class="btn" type="button">Share Card</button></div>
@@ -3574,18 +3585,18 @@ async function downloadCurrentCardAsImage(viewOverride,templateOverride){
   const x=c.getContext("2d");
   if(template==="clean"){
     bg="#ffffff";fg="#0f172a";mt="#64748b";x.fillStyle=bg;x.fillRect(0,0,W,H);
-    x.fillStyle=accent;x.fillRect(0,0,W,18);
-    x.strokeStyle="rgba(15,23,42,.14)";x.lineWidth=3;x.beginPath();if(x.roundRect)x.roundRect(30,30,W-60,H-60,38);else x.rect(30,30,W-60,H-60);x.stroke();
+    x.fillStyle=accent;x.fillRect(84,58,150,10);
+    x.fillStyle="#eef2f7";x.fillRect(84,H-66,W-168,2);
   }else if(template==="modern"){
     bg="#ffffff";fg="#0f172a";mt="#64748b";x.fillStyle=bg;x.fillRect(0,0,W,H);
-    const g=x.createLinearGradient(0,0,W,0);g.addColorStop(0,accent);g.addColorStop(1,"#ffffff");x.fillStyle=g;x.fillRect(0,0,W,86);
-    x.fillStyle=accent;x.fillRect(0,0,22,H);
-    x.strokeStyle="rgba(15,23,42,.12)";x.lineWidth=3;x.beginPath();if(x.roundRect)x.roundRect(30,30,W-60,H-60,38);else x.rect(30,30,W-60,H-60);x.stroke();
+    x.fillStyle=accent;x.fillRect(0,0,360,H);
+    const g=x.createLinearGradient(360,0,520,0);g.addColorStop(0,accent);g.addColorStop(1,"#ffffff");x.globalAlpha=.22;x.fillStyle=g;x.fillRect(360,0,180,H);x.globalAlpha=1;
+    x.fillStyle="#ffffff";x.font="900 54px Arial, sans-serif";x.fillText("DS",86,720);
   }else{
     x.fillStyle=bg;x.fillRect(0,0,W,H);x.strokeStyle="rgba(30,64,175,.16)";x.lineWidth=3;x.beginPath();if(x.roundRect)x.roundRect(30,30,W-60,H-60,38);else x.rect(30,30,W-60,H-60);x.stroke();
   }
   let hasPhoto=!!d.photo_url;
-  if(hasPhoto){try{const img=await loadImg(d.photo_url);x.save();x.beginPath();if(x.roundRect)x.roundRect(82,76,220,220,32);else x.rect(82,76,220,220);x.clip();const sc=Math.max(220/img.width,220/img.height),w=img.width*sc,h=img.height*sc;x.drawImage(img,82+(220-w)/2,76+(220-h)/2,w,h);x.restore()}catch{hasPhoto=false}}
+  if(hasPhoto){try{const img=await loadImg(d.photo_url);x.save();let px=82,py=76,pw=220,ph=220;if(template==="clean"){px=90;py=88;pw=170;ph=170;x.beginPath();x.arc(px+pw/2,py+ph/2,pw/2,0,Math.PI*2)}else if(template==="modern"){px=70;py=90;pw=220;ph=220;x.beginPath();x.arc(px+pw/2,py+ph/2,pw/2,0,Math.PI*2)}else{x.beginPath();if(x.roundRect)x.roundRect(px,py,pw,ph,32);else x.rect(px,py,pw,ph)}x.clip();const sc=Math.max(pw/img.width,ph/img.height),w=img.width*sc,h=img.height*sc;x.drawImage(img,px+(pw-w)/2,py+(ph-h)/2,w,h);x.restore()}catch{hasPhoto=false}}
   function fit(v,maxW,fontSize=22,weight=600){v=String(v||"").trim();if(!v)return "";x.font=`${weight} ${fontSize}px Arial, sans-serif`;if(x.measureText(v).width<=maxW)return v;while(v.length>1&&x.measureText(v+"…").width>maxW)v=v.slice(0,-1);return v+"…"}
   function socialHandle(v){try{const u=new URL(cleanUrl(v));let p=u.pathname.split('/').filter(Boolean),z=p.pop()||u.hostname.replace(/^www\./,'');if(['share','profile.php','people'].includes(z.toLowerCase()))z=u.hostname.replace(/^www\./,'');return z.length>34?z.slice(0,31)+'…':z}catch{return String(v||'').slice(0,34)}}
   function iconCircle(cx,cy,kind){
@@ -3601,7 +3612,7 @@ async function downloadCurrentCardAsImage(viewOverride,templateOverride){
     else if(kind==='website'){x.fillStyle='#475569';x.font='700 26px Arial, sans-serif';x.fillText('◎',cx,cy)}
     x.restore();
   }
-  const name=localizedCardText(d,"full_name")||t("My DShario"), tx=hasPhoto?350:88, maxW=hasPhoto?980:1240;
+  const name=localizedCardText(d,"full_name")||t("My DShario"), tx=template==="modern"?430:(hasPhoto?(template==="clean"?310:350):88), maxW=template==="modern"?900:(hasPhoto?980:1240);
   const nameFs=name.length>30?42:name.length>22?47:(hasPhoto?51:58);
   x.textAlign="left";x.textBaseline="top";x.fillStyle=fg;x.font=`900 ${nameFs}px Arial, sans-serif`;x.fillText(fit(name,maxW,nameFs,900),tx,82);
   let y=82+nameFs+17;
@@ -3620,8 +3631,8 @@ async function downloadCurrentCardAsImage(viewOverride,templateOverride){
   if(d.instagram_url&&(view==="social"||view==="full"))items.push([t("Instagram"),socialHandle(d.instagram_url),'instagram']);
 
   const isSparseSocial=view==="social"&&items.length<=3;
-  const qrSize=isSparseSocial?250:190, qrX=isSparseSocial?1080:1160, qrY=isSparseSocial?370:570;
-  const rows=Math.ceil(items.length/2), colX=[92,625], colW=410;
+  const qrSize=template==="modern"?170:(isSparseSocial?250:190), qrX=template==="modern"?95:(isSparseSocial?1080:1160), qrY=template==="modern"?500:(isSparseSocial?370:570);
+  const rows=Math.ceil(items.length/2), colX=template==="modern"?[430,900]:[92,625], colW=template==="modern"?350:410;
   const minStart=hasPhoto?Math.max(350,y+25):Math.max(285,y+30);
   const rowH=rows<=2?108:rows===3?94:rows===4?82:70;
   const valueFs=items.length>6?19:22;
@@ -3635,10 +3646,20 @@ async function downloadCurrentCardAsImage(viewOverride,templateOverride){
   });
   const qrTarget=publicMode?((currentPublicSourceType==="temporary"&&currentPublicShareToken)?location.origin+location.pathname+"?share="+encodeURIComponent(currentPublicShareToken):shareUrl(d)):(d?.slug?location.origin+location.pathname+"?card="+encodeURIComponent(d.slug)+"&view=full":shareUrl(d));
   try{const holder=document.createElement('div');holder.style.cssText='position:fixed;left:-9999px;top:-9999px;background:#fff';document.body.appendChild(holder);new QRCode(holder,{text:qrTarget,width:qrSize,height:qrSize,colorDark:'#000000',colorLight:'#ffffff',correctLevel:QRCode.CorrectLevel.M});await new Promise(r=>setTimeout(r,80));const q=holder.querySelector('canvas');if(q){const pad=14;x.fillStyle='#fff';x.fillRect(qrX-pad,qrY-pad,qrSize+pad*2,qrSize+58);x.drawImage(q,qrX,qrY,qrSize,qrSize);x.fillStyle='#334155';x.textAlign='center';x.textBaseline='top';x.font='700 16px Arial, sans-serif';x.fillText(window.currentLang==="bn"?"লাইভ DShario খুলুন":"Open live DShario",qrX+qrSize/2,qrY+qrSize+24)}holder.remove()}catch(e){console.warn('QR render failed',e)}
-  x.textAlign="left";x.textBaseline='top';x.fillStyle=fg;x.font="900 30px Arial, sans-serif";x.fillText("DS",82,794);x.fillStyle=mt;x.font="20px Arial, sans-serif";x.fillText(window.currentLang==="bn"?"যোগাযোগ রাখুন।":"Keep in touch.",140,798);
+  x.textAlign="left";x.textBaseline='top';
+  if(template!=="modern"){x.fillStyle=fg;x.font="900 30px Arial, sans-serif";x.fillText("DS",82,794);x.fillStyle=mt;x.font="20px Arial, sans-serif";x.fillText(window.currentLang==="bn"?"যোগাযোগ রাখুন।":"Keep in touch.",140,798)}
+  else{x.fillStyle=mt;x.font="20px Arial, sans-serif";x.fillText(window.currentLang==="bn"?"যোগাযোগ রাখুন।":"Keep in touch.",430,798)};
   c.toBlob(b=>{if(b)downloadBlob(b,safeName(name||d.full_name||"dshario")+"-"+view+"-"+template+"-card.png")},"image/png");
 }
 if($("pngBtn")) $("pngBtn").onclick=()=>downloadCurrentCardAsImage();
+if($("ownerDownloadToggleBtn")) $("ownerDownloadToggleBtn").onclick=()=>{
+  const box=$("ownerDownloadOptions"); if(!box)return; box.classList.toggle("show");
+  $("ownerDownloadToggleBtn").textContent=box.classList.contains("show")?"Close Download Options":"⇩ Download Image";
+};
+if($("ownerDownloadTemplate")) $("ownerDownloadTemplate").addEventListener("change",()=>{
+  const v=$("ownerDownloadTemplate").value,h=$("ownerTemplateHint");if(!h)return;
+  h.textContent=v==="clean"?"Clean — white, minimal and spacious.":v==="modern"?"Modern — bold accent panel with a contemporary layout.":"Classic — traditional DShario colour card.";
+});
 if($("ownerDownloadBtn")) $("ownerDownloadBtn").onclick=()=>{
   if(!currentCard?.slug){msg(window.currentLang==="bn"?"প্রথমে আপনার DShario কার্ড তৈরি ও সেভ করুন।":"Create and save your DShario card first.","info");return;}
   const selected=$("ownerDownloadView")?.value||$("privacy_view")?.value||"full";
@@ -4296,6 +4317,9 @@ async function saveIncomingConnection(c,label){
   if(error){msg(error.message,"err");return}
   try{await sb.rpc("mark_incoming_notice_seen",{target_user_id:c.connected_user_id})}catch(e){}
   try{if(c.connection_update_at)await sb.rpc("mark_connection_update_seen",{target_user_id:c.connected_user_id,update_at:c.connection_update_at})}catch(e){}
+  // The latest received share type is authoritative for the saved connection.
+  const incomingShareType=normalisePurpose(currentPublicPurpose||restoreReceivedPurpose(c.connected_user_id));
+  if(incomingShareType) writeConnectionPurpose(c.connected_user_id,incomingShareType);
   recordConnectionSave(c.connected_user_id,c.saved_privacy_view||"professional",c.source_type||"permanent");
   msg(t("✓ Connection saved."),"ok");
   await loadNotifications();
@@ -4338,15 +4362,11 @@ function connectionItem(c,isNew){
   }
 
   const favouriteMark=metaInfo.favorite?'<span class="connectionFavouriteMark" title="Favourite">★</span>':'';
-  const summaryBits=[handle,metaInfo.category].filter(Boolean).map(escHtml).join(' • ');
-  const note=metaInfo.note?`<div class="connectionNote compact">📝 ${escHtml(metaInfo.note)}</div>`:"";
+  const summaryBits=[handle].filter(Boolean).map(escHtml).join(' • ');
   const savedPurpose=readConnectionPurpose(c.connected_user_id);
-  const purposeLine=savedPurpose?`<div class="connectionContext compact">Share type: ${escHtml(purposeLabel(savedPurpose))}</div>`:"";
-  const howMet=metaInfo.howMet?`<div class="connectionContext compact">🤝 ${escHtml(metaInfo.howMet)}</div>`:"";
-  let reminder="";
-  if(metaInfo.reminderAt){const rd=new Date(metaInfo.reminderAt);const overdue=!metaInfo.reminderDone&&rd.getTime()<Date.now();const cls=metaInfo.reminderDone?" done":(overdue?" overdue":"");reminder=`<div class="connectionReminder compact${cls}">⏰ ${metaInfo.reminderDone?"Completed: ":"Follow up: "}${escHtml(format12HourDate(metaInfo.reminderAt))}</div>`;}
+  const purposeLine=savedPurpose?`<div class="connectionContext compact primaryShareType">${escHtml(purposeLabel(savedPurpose))}</div>`:"";
 
-  item.innerHTML=`${badge}<div class="connectionTop"><div class="connectionInfo"><div class="connectionNameRow"><div class="connectionName">${escHtml(name)}</div>${favouriteMark}</div>${summaryBits?`<div class="connectionSummaryLine">${summaryBits}</div>`:""}${nick}${note}${purposeLine}${howMet}${reminder}</div></div>${updated}${expiredText}<div class="connectionActions"></div><div class="connectionManagePanel"><div class="connectionManageHead"><strong>Manage Connection</strong><button class="mini closeManageBtn" type="button">Close</button></div><div class="connectionManageMeta">${savedPurpose?`Share type: ${escHtml(purposeLabel(savedPurpose))}`:""}</div><div class="connectionOrganiseEditor"><div class="organiseGrid"><div class="field"><label>Private label</label><input class="organiseLabel" maxlength="80" placeholder="e.g. Hasan – Adelaide meeting"></div><div class="field"><label>Category</label><select class="organiseCategory">${connectionCategories.map(x=>`<option value="${escHtml(x)}">${escHtml(x||"No category")}</option>`).join("")}</select></div><div class="field"><label>How we connected</label><select class="organiseHowMet">${howMetOptions.map(x=>`<option value="${escHtml(x)}">${escHtml(x||"Not specified")}</option>`).join("")}</select></div><div class="field"><label>Follow-up reminder</label><input class="organiseReminder" type="datetime-local"><div class="hint">Optional.</div></div><div class="field organiseFull"><label>Private note</label><textarea class="organiseNote" maxlength="300" placeholder="e.g. Discussed quotation — send details next week"></textarea><div class="hint">Only you can see this note.</div></div></div><div class="connectionOrganiseActions"><button class="mini saveOrganiseBtn" type="button">Save Changes</button><button class="mini deleteNoteManageBtn" type="button">🗑 Delete Note</button><button class="mini reminderDoneManageBtn" type="button">✓ Reminder Done</button><button class="mini clearReminderManageBtn" type="button">Clear Reminder</button></div></div><div class="connectionManageMeta connectionTraceWrap">${connectionTraceHtml(c)}</div><div class="connectionManageActions"><button class="mini manageFavouriteBtn" type="button">${metaInfo.favorite?"★ Remove Favourite":"☆ Add Favourite"}</button><button class="mini removeConnectionBtn" type="button">🗑 Remove Connection</button></div></div>`;
+  item.innerHTML=`${badge}<div class="connectionTop"><div class="connectionInfo"><div class="connectionNameRow"><div class="connectionName">${escHtml(name)}</div>${favouriteMark}</div>${summaryBits?`<div class="connectionSummaryLine">${summaryBits}</div>`:""}${purposeLine}</div></div>${updated}${expiredText}<div class="connectionActions"></div><div class="connectionManagePanel"><div class="connectionManageHead"><strong>Manage Connection</strong><button class="mini closeManageBtn" type="button">Close</button></div><div class="connectionManageMeta">${savedPurpose?`Share type: ${escHtml(purposeLabel(savedPurpose))}`:""}</div><div class="connectionOrganiseEditor"><div class="organiseGrid"><div class="field"><label>Private label</label><input class="organiseLabel" maxlength="80" placeholder="e.g. Hasan – Adelaide meeting"></div><div class="field"><label>Category</label><select class="organiseCategory">${connectionCategories.map(x=>`<option value="${escHtml(x)}">${escHtml(x||"No category")}</option>`).join("")}</select></div><div class="field"><label>How we connected</label><select class="organiseHowMet">${howMetOptions.map(x=>`<option value="${escHtml(x)}">${escHtml(x||"Not specified")}</option>`).join("")}</select></div><div class="field"><label>Follow-up reminder</label><input class="organiseReminder" type="datetime-local"><div class="hint">Optional.</div></div><div class="field organiseFull"><label>Private note</label><textarea class="organiseNote" maxlength="300" placeholder="e.g. Discussed quotation — send details next week"></textarea><div class="hint">Only you can see this note.</div></div></div><div class="connectionOrganiseActions"><button class="mini saveOrganiseBtn" type="button">Save Changes</button><button class="mini deleteNoteManageBtn" type="button">🗑 Delete Note</button><button class="mini reminderDoneManageBtn" type="button">✓ Reminder Done</button><button class="mini clearReminderManageBtn" type="button">Clear Reminder</button></div></div><div class="connectionManageMeta connectionTraceWrap">${connectionTraceHtml(c)}</div><div class="connectionManageActions"><button class="mini manageFavouriteBtn" type="button">${metaInfo.favorite?"★ Remove Favourite":"☆ Add Favourite"}</button><button class="mini removeConnectionBtn" type="button">🗑 Remove Connection</button></div></div>`;
 
   const acts=item.querySelector(".connectionActions");
   if(!expired&&c.card_slug){
