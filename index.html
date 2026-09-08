@@ -2365,7 +2365,7 @@ $("privacyModal").addEventListener("click",e=>{if(e.target===$("privacyModal"))c
 let session = null, user = null, currentCard = null, photoData = "", authMode = "signin", publicMode = false;
 let passwordRecoveryVerified = false;
 let currentShareUrl = "", currentShareToken = "", publicShareView = "", publicShareCheckTimer = null;
-let currentPublicTargetUserId = null, currentPublicSourceType = "permanent", currentPublicShareToken = "", currentPublicMessage = "";
+let currentPublicTargetUserId = null, currentPublicSourceType = "permanent", currentPublicShareToken = "", currentPublicMessage = "", currentPublicPurpose = "";
 let pendingMemberExchange = false;
 let shareStatusState = {kind:"idle", choice:null};
 try{ localStorage.setItem("dshario-lang","en"); }catch(e){}
@@ -2630,6 +2630,11 @@ function markSharedReceivedNow(targetId){
   if(!targetId)return;
   try{const k="dshario-received-at:"+targetId;if(!sessionStorage.getItem(k))sessionStorage.setItem(k,new Date().toISOString())}catch(e){}
 }
+function normalisePurpose(p){return ["business","career","networking","social"].includes((p||"").toLowerCase())?(p||"").toLowerCase():""}
+function purposeLabel(p){const x=normalisePurpose(p);return x?({business:"💼 Business",career:"👔 Career",networking:"🤝 Networking",social:"👥 Social"}[x]||""):""}
+function connectionPurposeKey(targetId){return user?.id&&targetId?"dshario-connection-purpose:"+user.id+":"+targetId:""}
+function writeConnectionPurpose(targetId,purpose){try{const k=connectionPurposeKey(targetId),p=normalisePurpose(purpose);if(k&&p)localStorage.setItem(k,p)}catch(e){}}
+function readConnectionPurpose(targetId){try{return normalisePurpose(localStorage.getItem(connectionPurposeKey(targetId))||"")}catch(e){return ""}}
 function recordConnectionSave(targetId,view,source){
   if(!user||!targetId)return;
   const h=readConnectionHistory(targetId), now=new Date().toISOString();
@@ -2735,6 +2740,7 @@ async function saveCurrentConnection(){
         // RC19: even an already-saved presentation gets a trace timestamp when the
         // receiver deliberately saves/views it again, avoiding blank date rows.
         recordConnectionSave(currentPublicTargetUserId,requestedView,currentPublicSourceType);
+        writeConnectionPurpose(currentPublicTargetUserId,currentPublicPurpose);
         $("saveConnectionBtn").dataset.saved="1";
         $("saveConnectionBtn").textContent=window.currentLang==="bn"?"My Connections-এ দেখুন":"View in My Connections";
         if($("publicSaveConnectionBtn")) $("publicSaveConnectionBtn").textContent=$("saveConnectionBtn").textContent;
@@ -2814,6 +2820,7 @@ async function saveCurrentConnection(){
   try{await sb.rpc("mark_incoming_notice_seen",{target_user_id:currentPublicTargetUserId})}catch(e){}
   try{if(verifiedRow?.connection_update_at)await sb.rpc("mark_connection_update_seen",{target_user_id:currentPublicTargetUserId,update_at:verifiedRow.connection_update_at})}catch(e){}
   recordConnectionSave(currentPublicTargetUserId,activePrivacyView(),currentPublicSourceType);
+  writeConnectionPurpose(currentPublicTargetUserId,currentPublicPurpose);
   $("saveConnectionBtn").dataset.saved="1";
   $("saveConnectionBtn").textContent=window.currentLang==="bn"?"My Connections-এ দেখুন":"View in My Connections";
   if($("publicSaveConnectionBtn")) $("publicSaveConnectionBtn").textContent=$("saveConnectionBtn").textContent;
@@ -2836,6 +2843,7 @@ async function loadSharedCard(token){
   const link=Array.isArray(data)?data[0]:data;
   if(error||!link){showExpiredShareLink();return}
   publicShareView=link.privacy_view||"professional";
+  currentPublicPurpose=normalisePurpose(new URLSearchParams(location.search).get("purpose"));
   currentPublicTargetUserId=link.user_id||null;
   markSharedReceivedNow(currentPublicTargetUserId);
   currentPublicSourceType="temporary";
@@ -3036,6 +3044,7 @@ async function loadPublicCard(slug){
   markSharedReceivedNow(currentPublicTargetUserId);
   currentPublicSourceType="permanent";
   currentPublicShareToken="";
+  currentPublicPurpose=normalisePurpose(new URLSearchParams(location.search).get("purpose"));
   hideReceiverMessage();
   render(card); setView("card");
   await refreshPublicReceiverSession();
@@ -3685,7 +3694,7 @@ function updateWizPrivacyHelp(){
   };
   box.textContent=window.currentLang==="bn"?(bn[v]||bn.professional):en;
 }
-if($("wizView")) $("wizView").addEventListener("change",()=>{updateWizPrivacyHelp();if(wizPurpose&&$("wizPurposeSummary"))$("wizPurposeSummary").textContent=`Sharing purpose: ${wizPurposeLabel[wizPurpose]}. Privacy view manually set to ${$("wizView").value[0].toUpperCase()+$("wizView").value.slice(1)}.`;});
+if($("wizView")) $("wizView").addEventListener("change",()=>{updateWizPrivacyHelp();if(wizPurpose&&$("wizPurposeSummary")){const vv=$("wizView").value;$("wizPurposeSummary").textContent=`Sharing purpose: ${wizPurposeLabel[wizPurpose]}. Privacy view manually set to ${vv[0].toUpperCase()+vv.slice(1)}.`+(vv==="full"?" Full View shares all the details you have added to your card.":"");}});
 
 let wizAudience="",wizType="",wizRecipients=[],wizPurpose="";
 const wizPurposeMap={business:"business",career:"professional",networking:"professional",social:"social"};
@@ -3730,7 +3739,11 @@ $("wizTemporary").onclick=()=>chooseWiz("temporary");
 if($("wizAddPdfBtn"))$("wizAddPdfBtn").onclick=async()=>{await uploadDocument("wizPdfUpload");renderWizDocs()};
 
 async function recordShare({share_type,recipient_user_id=null,recipient_handle=null,privacy_view,share_token=null,channel="link"}){
-  try{await sb.from("share_records").insert({owner_user_id:user.id,share_type,recipient_user_id,recipient_handle,privacy_view,share_token,channel})}catch(e){}
+  try{
+    const payload={owner_user_id:user.id,share_type,recipient_user_id,recipient_handle,privacy_view,share_token,channel};
+    const q=await sb.from("share_records").insert(payload).select("id").maybeSingle();
+    if(q?.data?.id&&wizPurpose) localStorage.setItem("dshario-share-purpose:"+user.id+":"+q.data.id,normalisePurpose(wizPurpose));
+  }catch(e){}
 }
 
 async function makeWizTemp(recipient=null){
@@ -3740,11 +3753,11 @@ async function makeWizTemp(recipient=null){
   const ids=[...document.querySelectorAll(".wizDoc:checked")].map(x=>x.value);
   if(ids.length){r=await sb.from("share_link_documents").insert(ids.map(document_id=>({share_token:token,document_id})));if(r.error){await sb.from("share_links").update({revoked:true}).eq("token",token);throw r.error}}
   await recordShare({share_type:"temporary",recipient_user_id:recipient?.user_id||null,recipient_handle:recipient?.card_slug||null,privacy_view:$("wizView").value,share_token:token,channel:recipient?"dshario":"link"});
-  return {token,url:location.origin+location.pathname+"?share="+token};
+  return {token,url:location.origin+location.pathname+"?share="+token+(wizPurpose?"&purpose="+encodeURIComponent(wizPurpose):"")};
 }
 async function wizPermanentUrl(){
   const v=$("wizView").value||"professional";
-  const u=location.origin+location.pathname+"?card="+encodeURIComponent(currentCard.slug)+"&view="+encodeURIComponent(v);
+  const u=location.origin+location.pathname+"?card="+encodeURIComponent(currentCard.slug)+"&view="+encodeURIComponent(v)+(wizPurpose?"&purpose="+encodeURIComponent(wizPurpose):"");
   await recordShare({share_type:"permanent",privacy_view:v,channel:"link"});
   return u;
 }
@@ -3810,8 +3823,10 @@ async function loadShareHistory(){
     let valid=true,expires="";
     if(r.share_type==="temporary"&&r.share_token){const q=await sb.from("share_links").select("expires_at,revoked").eq("token",r.share_token).eq("user_id",user.id).maybeSingle();valid=!!q.data&&!q.data.revoked&&new Date(q.data.expires_at)>new Date();expires=q.data?.expires_at?format12HourDate(q.data.expires_at):""}
     const who=r.recipient_handle?"@"+r.recipient_handle:(r.channel==="dshario"?"DShario user":"Anyone / Link");
+    let histPurpose="";try{histPurpose=normalisePurpose(localStorage.getItem("dshario-share-purpose:"+user.id+":"+r.id)||"")}catch(e){}
+    const purposeMeta=histPurpose?" • Purpose: "+purposeLabel(histPurpose):"";
     const it=document.createElement("div");it.className="shareHistoryItem";it.dataset.shareRecordId=r.id;
-    it.innerHTML=`<div class="shareHistorySelectWrap"><input class="shareHistorySelect" type="checkbox" aria-label="Select shared card"><div class="shareHistorySelectBody"><div class="shareHistoryTop"><strong>${r.share_type==="temporary"?"Temporary":"Permanent"} • ${escHtml(who)}</strong><span>${escHtml((r.privacy_view||"professional").replace(/^./,x=>x.toUpperCase()))}</span></div><div class="shareHistoryMeta">Shared ${format12HourDate(r.created_at)}${expires?" • Expires "+escHtml(expires):""}${r.share_type==="temporary"?" • "+(valid?"Active":"Expired / revoked"):""}</div><div class="shareHistoryActions"></div></div></div>`;
+    it.innerHTML=`<div class="shareHistorySelectWrap"><input class="shareHistorySelect" type="checkbox" aria-label="Select shared card"><div class="shareHistorySelectBody"><div class="shareHistoryTop"><strong>${r.share_type==="temporary"?"Temporary":"Permanent"} • ${escHtml(who)}</strong><span>${escHtml((r.privacy_view||"professional").replace(/^./,x=>x.toUpperCase()))}</span></div><div class="shareHistoryMeta">Shared ${format12HourDate(r.created_at)}${purposeMeta}${expires?" • Expires "+escHtml(expires):""}${r.share_type==="temporary"?" • "+(valid?"Active":"Expired / revoked"):""}</div><div class="shareHistoryActions"></div></div></div>`;
     const checkbox=it.querySelector(".shareHistorySelect");checkbox.onchange=updateShareHistoryBulkState;
     const actions=it.querySelector(".shareHistoryActions");
     if(r.share_type==="temporary"&&valid){const revoke=document.createElement("button");revoke.className="mini";revoke.textContent="Revoke";revoke.onclick=async()=>{if(!confirm("Revoke this Temporary Share?"))return;const u=await sb.from("share_links").update({revoked:true}).eq("token",r.share_token).eq("user_id",user.id);if(u.error)msg(u.error.message,"err");else{msg("✓ Temporary Share revoked.","ok");loadShareHistory()}};actions.appendChild(revoke)}
@@ -4228,11 +4243,13 @@ function connectionItem(c,isNew){
   const favouriteMark=metaInfo.favorite?'<span class="connectionFavouriteMark" title="Favourite">★</span>':'';
   const summaryBits=[handle,metaInfo.category].filter(Boolean).map(escHtml).join(' • ');
   const note=metaInfo.note?`<div class="connectionNote compact">📝 ${escHtml(metaInfo.note)}</div>`:"";
+  const savedPurpose=readConnectionPurpose(c.connected_user_id);
+  const purposeLine=savedPurpose?`<div class="connectionContext compact">Purpose: ${escHtml(purposeLabel(savedPurpose))}</div>`:"";
   const howMet=metaInfo.howMet?`<div class="connectionContext compact">🤝 ${escHtml(metaInfo.howMet)}</div>`:"";
   let reminder="";
   if(metaInfo.reminderAt){const rd=new Date(metaInfo.reminderAt);const overdue=!metaInfo.reminderDone&&rd.getTime()<Date.now();const cls=metaInfo.reminderDone?" done":(overdue?" overdue":"");reminder=`<div class="connectionReminder compact${cls}">⏰ ${metaInfo.reminderDone?"Completed: ":"Follow up: "}${escHtml(format12HourDate(metaInfo.reminderAt))}</div>`;}
 
-  item.innerHTML=`${badge}<div class="connectionTop"><div class="connectionInfo"><div class="connectionNameRow"><div class="connectionName">${escHtml(name)}</div>${favouriteMark}</div>${summaryBits?`<div class="connectionSummaryLine">${summaryBits}</div>`:""}${nick}${note}${howMet}${reminder}</div></div>${updated}${expiredText}<div class="connectionActions"></div><div class="connectionManagePanel"><div class="connectionManageHead"><strong>Manage Connection</strong><button class="mini closeManageBtn" type="button">Close</button></div><div class="connectionManageMeta">Private connection details are visible only to you on this browser/device during beta.</div><div class="connectionOrganiseEditor"><div class="organiseGrid"><div class="field"><label>Private label</label><input class="organiseLabel" maxlength="80" placeholder="e.g. Hasan – Adelaide meeting"></div><div class="field"><label>Category</label><select class="organiseCategory">${connectionCategories.map(x=>`<option value="${escHtml(x)}">${escHtml(x||"No category")}</option>`).join("")}</select></div><div class="field"><label>How we connected</label><select class="organiseHowMet">${howMetOptions.map(x=>`<option value="${escHtml(x)}">${escHtml(x||"Not specified")}</option>`).join("")}</select></div><div class="field"><label>Follow-up reminder</label><input class="organiseReminder" type="datetime-local"><div class="hint">Optional.</div></div><div class="field organiseFull"><label>Private note</label><textarea class="organiseNote" maxlength="300" placeholder="e.g. Discussed quotation — send details next week"></textarea><div class="hint">Only you can see this note.</div></div></div><div class="connectionOrganiseActions"><button class="mini saveOrganiseBtn" type="button">Save Changes</button><button class="mini deleteNoteManageBtn" type="button">🗑 Delete Note</button><button class="mini reminderDoneManageBtn" type="button">✓ Reminder Done</button><button class="mini clearReminderManageBtn" type="button">Clear Reminder</button></div></div><div class="connectionManageMeta connectionTraceWrap">${connectionTraceHtml(c)}</div><div class="connectionManageActions"><button class="mini manageFavouriteBtn" type="button">${metaInfo.favorite?"★ Remove Favourite":"☆ Add Favourite"}</button><button class="mini removeConnectionBtn" type="button">🗑 Remove Connection</button></div></div>`;
+  item.innerHTML=`${badge}<div class="connectionTop"><div class="connectionInfo"><div class="connectionNameRow"><div class="connectionName">${escHtml(name)}</div>${favouriteMark}</div>${summaryBits?`<div class="connectionSummaryLine">${summaryBits}</div>`:""}${nick}${note}${purposeLine}${howMet}${reminder}</div></div>${updated}${expiredText}<div class="connectionActions"></div><div class="connectionManagePanel"><div class="connectionManageHead"><strong>Manage Connection</strong><button class="mini closeManageBtn" type="button">Close</button></div><div class="connectionManageMeta">Private connection details are visible only to you on this browser/device during beta.</div><div class="connectionOrganiseEditor"><div class="organiseGrid"><div class="field"><label>Private label</label><input class="organiseLabel" maxlength="80" placeholder="e.g. Hasan – Adelaide meeting"></div><div class="field"><label>Category</label><select class="organiseCategory">${connectionCategories.map(x=>`<option value="${escHtml(x)}">${escHtml(x||"No category")}</option>`).join("")}</select></div><div class="field"><label>How we connected</label><select class="organiseHowMet">${howMetOptions.map(x=>`<option value="${escHtml(x)}">${escHtml(x||"Not specified")}</option>`).join("")}</select></div><div class="field"><label>Follow-up reminder</label><input class="organiseReminder" type="datetime-local"><div class="hint">Optional.</div></div><div class="field organiseFull"><label>Private note</label><textarea class="organiseNote" maxlength="300" placeholder="e.g. Discussed quotation — send details next week"></textarea><div class="hint">Only you can see this note.</div></div></div><div class="connectionOrganiseActions"><button class="mini saveOrganiseBtn" type="button">Save Changes</button><button class="mini deleteNoteManageBtn" type="button">🗑 Delete Note</button><button class="mini reminderDoneManageBtn" type="button">✓ Reminder Done</button><button class="mini clearReminderManageBtn" type="button">Clear Reminder</button></div></div><div class="connectionManageMeta connectionTraceWrap">${connectionTraceHtml(c)}</div><div class="connectionManageActions"><button class="mini manageFavouriteBtn" type="button">${metaInfo.favorite?"★ Remove Favourite":"☆ Add Favourite"}</button><button class="mini removeConnectionBtn" type="button">🗑 Remove Connection</button></div></div>`;
 
   const acts=item.querySelector(".connectionActions");
   if(!expired&&c.card_slug){
