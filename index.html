@@ -1640,6 +1640,17 @@ QRCodeCore.createBytes = function(buffer, rsBlocks) {
 .connectionSearch{display:flex;gap:8px;flex-wrap:wrap;margin:9px 0 12px}
 .connectionSearch input{flex:1;min-width:190px}
 .connectionBadge{display:inline-flex;align-items:center;padding:4px 8px;border-radius:999px;font-size:11px;font-weight:900;background:#fff7ed;color:#9a3412;border:1px solid #fed7aa;margin-bottom:8px}
+.connectionTags{display:flex;gap:6px;flex-wrap:wrap;margin-top:7px}
+.connectionTag{display:inline-flex;align-items:center;padding:4px 8px;border-radius:999px;background:#eef2ff;border:1px solid #dbe3ff;font-size:11px;font-weight:800;color:#334155}
+.connectionNote{margin-top:7px;padding:8px 10px;border-radius:10px;background:#f8fafc;border:1px solid #e5e7eb;font-size:12px;line-height:1.45;color:#475569;white-space:pre-wrap;overflow-wrap:anywhere}
+.connectionOrganiseEditor{display:none;margin-top:10px;padding:11px;border:1px solid #dbe3ef;border-radius:12px;background:#f8fafc}
+.connectionOrganiseEditor.show{display:block}
+.connectionOrganiseEditor .organiseGrid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.connectionOrganiseEditor textarea{min-height:74px;resize:vertical}
+.connectionOrganiseEditor .organiseFull{grid-column:1/-1}
+.connectionOrganiseActions{display:flex;gap:7px;flex-wrap:wrap;margin-top:8px}
+.favoriteBtn.isFavorite{font-weight:900}
+@media(max-width:560px){.connectionOrganiseEditor .organiseGrid{grid-template-columns:1fr}}
 .sendDsharioBox{margin-top:18px;padding:14px;border:1px solid #dbe5f2;border-radius:16px;background:#f8fbff}
 .sendDsharioBox h3{margin:0 0 5px}
 .sendDsharioResult{display:none;margin-top:10px;padding:12px;border:1px solid #dbe5f2;border-radius:13px;background:#fff}
@@ -1665,7 +1676,7 @@ QRCodeCore.createBytes = function(buffer, rsBlocks) {
 <div class="app">
 <header class="header">
   <div class="brand"><span class="brandIcon">DS</span><span>DShario</span></div>
-  <div style="display:flex;align-items:center;gap:8px"><button id="helpBtn" class="accountPill helpPill" type="button" aria-label="Help">?</button><button id="langToggle" class="accountPill" type="button" aria-label="Change language">বাংলা</button><button id="accountPill" class="accountPill">Sign in</button></div>
+  <div style="display:flex;align-items:center;gap:8px"><button id="helpBtn" class="accountPill helpPill" type="button" aria-label="Help">?</button><button id="accountPill" class="accountPill">Sign in</button></div>
 </header>
 
 <div id="tabs" class="tabs">
@@ -1973,11 +1984,11 @@ QRCodeCore.createBytes = function(buffer, rsBlocks) {
   <details class="editSection" open>
     <summary>1. Basic information</summary>
     <div class="editSectionBody">
-      <div class="editIntro">Your English name is required. Bangla name is optional. If no Bangla name is entered, the English name is shown in both languages.</div>
+      <div class="editIntro">Your full name is required. Add only the professional information you want to share.</div>
       <div class="grid">
         <div class="field"><label>Personal DShario name *</label><input id="slug" placeholder="e.g. hasan-zaman"><span class="hint">Your permanent link will use this name. Letters, numbers and hyphens only.</span></div>
-        <div class="field"><label>Full name (English) *</label><input id="full_name" placeholder="Your name"></div>
-        <div class="field"><label>নাম (বাংলা) — optional</label><input id="full_name_bn" placeholder="আপনার নাম"></div>
+        <div class="field"><label>Full name *</label><input id="full_name" placeholder="Your name"></div>
+        <input id="full_name_bn" type="hidden" value="">
         <div class="field"><label>Profession / job title</label><input id="job_title" placeholder="e.g. Industrial Pharmacist"></div>
         <div class="field"><label>Company / organisation</label><input id="company" placeholder="Optional"></div>
         <div class="field full"><label>Short introduction</label><textarea id="description" placeholder="A short professional introduction"></textarea></div>
@@ -2099,7 +2110,7 @@ QRCodeCore.createBytes = function(buffer, rsBlocks) {
       <div class="connectionsHead">
         <div>
           <h2 style="font-size:20px;margin:0">My Connections</h2>
-          <div class="hint">Cards sent to you appear here. Save a connection, add a private label, or delete it.</div>
+          <div class="hint">Cards sent to you appear here. Search, favourite and organise important professional connections.</div>
         </div>
         <button id="refreshConnectionsBtn" class="btn secondary" type="button">Refresh</button>
       </div>
@@ -2111,7 +2122,7 @@ QRCodeCore.createBytes = function(buffer, rsBlocks) {
 
       <div class="connectionSection">
         <div class="connectionSectionTitle">Saved Connections</div>
-        <div id="savedSearchRow"><input id="savedConnectionsSearch" placeholder="@DShario name or private label"><button id="savedSearchIcon" class="mini searchIcon" type="button">🔍</button></div>
+        <div id="savedSearchRow"><input id="savedConnectionsSearch" placeholder="Search name, @DShario, label, category or note"><button id="savedSearchIcon" class="mini searchIcon" type="button">🔍</button></div><div class="hint" style="margin-top:7px">Favourite, category and private note are visible only to you. During beta they are stored on this browser/device.</div>
         <div id="savedConnectionsList" class="connectionsList"></div>
       </div>
     </div>
@@ -2139,7 +2150,7 @@ QRCodeCore.createBytes = function(buffer, rsBlocks) {
     <h1 id="helpTitle">How DShario works</h1>
     <p id="helpIntro">A quick guide to sharing the right information safely.</p>
     <div class="helpSteps">
-      <div class="helpStep"><strong id="hs1">1. Create your card</strong><span id="hb1">Add the professional and contact information you want to use. Your Bangla name is optional; other information stays as you enter it.</span></div>
+      <div class="helpStep"><strong id="hs1">1. Create your card</strong><span id="hb1">Add the professional and contact information you want to use. Keep optional details blank when you do not need them.</span></div>
       <div class="helpStep"><strong id="hs2">2. Choose a privacy view</strong><span id="hb2">Professional, Business, Social or Full controls what the recipient can see.</span></div>
       <div class="helpStep"><strong id="hs3">3. Choose how to share</strong><span id="hb3">My DShario Link is your permanent card address. Temporary Share lasts 24 hours, 7 days or 30 days and can be revoked early.</span></div>
       <div class="helpStep"><strong id="hs4">4. Add PDFs to Temporary Share</strong><span id="hb4">Add an optional message and upload up to 2 PDFs, maximum 2 MB each. The message and PDFs stay available only while the Temporary Share is valid. Expiry or revocation stops future DShario access, but cannot remove a copy already downloaded by the recipient.</span></div>
@@ -2148,7 +2159,7 @@ QRCodeCore.createBytes = function(buffer, rsBlocks) {
       <div class="helpStep"><strong id="hs7">7. Exchange with my DShario</strong><span id="hb7">A DShario member can sign in, choose the privacy view they want to send, and exchange their existing DShario with the sender. People who do not use DShario can use the separate contact-return option when it is available.</span></div>
       <div class="helpStep"><strong id="hs8">8. My Connections and history</strong><span id="hb8">One sender appears as one active connection. Saving a newer view from the same sender makes it the current saved card. Earlier cards remain only as a lightweight history trace, without keeping the old card details. Received and Saved date/time help you track when the connection happened.</span></div>
       <div class="helpStep"><strong id="hs9">9. Temporary Share expiry and revocation</strong><span id="hb9">When a Temporary Share expires or is revoked, its live card actions and temporary details are no longer available. A searchable history trace may remain. If the same sender is later saved through a permanent link, that permanent card becomes the active connection.</span></div>
-      <div class="helpStep"><strong id="hs10">10. English and Bangla</strong><span id="hb10">The language switch translates DShario interface and card labels. User-entered names, titles, companies, links and other content remain as entered.</span></div>
+      <div class="helpStep"><strong id="hs10">10. Organise professional connections</strong><span id="hb10">In My Connections you can search by name, DShario name, label, category or note. Mark important people as favourites and add a private category or note to remember why the connection matters.</span></div>
     </div>
   </div>
 </div>
@@ -2220,7 +2231,7 @@ QRCodeCore.createBytes = function(buffer, rsBlocks) {
     <p>DShario is currently a prototype digital identity and contact-sharing service. This policy describes the information handled by the current prototype and how it is used.</p>
 
     <h2>1. Information we handle</h2>
-    <p>Depending on the features you use, DShario may handle account and authentication information; card information such as name, optional Bangla name, title, organisation, introduction, location, website, phone, email, WhatsApp, social links, profile image and card appearance; privacy-view and share-link settings; temporary-share tokens, expiry, revocation and optional message information; PDF documents you choose to upload for Temporary Share; DShario connections you choose to save; connection-view status used to show a simple “DShario updated” indicator; and contact details voluntarily submitted through Contact Exchange.</p>
+    <p>Depending on the features you use, DShario may handle account and authentication information; card information such as name, title, organisation, introduction, location, website, phone, email, WhatsApp, social links, profile image and card appearance; privacy-view and share-link settings; temporary-share tokens, expiry, revocation and optional message information; PDF documents you choose to upload for Temporary Share; DShario connections you choose to save; connection-view status used to show a simple “DShario updated” indicator; and contact details voluntarily submitted through Contact Exchange.</p>
 
     <h2>2. Why we use information</h2>
     <p>We use this information to authenticate users, create and store cards, apply selected privacy views, generate permanent and temporary sharing experiences, provide QR and digital-card downloads, provide Temporary Share messages and documents, save user-requested DShario connections, show a simple update indicator when a saved user changes their card, deliver contact exchanges to the intended card owner, maintain basic service security and operate and improve the prototype.</p>
@@ -2253,7 +2264,7 @@ QRCodeCore.createBytes = function(buffer, rsBlocks) {
     <p>Card and account-related information is retained while needed to provide the service or until deleted where the prototype provides deletion controls, subject to legitimate operational, security or legal needs. Temporary-share access follows its expiry or revocation status. Received Contacts is intended to be temporary rather than a permanent contact archive. Retention rules should be made more specific before commercial launch.</p>
 
     <h2>11. Language</h2>
-    <p>The English/Bangla switch translates DShario interface text and card labels. Except for an optional alternate Bangla name, user-entered content is generally displayed as entered and is not represented as automatically translated.</p>
+    <p>DShario currently provides its interface and card labels in English. User-entered names, titles, companies, links and other content are displayed as entered.</p>
 
     <h2>12. Children and sensitive information</h2>
     <p>DShario is intended for professional and adult networking and is not designed for children. Do not use card fields or document sharing for passwords, payment credentials, government identifiers, health information or other highly sensitive information unless a future DShario feature expressly supports that category with appropriate safeguards.</p>
@@ -2301,11 +2312,15 @@ let currentShareUrl = "", currentShareToken = "", publicShareView = "", publicSh
 let currentPublicTargetUserId = null, currentPublicSourceType = "permanent", currentPublicShareToken = "", currentPublicMessage = "";
 let pendingMemberExchange = false;
 let shareStatusState = {kind:"idle", choice:null};
-window.currentLang = localStorage.getItem("dshario-lang") || "en";
-function t(en){ return window.currentLang==="bn" ? ((window.bnText&&window.bnText[en])||en) : en; }
+try{ localStorage.setItem("dshario-lang","en"); }catch(e){}
+// RC30.1: English-only product. Keep language state immutable so old browser
+// preferences or stale Bangla state cannot re-activate translated labels.
+try{ Object.defineProperty(window,"currentLang",{value:"en",writable:false,configurable:false}); }
+catch(e){ window.currentLang="en"; }
+function t(en){ return en; }
 const createMode = new URLSearchParams(location.search).get("create") === "1";
 
-const formIds = ["slug","full_name","full_name_bn","job_title","company","description","location","website","phone","email","whatsapp","linkedin_url","facebook_url","instagram_url","card_color"];
+const formIds = ["slug","full_name","job_title","company","description","location","website","phone","email","whatsapp","linkedin_url","facebook_url","instagram_url","card_color"];
 
 function msg(text,type="ok"){
   const n=$("notice"); n.textContent=t(text); n.className="notice show "+type;
@@ -3147,32 +3162,20 @@ async function loadPublicDocuments(token){
 function openHelp(){$("helpModal").classList.add("show");document.body.style.overflow="hidden";updateHelpLanguage()}
 function closeHelp(){$("helpModal").classList.remove("show");document.body.style.overflow=""}
 function updateHelpLanguage(){
-  const bn=window.currentLang==="bn";
-  $("helpClose").textContent=bn?"বন্ধ করুন":"Close";
-  $("helpTitle").textContent=bn?"DShario কীভাবে কাজ করে":"How DShario works";
-  $("helpIntro").textContent=bn?"সঠিক তথ্য নিরাপদভাবে শেয়ার করার সংক্ষিপ্ত গাইড।":"A quick guide to sharing the right information safely.";
-  const x=bn?[
-    ["১. আপনার কার্ড তৈরি করুন","আপনি যে পেশাগত ও যোগাযোগের তথ্য ব্যবহার করতে চান তা যোগ করুন। বাংলা নাম ঐচ্ছিক; অন্য তথ্য আপনি যেভাবে লিখবেন সেভাবেই থাকবে।"],
-    ["২. প্রাইভেসি ভিউ বেছে নিন","প্রফেশনাল, বিজনেস, সোশ্যাল বা সম্পূর্ণ ভিউ ঠিক করে প্রাপক কী দেখতে পারবেন।"],
-    ["৩. কীভাবে শেয়ার করবেন বেছে নিন","My DShario Link আপনার স্থায়ী কার্ড ঠিকানা। Temporary Share ২৪ ঘণ্টা, ৭ দিন বা ৩০ দিন কাজ করে এবং প্রয়োজনে আগে বাতিল করা যায়।"],
-    ["৪. Temporary Share-এ PDF যোগ করুন","ঐচ্ছিক বার্তা যোগ করুন এবং সর্বোচ্চ ২টি PDF আপলোড করুন, প্রতিটি সর্বোচ্চ ২ MB। বার্তা ও PDF শুধু শেয়ারটি বৈধ থাকা পর্যন্ত পাওয়া যাবে। আগে ডাউনলোড করা কপি মেয়াদ শেষ বা বাতিলের মাধ্যমে মুছে ফেলা যায় না।"],
-    ["৫. শেয়ার, QR ও ডাউনলোড","লিংক বা QR পাঠান। ডিজিটাল কার্ডের ছবি ডাউনলোডও করতে পারেন; ছবির QR লাইভ DShario কার্ডে নিয়ে যাবে।"],
-    ["৬. প্রাপ্ত DShario My Connections-এ সেভ করুন","স্থায়ী বা বৈধ Temporary Share থেকে Save to My Connections বেছে নিন। সাইন ইন দরকার হলে DShario প্রাপ্ত কার্ডে ফিরে এসে সেভ সম্পন্ন করবে। সেভ হওয়ার পর View in My Connections-ই একমাত্র নেভিগেশন অ্যাকশন থাকবে এবং সরাসরি আপনার সেভ করা কানেকশন খুলবে।"],
-    ["৭. Exchange with my DShario","DShario সদস্য সাইন ইন করে যে প্রাইভেসি ভিউ পাঠাতে চান তা বেছে নিয়ে নিজের বিদ্যমান DShario প্রেরকের কাছে পাঠাতে পারবেন। DShario ব্যবহার না করা ব্যক্তি আলাদা contact-return অপশন ব্যবহার করতে পারেন, যখন সেটি উপলব্ধ থাকে।"],
-    ["৮. My Connections ও ইতিহাস","একজন প্রেরক My Connections-এ একটি সক্রিয় কানেকশন হিসেবে থাকবে। একই প্রেরকের নতুন ভিউ সেভ করলে সেটিই বর্তমান কার্ড হবে। আগের কার্ডগুলো শুধু সংক্ষিপ্ত history trace হিসেবে থাকবে, পুরোনো কার্ডের বিস্তারিত নয়। Received ও Saved তারিখ/সময় ইতিহাস বুঝতে সাহায্য করবে।"],
-    ["৯. Temporary Share-এর মেয়াদ ও বাতিল","Temporary Share মেয়াদ শেষ বা বাতিল হলে লাইভ কার্ডের অ্যাকশন ও অস্থায়ী তথ্য আর পাওয়া যাবে না। একটি searchable history trace থাকতে পারে। একই প্রেরকের স্থায়ী লিংক পরে সেভ করলে সেটিই সক্রিয় কানেকশন হবে।"],
-    ["১০. ইংরেজি ও বাংলা","ভাষা পরিবর্তন করলে DShario-এর ইন্টারফেস ও কার্ডের লেবেল অনুবাদ হয়। ব্যবহারকারীর লেখা নাম, পদবি, কোম্পানি, লিংক ও অন্যান্য তথ্য যেভাবে লেখা হয়েছে সেভাবেই থাকে।"]
-  ]:[
-    ["1. Create your card","Add the professional and contact information you want to use. Your Bangla name is optional; other information stays as you enter it."],
+  $("helpClose").textContent="Close";
+  $("helpTitle").textContent="How DShario works";
+  $("helpIntro").textContent="A quick guide to sharing the right information safely.";
+  const x=[
+    ["1. Create your card","Add the professional and contact information you want to use. Keep optional details blank when you do not need them."],
     ["2. Choose a privacy view","Professional, Business, Social or Full controls what the recipient can see."],
     ["3. Choose how to share","My DShario Link is your permanent card address. Temporary Share lasts 24 hours, 7 days or 30 days and can be revoked early."],
     ["4. Add PDFs to Temporary Share","Add an optional message and upload up to 2 PDFs, maximum 2 MB each. The message and PDFs stay available only while the Temporary Share is valid. Expiry or revocation stops future DShario access, but cannot remove a copy already downloaded by the recipient."],
     ["5. Share, QR and download","Send a link or QR. You can also download a digital-card image; its QR returns to the live DShario card."],
     ["6. Save a received DShario","From a permanent or valid Temporary Share, choose Save to My Connections. If sign-in is required, DShario returns to the received card and completes the save. Once saved, View in My Connections becomes the single navigation action and opens your saved connections directly."],
     ["7. Exchange with my DShario","A DShario member can sign in, choose the privacy view they want to send, and exchange their existing DShario with the sender. People who do not use DShario can use the separate contact-return option when it is available."],
-    ["8. My Connections and history","One sender appears as one active connection. Saving a newer view from the same sender makes it the current saved card. Earlier cards remain only as a lightweight history trace, without keeping the old card details. Received and Saved date/time help you track when the connection happened."],
+    ["8. My Connections and history","One sender appears as one active connection. Saving a newer view from the same sender makes it the current saved card. Earlier cards remain only as a lightweight history trace. Received and Saved date/time help you track when the connection happened."],
     ["9. Temporary Share expiry and revocation","When a Temporary Share expires or is revoked, its live card actions and temporary details are no longer available. A searchable history trace may remain. If the same sender is later saved through a permanent link, that permanent card becomes the active connection."],
-    ["10. English and Bangla","The language switch translates DShario interface and card labels. User-entered names, titles, companies, links and other content remain as entered."]
+    ["10. Organise professional connections","Search saved connections by name, DShario name, private label, category or note. Mark important people as favourites and add a private category or note to remember why the connection matters."]
   ];
   x.forEach((v,i)=>{$("hs"+(i+1)).textContent=v[0];$("hb"+(i+1)).textContent=v[1]});
 }
@@ -4080,6 +4083,29 @@ async function loadReceivedContacts(){
 }
 
 function escHtml(v){return String(v||"").replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]))}
+// RC30: lightweight professional-connection organisation.
+// Favourite/category/note stay private in this browser during beta and do not alter card/share data.
+function connectionMetaStoreKey(){ return user?.id ? "dshario-connection-meta:"+user.id : ""; }
+function readConnectionMetaStore(){
+  try{const k=connectionMetaStoreKey();return k?JSON.parse(localStorage.getItem(k)||"{}"):{};}catch(e){return {}}
+}
+function writeConnectionMetaStore(store){
+  try{const k=connectionMetaStoreKey();if(k)localStorage.setItem(k,JSON.stringify(store||{}));}catch(e){}
+}
+function getConnectionMeta(targetId){
+  const m=readConnectionMetaStore()[targetId]||{};
+  return {favorite:!!m.favorite,category:String(m.category||""),note:String(m.note||"")};
+}
+function setConnectionMeta(targetId,patch){
+  if(!targetId)return;const store=readConnectionMetaStore();
+  store[targetId]={...getConnectionMeta(targetId),...(patch||{})};
+  writeConnectionMetaStore(store);
+}
+function removeConnectionMeta(targetId){
+  if(!targetId)return;const store=readConnectionMetaStore();delete store[targetId];writeConnectionMetaStore(store);
+}
+const connectionCategories=["","Work","Client","Supplier","Colleague","Recruiter","Networking","Business","Other"];
+
 async function saveIncomingConnection(c,label){
   const {error}=await sb.rpc("save_incoming_dshario",{target_user_id:c.connected_user_id,private_label:label||null});
   if(error){msg(error.message,"err");return}
@@ -4094,18 +4120,22 @@ async function saveIncomingConnection(c,label){
 function connectionItem(c,isNew){
   const expired=c.source_type==="temporary"&&!c.temporary_share_valid;
   const item=document.createElement("div");item.className="connectionItem";
-  item.dataset.searchtext=[c.card_slug,c.nickname,c.full_name,c.full_name_bn].filter(Boolean).join(" ").toLowerCase();
+  const metaInfo=getConnectionMeta(c.connected_user_id);
+  item.dataset.searchtext=[c.card_slug,c.nickname,c.full_name,c.full_name_bn,metaInfo.category,metaInfo.note].filter(Boolean).join(" ").toLowerCase();
   item.dataset.expired=expired?"1":"0";
 
-  const name=(window.currentLang==="bn"&&c.full_name_bn)||c.full_name||t("DShario connection");
+  const name=c.full_name||t("DShario connection");
   const handle=c.card_slug?"@"+c.card_slug:"";
-  const meta="";
   const nick=c.nickname?`<div class="connectionNickname">${t("My label")}: ${escHtml(c.nickname)}</div>`:"";
   const badge=isNew?`<div class="connectionBadge">${t("New")}</div>`:"";
   const updated=(!isNew&&c.dshario_updated)?`<div class="connectionStatus updated">↻ ${t("Card updated")}</div>`:"";
   const expiredText=expired?`<div class="connectionStatus expired">${t("Temporary DShario link expired or revoked")}</div>`:"";
+  const categoryTag=(!isNew&&metaInfo.category)?`<span class="connectionTag">${escHtml(metaInfo.category)}</span>`:"";
+  const favouriteTag=(!isNew&&metaInfo.favorite)?`<span class="connectionTag">★ Favourite</span>`:"";
+  const tags=(categoryTag||favouriteTag)?`<div class="connectionTags">${favouriteTag}${categoryTag}</div>`:"";
+  const note=(!isNew&&metaInfo.note)?`<div class="connectionNote">📝 ${escHtml(metaInfo.note)}</div>`:"";
 
-  item.innerHTML=`${badge}<div class="connectionTop"><div class="connectionInfo"><div class="connectionName">${escHtml(name)}</div><div class="connectionHandle">${escHtml(handle)}</div>${nick}${!isNew?connectionTraceHtml(c):""}</div></div>${updated}${expiredText}<div class="connectionActions"></div><div class="nicknameEditor"><input maxlength="80" placeholder="${escHtml(t("Private nickname, e.g. Hasan – Adelaide meeting"))}"><button class="mini saveNicknameBtn" type="button">${t("Save label")}</button><button class="mini cancelNicknameBtn" type="button">${t("Cancel")}</button></div>`;
+  item.innerHTML=`${badge}<div class="connectionTop"><div class="connectionInfo"><div class="connectionName">${escHtml(name)}</div><div class="connectionHandle">${escHtml(handle)}</div>${nick}${tags}${note}${!isNew?connectionTraceHtml(c):""}</div></div>${updated}${expiredText}<div class="connectionActions"></div>${!isNew?`<div class="connectionOrganiseEditor"><div class="organiseGrid"><div class="field"><label>Private label</label><input class="organiseLabel" maxlength="80" placeholder="e.g. Hasan – Adelaide meeting"></div><div class="field"><label>Category</label><select class="organiseCategory">${connectionCategories.map(x=>`<option value="${escHtml(x)}">${escHtml(x||"No category")}</option>`).join("")}</select></div><div class="field organiseFull"><label>Private note</label><textarea class="organiseNote" maxlength="300" placeholder="e.g. Met at supplier meeting — follow up about quotation"></textarea><div class="hint">Only you can see this note.</div></div></div><div class="connectionOrganiseActions"><button class="mini saveOrganiseBtn" type="button">Save</button><button class="mini cancelOrganiseBtn" type="button">Cancel</button></div></div>`:""}`;
 
   const acts=item.querySelector(".connectionActions");
 
@@ -4157,28 +4187,41 @@ function connectionItem(c,isNew){
     acts.appendChild(view);
   }
 
-  if(!expired){
-    const labelBtn=document.createElement("button");labelBtn.className="mini";labelBtn.textContent=c.nickname?t("Edit Label"):t("Add Label");
-    labelBtn.onclick=()=>{
-      const ed=item.querySelector(".nicknameEditor"),inp=ed.querySelector("input");
-      inp.value=c.nickname||"";ed.classList.toggle("show");if(ed.classList.contains("show"))inp.focus();
-    };
-    acts.appendChild(labelBtn);
-  }
+  const fav=document.createElement("button");fav.className="mini favoriteBtn"+(metaInfo.favorite?" isFavorite":"");fav.textContent=metaInfo.favorite?"★ Favourite":"☆ Favourite";
+  fav.onclick=()=>{setConnectionMeta(c.connected_user_id,{favorite:!metaInfo.favorite});loadMyConnections();};
+  acts.appendChild(fav);
 
-  const ed=item.querySelector(".nicknameEditor"),inp=ed.querySelector("input");
-  ed.querySelector(".cancelNicknameBtn").onclick=()=>ed.classList.remove("show");
-  ed.querySelector(".saveNicknameBtn").onclick=async()=>{
-    const {error}=await sb.rpc("set_connection_nickname",{target_user_id:c.connected_user_id,new_nickname:inp.value.trim()||null});
-    if(error){msg(error.message,"err");return}
-    msg(t("Private label saved."),"ok");loadMyConnections();
-  };
+  if(!expired){
+    const organise=document.createElement("button");organise.className="mini";organise.textContent="Organise";
+    organise.onclick=()=>{
+      const ed=item.querySelector(".connectionOrganiseEditor");
+      const m=getConnectionMeta(c.connected_user_id);
+      ed.querySelector(".organiseLabel").value=c.nickname||"";
+      ed.querySelector(".organiseCategory").value=connectionCategories.includes(m.category)?m.category:"Other";
+      ed.querySelector(".organiseNote").value=m.note||"";
+      ed.classList.toggle("show");
+      if(ed.classList.contains("show"))ed.querySelector(".organiseLabel").focus();
+    };
+    acts.appendChild(organise);
+
+    const ed=item.querySelector(".connectionOrganiseEditor");
+    ed.querySelector(".cancelOrganiseBtn").onclick=()=>ed.classList.remove("show");
+    ed.querySelector(".saveOrganiseBtn").onclick=async()=>{
+      const label=ed.querySelector(".organiseLabel").value.trim()||null;
+      const category=ed.querySelector(".organiseCategory").value||"";
+      const note=ed.querySelector(".organiseNote").value.trim().slice(0,300);
+      const {error}=await sb.rpc("set_connection_nickname",{target_user_id:c.connected_user_id,new_nickname:label});
+      if(error){msg(error.message,"err");return}
+      setConnectionMeta(c.connected_user_id,{category,note});
+      msg("Connection details saved.","ok");loadMyConnections();
+    };
+  }
 
   const remove=document.createElement("button");remove.className="mini";remove.textContent=t("Delete");
   remove.onclick=async()=>{
     if(!confirm(t("Remove this DShario from My Connections?")))return;
     const {error}=await sb.rpc("remove_dshario_connection",{target_user_id:c.connected_user_id});
-    if(error)msg(error.message,"err");else loadMyConnections();
+    if(error)msg(error.message,"err");else{removeConnectionMeta(c.connected_user_id);loadMyConnections();}
   };
   acts.appendChild(remove);
   return item;
@@ -4206,7 +4249,11 @@ async function loadMyConnections(){
 
   const rows=Array.isArray(data)?data:[];
   const incoming=rows.filter(c=>c.is_saved===false);
-  const saved=rows.filter(c=>c.is_saved!==false);
+  const saved=rows.filter(c=>c.is_saved!==false).sort((a,b)=>{
+    const af=getConnectionMeta(a.connected_user_id).favorite?1:0,bf=getConnectionMeta(b.connected_user_id).favorite?1:0;
+    if(af!==bf)return bf-af;
+    return String(a.full_name||a.card_slug||"").localeCompare(String(b.full_name||b.card_slug||""));
+  });
 
   $("newConnectionsList").innerHTML="";
   $("savedConnectionsList").innerHTML="";
@@ -4419,276 +4466,18 @@ $("memberExchangeBtn").onclick=openMemberExchange; $("guestExchangeBtn").onclick
 </script>
 
 <script>
-window.bnText = {
-  "Save with Private Label":"ব্যক্তিগত লেবেল দিয়ে সেভ করুন",
-  "Send Temporary Card":"অস্থায়ী কার্ড পাঠান",
-  "✓ Temporary Card Sent":"✓ অস্থায়ী কার্ড পাঠানো হয়েছে",
-  "View Card":"কার্ড দেখুন",
-  "Send My Card":"আমার কার্ড পাঠান",
-  "Save Connection":"কানেকশন সেভ করুন",
-  "Save with Private Label":"লেবেল দিয়ে সেভ করুন",
-  "New Connections":"নতুন কানেকশন",
-  "Saved Connections":"সেভ করা কানেকশন",
-  "New":"নতুন",
-  "Save Connection":"যেমন আছে সেভ করুন",
-  "Save with Private Label":"ব্যক্তিগত লেবেল দিয়ে সেভ করুন",
-  "Private label (only you can see it)":"ব্যক্তিগত লেবেল (শুধু আপনি দেখতে পারবেন)",
-  "Delete":"মুছুন",
-  "Delete this incoming DShario?":"এই নতুন DShario মুছবেন?",
-  "No new connections.":"নতুন কোনো DShario পাওয়া যায়নি।",
-  "✓ Connection saved.":"✓ DShario সেভ হয়েছে।",
-  "Searching...":"খোঁজা হচ্ছে...",
-  "No DShario found with that exact name.":"এই নির্দিষ্ট নামে কোনো DShario পাওয়া যায়নি।",
-  "This is your own DShario.":"এটি আপনার নিজের DShario।",
-  "Send My Card":"আমার DShario পাঠান",
-  "✓ Sent":"✓ পাঠানো হয়েছে",
-  "✓ Your DShario was sent. It will appear as New in their My Connections.":"✓ আপনার DShario পাঠানো হয়েছে। এটি তাদের My Connections-এ নতুন হিসেবে দেখা যাবে।",
-  "Your DShario has been updated":"আপনার DShario আপডেট হয়েছে",
-  "Notify My Connections":"My Connections-কে জানান",
-  "Not now":"এখন নয়",
-  "My label":"আমার লেবেল",
-  "Add Label":"আমার লেবেল যোগ করুন",
-  "Edit Label":"আমার লেবেল সম্পাদনা করুন",
-  "Private nickname, e.g. Hasan – Adelaide meeting":"ব্যক্তিগত নাম/লেবেল, যেমন Hasan – Adelaide meeting",
-  "Save label":"লেবেল সেভ করুন",
-  "Private label saved.":"ব্যক্তিগত লেবেল সেভ হয়েছে।",
-  "Update saved. No connection notification was sent.":"আপডেট সেভ হয়েছে। কোনো নোটিফিকেশন পাঠানো হয়নি।",
-  "Message included":"বার্তা যুক্ত হয়েছে",
-  "Edit message":"বার্তা সম্পাদনা করুন",
-  "Remove message":"বার্তা মুছুন",
-  "Removing the message will revoke the current Temporary Share. Create a new link after removing it. Continue?":"বার্তা মুছলে বর্তমান অস্থায়ী শেয়ার বাতিল হবে। বার্তা মুছে নতুন লিংক তৈরি করতে হবে। চালিয়ে যাবেন?",
-  "Message removed. Create a new Temporary Share when ready.":"বার্তা মুছে ফেলা হয়েছে। প্রস্তুত হলে নতুন অস্থায়ী শেয়ার তৈরি করুন।",
-  "← Back to shared DShario":"← শেয়ার করা DShario-তে ফিরে যান",
-  "Please sign in to exchange with your DShario. You can return to the shared card at any time.":"আপনার DShario দিয়ে বিনিময় করতে সাইন ইন করুন। যেকোনো সময় শেয়ার করা কার্ডে ফিরে যেতে পারবেন।",
-  "Signed in successfully. The shared DShario is still open.":"সফলভাবে সাইন ইন হয়েছে। শেয়ার করা DShario এখনও খোলা আছে।",
-  "Add a message (optional)":"বার্তা যোগ করুন (ঐচ্ছিক)",
-  "This message stays available while the Temporary Share is valid.":"অস্থায়ী শেয়ার বৈধ থাকা পর্যন্ত এই বার্তা দেখা যাবে।",
-  "Message from sender":"প্রেরকের বার্তা",
-  "Got it":"ঠিক আছে",
-  "★ Save to My Connections":"★ আমার DShario-তে সেভ করুন",
-  "My Connections":"আমার কানেকশন",
-  "DShario members you chose to save.":"যেসব DShario সদস্যকে আপনি সেভ করেছেন।",
-  "Loading connections...":"কানেকশন লোড হচ্ছে...",
-  "No saved connections yet.":"এখনও কোনো DShario কানেকশন সেভ করা হয়নি।",
-  "Saved":"সেভ করা হয়েছে",
-  "Previous cards":"আগের কার্ডসমূহ",
-  "Temporary":"অস্থায়ী",
-  "Permanent":"স্থায়ী",
-  "Temporary share expired or revoked":"অস্থায়ী শেয়ারের মেয়াদ শেষ বা বাতিল হয়েছে",
-  "Temporary DShario link expired or revoked":"অস্থায়ী DShario মেয়াদোত্তীর্ণ, বাতিল বা অকার্যকর",
-  "DShario updated":"DShario আপডেট হয়েছে",
-  "Temporary connection":"অস্থায়ী কানেকশন",
-  "Live DShario connection":"লাইভ DShario কানেকশন",
-  "View Card":"DShario দেখুন",
-  "Remove connection":"কানেকশন মুছুন",
-  "Remove this DShario from My Connections?":"My Connections থেকে এই DShario মুছবেন?",
-
-  "নাম (বাংলা) — optional":"নাম (বাংলা) — ঐচ্ছিক",
-  "Profession / job title":"পেশা / পদবি",
-  "Company / organisation":"কোম্পানি / প্রতিষ্ঠান",
-  "Short introduction":"সংক্ষিপ্ত পরিচিতি",
-
-  "Documents with this link":"এই লিংকের সঙ্গে ডকুমেন্ট",
-  "Optional. Selected documents follow this secure link and stop being available when the link expires or is revoked.":"ঐচ্ছিক। নির্বাচিত ডকুমেন্ট এই নিরাপদ লিংকের সঙ্গে থাকবে এবং লিংকের মেয়াদ শেষ হলে বা বাতিল করলে আর পাওয়া যাবে না।",
-  "Documents":"ডকুমেন্ট",
-  "Add up to 2 PDF documents (maximum 2 MB each), then choose which document to include with a secure share link.":"সর্বোচ্চ ২টি PDF ডকুমেন্ট যোগ করুন (প্রতিটি সর্বোচ্চ ২ MB)। নতুন ডকুমেন্ট শেয়ারের জন্য স্বয়ংক্রিয়ভাবে নির্বাচিত থাকবে; প্রয়োজন না হলে টিক তুলে দিন।",
-  "Choose PDF":"PDF বেছে নিন",
-  "Upload PDF":"PDF আপলোড করুন",
-  "Shared documents":"শেয়ার করা ডকুমেন্ট",
-  "Attach PDF (optional)":"PDF যুক্ত করুন (ঐচ্ছিক)",
-  "Up to 2 PDFs, maximum 2 MB each. Documents are available only through this temporary link.":"সর্বোচ্চ ২টি PDF, প্রতিটি সর্বোচ্চ ২ MB। ডকুমেন্ট শুধু এই অস্থায়ী লিংকের মাধ্যমে পাওয়া যাবে।",
-  "Add PDF":"PDF যোগ করুন",
-  "Selected documents stop being available from DShario when this link expires or is revoked. A copy already downloaded by the receiver cannot be removed from their device.":"লিংকের মেয়াদ শেষ হলে বা বাতিল করলে নির্বাচিত ডকুমেন্ট DShario থেকে আর পাওয়া যাবে না। প্রাপক আগে ডাউনলোড করে রাখলে সেই কপি তার ডিভাইস থেকে মুছে ফেলা যাবে না।",
-  "Sign in":"সাইন ইন",
-  "Signed in":"সাইন ইন করা আছে",
-  "▣ My Card":"▣ আমার কার্ড",
-  "✎ Create My DShario":"✎ এডিট / তৈরি",
-  "◉ Account":"◉ অ্যাকাউন্ট",
-  "Public DShario • No account required to view":"পাবলিক DShario • দেখতে অ্যাকাউন্ট লাগবে না",
-  "Your name":"আপনার নাম",
-  "Professional title":"পেশাগত পদবি",
-  "Company / organisation":"কোম্পানি / প্রতিষ্ঠান",
-  "Your short introduction will appear here.":"আপনার সংক্ষিপ্ত পরিচিতি এখানে দেখা যাবে।",
-  "Location":"অবস্থান",
-  "Website":"ওয়েবসাইট",
-  "No social links added.":"কোনো সামাজিক লিংক যোগ করা হয়নি।",
-  "✓ Saved online — sign in from another device to open My Card":"✓ অনলাইনে সেভ হয়েছে — অন্য ডিভাইস থেকে আমার কার্ড খুলতে সাইন ইন করুন",
-  "Keep in touch.":"যোগাযোগ রাখুন।",
-  "Professional view":"প্রফেশনাল ভিউ",
-  "Business view":"বিজনেস ভিউ",
-  "Social view":"সোশ্যাল ভিউ",
-  "Full view":"সম্পূর্ণ ভিউ",
-  "Choose what you want to share":"আপনি কী শেয়ার করতে চান বেছে নিন",
-  "Professional — limited professional details":"প্রফেশনাল — সীমিত পেশাগত তথ্য",
-  "Business — include direct contact details":"বিজনেস — সরাসরি যোগাযোগের তথ্যসহ",
-  "Social — social links only":"সোশ্যাল — শুধু সামাজিক লিংক",
-  "Full — all details on your card":"সম্পূর্ণ — আপনার কার্ডের সব তথ্য",
-  "The generated link and QR code will use this privacy view.":"তৈরি করা লিংক ও QR কোড এই প্রাইভেসি ভিউ ব্যবহার করবে।",
-  "How long should this share link work?":"এই শেয়ার লিংক কতদিন কাজ করবে?",
-  "Permanent":"স্থায়ী",
-  "24 hours":"২৪ ঘণ্টা",
-  "7 days":"৭ দিন",
-  "30 days":"৩০ দিন",
-  "Share type":"শেয়ারের ধরন",
-  "My DShario Link — permanent":"আমার DShario লিংক — স্থায়ী",
-  "Temporary Share — controlled access":"অস্থায়ী শেয়ার — নিয়ন্ত্রিত অ্যাক্সেস",
-  "Your permanent DShario address. It does not expire and has no Revoke button.":"আপনার স্থায়ী DShario ঠিকানা। এর মেয়াদ শেষ হয় না এবং এতে বাতিল করার বাটন নেই।",
-  "Temporary link lifetime":"অস্থায়ী লিংকের সময়সীমা",
-  "Documents with this temporary link":"এই অস্থায়ী লিংকের সঙ্গে ডকুমেন্ট",
-  "Optional. Selected documents are available only through this temporary link and stop being available when it expires or is revoked.":"ঐচ্ছিক। নির্বাচিত ডকুমেন্ট শুধু এই অস্থায়ী লিংকের মাধ্যমে পাওয়া যাবে এবং লিংকের মেয়াদ শেষ হলে বা বাতিল করলে আর পাওয়া যাবে না।",
-  "Prepare My DShario Link":"আমার DShario লিংক প্রস্তুত করুন",
-  "Create Temporary Link":"অস্থায়ী লিংক তৈরি করুন",
-  "Revoke Temporary Link":"অস্থায়ী লিংক বাতিল করুন",
-  "Prepare a link before copying, sharing or showing its QR code.":"কপি, শেয়ার বা QR কোড দেখানোর আগে লিংক প্রস্তুত করুন।",
-  "Create Share Link":"শেয়ার লিংক তৈরি করুন",
-  "Revoke This Link":"এই লিংক বাতিল করুন",
-  "Create a link before copying, sharing or showing its QR code.":"কপি, শেয়ার বা QR কোড দেখানোর আগে একটি লিংক তৈরি করুন।",
-  "☎ Call":"☎ কল",
-  "✉ Email":"✉ ইমেইল",
-  "◉ Share on WhatsApp":"◉ WhatsApp-এ শেয়ার",
-  "⌯ Share DShario":"⌯ DShario শেয়ার",
-  "🔗 Copy Link":"🔗 লিংক কপি",
-  "▦ QR Code":"▦ QR কোড",
-  "＋ Save to Contacts":"＋ কন্টাক্টে সেভ করুন",
-  "Download card view":"কার্ডের ভিউ ডাউনলোড করুন",
-  "Professional":"প্রফেশনাল",
-  "Business":"বিজনেস",
-  "Social":"সোশ্যাল",
-  "Full":"সম্পূর্ণ",
-  "⇩ Download as Image":"⇩ ছবি হিসেবে ডাউনলোড",
-  "Exchange contact":"যোগাযোগের তথ্য বিনিময়",
-  "Send your contact back in seconds — no DShario account required.":"কয়েক সেকেন্ডে আপনার যোগাযোগের তথ্য পাঠান — DShario অ্যাকাউন্ট লাগবে না।",
-  "Send my contact back":"আমার যোগাযোগের তথ্য পাঠান",
-  "Exchange with my DShario":"আমার DShario দিয়ে তথ্য বিনিময় করুন",
-  "Already use DShario? Sign in and send your saved details with less typing.":"আগেই DShario ব্যবহার করেন? সাইন ইন করে কম টাইপ করে আপনার সেভ করা তথ্য পাঠান।",
-  "Name *":"নাম *",
-  "Phone":"মোবাইল",
-  "Email":"ইমেইল",
-  "Company":"কোম্পানি",
-  "Job title":"পদবি",
-  "I agree to share these selected contact details with this DShario card owner. The owner may save these details to their phone. DShario will keep the exchange in the owner’s temporary contact inbox until it is deleted, subject to the Privacy Policy.":"আমি এই নির্বাচিত যোগাযোগের তথ্য DShario কার্ডের মালিকের সাথে শেয়ার করতে সম্মত। মালিক তথ্যগুলো তার ফোনে সেভ করতে পারেন। Privacy Policy অনুযায়ী মুছে ফেলা পর্যন্ত DShario এগুলো মালিকের অস্থায়ী কন্টাক্ট ইনবক্সে রাখবে।",
-  "Send my contact":"আমার কন্টাক্ট পাঠান",
-  "✓ Contact sent. Want your own digital card? Create your free DShario — designed for easy mobile sharing.":"✓ কন্টাক্ট পাঠানো হয়েছে। নিজের ডিজিটাল কার্ড চান? সহজ মোবাইল শেয়ারিংয়ের জন্য আপনার ফ্রি DShario তৈরি করুন।",
-  "Scan to open this DShario":"এই DShario খুলতে স্ক্যান করুন",
-  "Received Contacts":"প্রাপ্ত কন্টাক্ট",
-  "Temporary inbox — save contacts you want to keep to your phone, then delete them from DShario.":"অস্থায়ী ইনবক্স — যেসব কন্টাক্ট রাখতে চান ফোনে সেভ করুন, তারপর DShario থেকে মুছে দিন।",
-  "Refresh":"রিফ্রেশ",
-  "No contacts received yet.":"এখনও কোনো কন্টাক্ট পাওয়া যায়নি।",
-  "Delete from DShario":"DShario থেকে মুছুন",
-  "Name":"নাম",
-  "Mobile":"মোবাইল",
-  "Job title":"পদবি",
-  "Source":"উৎস",
-  "Received":"প্রাপ্ত সময়",
-  "DShario member":"DShario সদস্য",
-  "Contact sent back":"পাঠানো কন্টাক্ট",
-  "Account":"অ্যাকাউন্ট",
-  "Create account":"অ্যাকাউন্ট তৈরি করুন",
-  "Password":"পাসওয়ার্ড",
-  "Sign out":"সাইন আউট",
-  "Save Card":"কার্ড সেভ করুন",
-  "Delete Card":"কার্ড মুছুন",
-  "Privacy view":"প্রাইভেসি ভিউ",
-  "My account":"আমার অ্যাকাউন্ট",
-  "Create or edit your DShario":"আপনার DShario তৈরি বা এডিট করুন",
-  "Your DShario is saved online to your account. Edit it only when your details change.":"আপনার DShario আপনার অ্যাকাউন্টে অনলাইনে সেভ থাকে। তথ্য পরিবর্তন হলে এডিট করুন।",
-  "Personal DShario name *":"ব্যক্তিগত DShario নাম *",
-  "Default Privacy View":"ডিফল্ট প্রাইভেসি ভিউ",
-  "Professional — name, role, company, WhatsApp, LinkedIn, website":"প্রফেশনাল — নাম, পদবি, প্রতিষ্ঠান, WhatsApp, LinkedIn, ওয়েবসাইট",
-  "Business — professional + phone, email, WhatsApp":"বিজনেস — প্রফেশনাল তথ্য + ফোন, ইমেইল, WhatsApp",
-  "Social — name + selected social links":"সোশ্যাল — নাম + নির্বাচিত সোশ্যাল লিংক",
-  "Full — all details you choose to add":"সম্পূর্ণ — আপনার যোগ করা সব নির্বাচিত তথ্য",
-  "Choose what this share link should reveal. You can change the view before sharing.":"এই শেয়ার লিংকে কী দেখা যাবে বেছে নিন। শেয়ারের আগে ভিউ পরিবর্তন করতে পারবেন।",
-  "Full name *":"পূর্ণ নাম *",
-  "Full name (English) *":"পূর্ণ নাম (ইংরেজি) *",
-  "Profession / job title (English)":"পেশা / পদবি (ইংরেজি)",
-  "Company / organisation (English)":"কোম্পানি / প্রতিষ্ঠান (ইংরেজি)",
-  "Short introduction (English)":"সংক্ষিপ্ত পরিচিতি (ইংরেজি)",
-  "My DShario":"আমার DShario",
-  "Profession / job title":"পেশা / পদবি",
-  "Company / organisation":"কোম্পানি / প্রতিষ্ঠান",
-  "Short introduction":"সংক্ষিপ্ত পরিচিতি",
-  "Mobile number":"মোবাইল নম্বর",
-  "Email address":"ইমেইল ঠিকানা",
-  "WhatsApp number":"WhatsApp নম্বর",
-  "WhatsApp username":"WhatsApp ইউজারনেম",
-  "LinkedIn":"লিংকডইন",
-  "Facebook":"ফেসবুক",
-  "Instagram":"ইনস্টাগ্রাম",
-  "LinkedIn (optional)":"LinkedIn (ঐচ্ছিক)",
-  "Facebook (optional)":"Facebook (ঐচ্ছিক)",
-  "Instagram (optional)":"Instagram (ঐচ্ছিক)",
-  "Card background colour":"কার্ডের ব্যাকগ্রাউন্ড রং",
-  "Profile image (optional)":"প্রোফাইল ছবি (ঐচ্ছিক)",
-  "Show on public DShario":"পাবলিক DShario-তে দেখান",
-  "No photo":"কোনো ছবি নেই",
-  "Remove photo":"ছবি সরান",
-  "Save My Card Online":"আমার DShario অনলাইনে সেভ করুন",
-  "Preview":"প্রিভিউ",
-  "Create my free card":"আমার ফ্রি কার্ড তৈরি করুন",
-  "Create a free digital contact card and share it by link or QR code.":"একটি ফ্রি ডিজিটাল কন্টাক্ট কার্ড তৈরি করুন এবং লিংক বা QR কোডে শেয়ার করুন।",
-  "Free to create. Share your card anywhere.":"ফ্রি তৈরি করুন। যেকোনো জায়গায় আপনার কার্ড শেয়ার করুন।",
-  "DShario account":"DShario অ্যাকাউন্ট",
-  "Sign in to save your DShario online and access it from another device.":"DShario অনলাইনে সেভ করতে এবং অন্য ডিভাইস থেকে ব্যবহার করতে সাইন ইন করুন।",
-  "New users must confirm their email before first sign-in.":"নতুন ব্যবহারকারীদের প্রথম সাইন-ইনের আগে ইমেইল নিশ্চিত করতে হবে।",
-  "Refresh contacts":"কন্টাক্ট রিফ্রেশ করুন",
-  "Temporary inbox — save important contacts to your phone, then delete them from DShario.":"অস্থায়ী ইনবক্স — গুরুত্বপূর্ণ কন্টাক্ট ফোনে সেভ করে তারপর DShario থেকে মুছুন।",
-  "Temporary contact inbox. Save useful contacts to your phone, then delete them from DShario to make room for new contacts.":"অস্থায়ী কন্টাক্ট ইনবক্স। দরকারি কন্টাক্ট ফোনে সেভ করে DShario থেকে মুছুন, যাতে নতুন কন্টাক্টের জন্য জায়গা হয়।",
-  "0 / 10 contacts":"০ / ১০টি কন্টাক্ট",
-  "Close":"বন্ধ করুন"
-};
-
-const enText = {};
-function rememberEnglish(){
-  document.querySelectorAll("body *").forEach(el=>{
-    if(el.children.length===0){
-      const t=el.textContent.trim();
-      if(t && !el.dataset.enText) el.dataset.enText=t;
-    }
-  });
-}
-function translateDynamicText(t){
-  if(window.currentLang!=="bn") return t;
-  if(/^(\d+)\s*\/\s*10 pending contacts/.test(t)){
-    const n=t.match(/^(\d+)/)?.[1]||"0";
-    return n+" / ১০টি অপেক্ষমাণ কন্টাক্ট"+(t.includes("Inbox full")?" • ইনবক্স পূর্ণ — জায়গা করতে একটি কন্টাক্ট সেভ করে মুছুন।":"");
-  }
-  if(t.startsWith("Received ")) return "প্রাপ্ত "+t.slice(9);
-  return (window.bnText&&window.bnText[t]) || t;
-}
+// RC30.1 English-only compatibility shim.
+// Legacy translation data and UI translation logic were removed so previously saved
+// Bangla browser preference cannot affect live cards or downloaded card images.
+window.bnText = {};
+function rememberEnglish(){}
+function translateDynamicText(t){ return t; }
 function applyLanguage(){
-  document.documentElement.lang=window.currentLang==="bn"?"bn":"en";
-  const dynamicIds=new Set(["pName","pRole","pCompany","pTagline","pLocation","pPhone","pEmail","qrText","notice","viewBadge","shareLinkStatus","authStatus","userEmail","receivedContactsCount","publicInvalidState"]);
-  document.querySelectorAll("body *").forEach(el=>{
-    if(el.children.length===0 && !dynamicIds.has(el.id) && !el.closest("#receivedContactsList")){
-      if(!el.dataset.enText) el.dataset.enText=el.textContent.trim();
-      const original=el.dataset.enText;
-      if(original) el.textContent=window.currentLang==="bn"?translateDynamicText(original):original;
-    }
-  });
-  document.querySelectorAll("option").forEach(o=>{
-    if(!o.dataset.enText) o.dataset.enText=o.textContent.trim();
-    o.textContent=window.currentLang==="bn"?((window.bnText[o.dataset.enText])||o.dataset.enText):o.dataset.enText;
-  });
-  const b=document.getElementById("langToggle");
-  if(b){b.textContent=window.currentLang==="bn"?"EN":"বাংলা"; b.dataset.enText="";}
+  document.documentElement.lang="en";
+  try{localStorage.setItem("dshario-lang","en");}catch(e){}
 }
-function setLanguage(lang){
-  window.currentLang=lang;
-  localStorage.setItem("dshario-lang",lang);
-  applyLanguage();
-  setShareStatus(shareStatusState.kind,shareStatusState.choice);
-  if(currentCard) render(currentCard);
-  if(publicMode && !currentCard && $("publicInvalidState") && $("publicInvalidState").style.display!=="none") showExpiredShareLink();
-  if(user) refreshAuth(false);
-  if(user && $("receivedContactsPanel")?.style.display!=="none") loadReceivedContacts();
-  renderOwnerDocuments(); if($("helpModal")?.classList.contains("show")) updateHelpLanguage();
-}
-document.addEventListener("DOMContentLoaded",()=>{
-  rememberEnglish();
-  applyLanguage();
-  document.getElementById("langToggle")?.addEventListener("click",()=>setLanguage(window.currentLang==="en"?"bn":"en"));
-});
+function setLanguage(){ applyLanguage(); }
+document.addEventListener("DOMContentLoaded",applyLanguage);
 
 // RC17 owner image download control is intentionally isolated from auth, sharing and connection logic.
 // RC20 keeps revoked/expired Temporary Share records visible until manual deletion and hides the received-card Back control on Temporary Share cards.
@@ -4697,6 +4486,7 @@ document.addEventListener("DOMContentLoaded",()=>{
 // RC23 adds one isolated WhatsApp contact improvement: visible in Professional/Business/Full, with optional username support stored compatibly in the existing WhatsApp field.
 // RC25 adds WhatsApp to the downloaded card image in Professional/Business/Full only; no other feature logic changed.
 // RC26 changes only the downloaded PNG presentation: 90:55-style proportion, clearer contact/social icons, spacing and QR placement.
+// RC30.1 completes English-only cleanup by removing legacy translation machinery while preserving RC30 connection organisation features.
 updateShareTypeUI();
 </script>
 
