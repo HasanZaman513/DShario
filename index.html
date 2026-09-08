@@ -6,7 +6,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>DShario WORKING RC25</title>
 <meta name="theme-color" content="#ffffff">
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2">// RC32.6 fixes share-type persistence so a fresh Full/Career/etc share cannot inherit an older type from the same sender. Adds three optional owner download-card templates without changing shared information.
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2">// RC32.8: polished Modern download template, adjustable photo crop, and reliable share-type synchronization. Exact direct @DShario synchronization uses the companion one-time Supabase migration.
 </script>
 <style>
 :root{--navy:#123a78;--blue:#3478ee;--ink:#0f172a;--muted:#64748b;--line:#dbe5f2;--soft:#f8fbff;--green:#16a34a;--shadow:0 12px 32px rgba(15,23,42,.10)}
@@ -17,7 +17,7 @@ button,input,textarea{font:inherit}button{cursor:pointer}.app{max-width:980px;ma
 .notice{display:none;margin:0 0 18px;padding:13px 15px;border-radius:13px;font-weight:800}.notice.show{display:block}.notice.ok{background:#ecfdf5;color:#166534}.notice.err{background:#fef2f2;color:#991b1b}.notice.info{background:#eff6ff;color:#1e40af}
 .view{display:none}.view.active{display:block}.panel{background:#fff;border:1px solid #e1e9f4;border-radius:18px;padding:20px;box-shadow:var(--shadow)}.panel h1{margin:0 0 8px;font-size:clamp(27px,5vw,40px);letter-spacing:-.04em}.lead{color:var(--muted);line-height:1.55;margin:0 0 19px}
 .grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}.field{display:flex;flex-direction:column;gap:7px}.field.full{grid-column:1/-1}.field label{font-size:13px;font-weight:800;color:#334155}.field input,.field textarea,.field select{width:100%;border:1px solid #cbd8ea;border-radius:12px;padding:13px 14px;color:var(--ink);background:#fbfdff;outline:none}.field textarea{min-height:82px;resize:vertical}.field input:focus,.field textarea:focus,.field select:focus{border-color:#4f8df7;box-shadow:0 0 0 3px #dbeafe}.hint{font-size:11px;color:var(--muted);line-height:1.4}.check{display:flex;align-items:center;gap:8px;font-size:12px!important}.check input{width:18px!important;height:18px;padding:0!important;accent-color:var(--blue)}
-.photoRow{display:grid;grid-template-columns:82px 1fr;gap:12px;align-items:center}.photoPreview{width:82px;height:82px;border-radius:18px;border:1px solid #cbd8ea;background:#f8fafc;display:grid;place-items:center;overflow:hidden;color:#64748b;font-size:11px;font-weight:800}.photoPreview img{width:100%;height:100%;object-fit:cover}.mini{border:1px solid #d7e0ec;border-radius:10px;background:#fff;padding:7px 10px;color:#334155;font-size:12px;font-weight:800}
+.photoRow{display:grid;grid-template-columns:82px 1fr;gap:12px;align-items:center}.photoPreview{width:82px;height:82px;border-radius:18px;border:1px solid #cbd8ea;background:#f8fafc;display:grid;place-items:center;overflow:hidden;color:#64748b;font-size:11px;font-weight:800}.photoPreview img{width:100%;height:100%;object-fit:cover}.photoAdjuster{display:none;margin-top:10px;padding:10px;border:1px solid #dbe5f2;border-radius:12px;background:#f8fbff}.photoAdjuster.show{display:block}.photoAdjustRow{display:grid;grid-template-columns:88px 1fr;gap:8px;align-items:center;margin-top:7px}.photoAdjustRow label{font-size:12px;font-weight:800;color:#475569}.photoAdjustRow input[type=range]{width:100%}.mini{border:1px solid #d7e0ec;border-radius:10px;background:#fff;padding:7px 10px;color:#334155;font-size:12px;font-weight:800}
 .actions{display:flex;gap:9px;flex-wrap:wrap;margin-top:18px}.btn{border:0;border-radius:12px;padding:12px 16px;font-weight:850;background:#2563eb;color:#fff}.btn.secondary{background:#eff6ff;color:#1d4ed8;border:1px solid #dbeafe}.btn.ghost{background:#fff;color:#334155;border:1px solid #dbe3ee}.btn.danger{background:#fff1f2;color:#be123c;border:1px solid #fecdd3}
 .cardWrap{max-width:860px;margin:0 auto}.card{position:relative;border:1px solid #d6e4f5;border-radius:22px;padding:28px 30px 31px;background:#eff6ff;box-shadow:var(--shadow);overflow:hidden}.profile{display:none;width:104px;height:104px;border-radius:22px;object-fit:cover;border:1px solid rgba(15,23,42,.18);margin-bottom:18px}.name{font-size:clamp(32px,6vw,48px);font-weight:950;letter-spacing:-.05em;line-height:1.05}.role{font-size:clamp(18px,3vw,24px);font-weight:800;color:#475569;margin-top:10px}.company{font-size:clamp(17px,2.5vw,21px);font-weight:850;margin-top:7px}.tagline{font-size:17px;color:#5b6b83;line-height:1.45;margin:16px 0 0;max-width:720px}.contacts{display:grid;gap:11px;margin-top:25px;max-width:680px}.contact{display:flex;align-items:center;gap:13px;color:inherit;text-decoration:none;font-size:17px;min-width:0}.icon{width:43px;height:43px;border:1px solid rgba(37,99,235,.18);border-radius:50%;display:grid;place-items:center;flex:0 0 auto;font-size:19px}.ct{overflow-wrap:anywhere}.brandIconContact{width:43px;height:43px;border:none;color:#fff;overflow:hidden;box-shadow:0 1px 2px rgba(15,23,42,.16)}.brandIconContact svg{width:24px;height:24px;fill:currentColor;display:block}.whatsappIcon{background:#25D366}.whatsappIcon svg{color:#fff;width:25px;height:25px}.linkedinIcon{background:#0A66C2}.linkedinLetters{font-family:Arial,sans-serif;font-size:23px;font-weight:700;line-height:1;color:#fff;letter-spacing:-1px}.facebookIcon{background:#1877F2}.facebookLetter{font-family:Arial,sans-serif;font-size:29px;font-weight:700;line-height:1;color:#fff;transform:translateY(3px)}.instagramIcon{background:linear-gradient(135deg,#833AB4 0%,#C13584 40%,#E1306C 58%,#F56040 78%,#FCAF45 100%);color:#fff}.instagramIcon svg{width:25px;height:25px}.cl{position:absolute;right:23px;bottom:18px;font-size:22px;font-weight:950}
 .saved{margin:16px 0 14px;padding:13px;border-radius:14px;background:#ecfdf5;color:#166534;font-weight:800;text-align:center}.shareLead{margin:18px 2px 13px;color:#64748b}.actionGrid{display:grid;grid-template-columns:1fr 1fr;gap:11px}.actionBtn{min-height:55px;border-radius:13px;border:1px solid #d9e2ee;background:#fff;color:#123a78;font-weight:850;font-size:15px;display:flex;align-items:center;justify-content:center;gap:8px;text-decoration:none}.actionBtn.call{background:#173d7d;color:#fff;border-color:#173d7d}.actionBtn.email{background:#3478ee;color:#fff;border-color:#3478ee}.actionBtn.wa{background:#18b868;color:#fff;border-color:#18b868}.actionBtn.share{background:linear-gradient(135deg,#7134d4,#8a35dc);color:#fff;border:0}.actionBtn.full{grid-column:1/-1}.qr{display:none;margin-top:13px;border:1px solid #dbe5f2;border-radius:14px;padding:15px;background:#f8fbff}.qr.show{display:flex;gap:15px;align-items:center}.qr img{width:120px;height:120px;border:7px solid #fff;border-radius:10px}.qrText{font-size:12px;color:#5b6b83;word-break:break-all}
@@ -2062,7 +2062,7 @@ QRCodeCore.createBytes = function(buffer, rsBlocks) {
         <div class="field full"><label>Short introduction</label><textarea id="description" placeholder="A short professional introduction"></textarea></div>
         <div class="field"><label>Location</label><input id="location" placeholder="City, country"></div>
         <div class="field"><label>Card background colour</label><input id="card_color" type="color" value="#eff6ff"></div>
-        <div class="field full"><label>Profile image (optional)</label><div class="photoRow"><div id="photoPreview" class="photoPreview">No photo</div><div><input id="photo" type="file" accept="image/*"><div style="margin-top:8px"><button id="removePhoto" class="mini" type="button">Remove photo</button></div></div></div></div>
+        <div class="field full"><label>Profile image (optional)</label><div class="photoRow"><div id="photoPreview" class="photoPreview">No photo</div><div><input id="photo" type="file" accept="image/*"><div style="margin-top:8px;display:flex;gap:7px;flex-wrap:wrap"><button id="photoAdjustToggle" class="mini" type="button" style="display:none">Adjust photo</button><button id="removePhoto" class="mini" type="button">Remove photo</button></div><div id="photoAdjuster" class="photoAdjuster"><strong style="font-size:12px">Adjust photo</strong><div class="hint">Move the image so your face and head fit comfortably.</div><div class="photoAdjustRow"><label for="photoPosition">Position</label><input id="photoPosition" type="range" min="-100" max="100" value="0"></div><div class="photoAdjustRow"><label for="photoZoom">Zoom</label><input id="photoZoom" type="range" min="100" max="160" value="100"></div></div></div></div></div>
       </div>
     </div>
   </details>
@@ -2390,7 +2390,7 @@ document.querySelectorAll(".openPrivacy").forEach(b=>b.addEventListener("click",
 $("privacyClose").addEventListener("click",closePrivacy);
 $("privacyModal").addEventListener("click",e=>{if(e.target===$("privacyModal"))closePrivacy()});
 
-let session = null, user = null, currentCard = null, photoData = "", authMode = "signin", publicMode = false;
+let session = null, user = null, currentCard = null, photoData = "", photoSourceData = "", photoPosition = 0, photoZoom = 1, authMode = "signin", publicMode = false;
 let passwordRecoveryVerified = false;
 let currentShareUrl = "", currentShareToken = "", publicShareView = "", publicShareCheckTimer = null;
 let currentPublicTargetUserId = null, currentPublicSourceType = "permanent", currentPublicShareToken = "", currentPublicMessage = "", currentPublicPurpose = "";
@@ -2648,6 +2648,7 @@ async function updateSaveConnectionButton(){
   let saved=false;
   if(canSave&&user){try{const q=await sb.rpc("get_my_dshario_connections_v2");const rows=Array.isArray(q.data)?q.data:[];saved=rows.some(x=>x.connected_user_id===currentPublicTargetUserId&&x.is_saved!==false)}catch(e){}}
   b.dataset.saved=saved?"1":"0";
+  if(saved&&currentPublicTargetUserId&&currentPublicPurpose){writeConnectionPurpose(currentPublicTargetUserId,currentPublicPurpose);rememberReceivedPurpose(currentPublicTargetUserId,currentPublicPurpose)}
   b.textContent=saved?"View in My Connections":"★ Save to My Connections";
   if(pb)pb.textContent=saved?"View in My Connections":"★ Save to My Connections";
 }
@@ -2699,6 +2700,18 @@ function matchSharePurpose(r){
   try{
     return normalisePurpose(localStorage.getItem("dshario-share-purpose:"+user.id+":"+r.id)||"");
   }catch(e){return ""}
+}
+async function syncDirectSharePurposes(){
+  if(!user)return;
+  try{
+    const {data,error}=await sb.from("share_records").select("owner_user_id,purpose,created_at").eq("recipient_user_id",user.id).not("purpose","is",null).order("created_at",{ascending:false}).limit(100);
+    if(error)return; // Works automatically after the one-time RC32.8 Supabase migration.
+    const seen=new Set();
+    for(const r of (Array.isArray(data)?data:[])){
+      const owner=String(r.owner_user_id||"");const p=normalisePurpose(r.purpose);if(!owner||!p||seen.has(owner))continue;
+      seen.add(owner);writeConnectionPurpose(owner,p);rememberReceivedPurpose(owner,p);
+    }
+  }catch(e){}
 }
 
 function recordConnectionSave(targetId,view,source){
@@ -2778,6 +2791,8 @@ async function saveCurrentConnection(){
     if(exactType) currentPublicPurpose=exactType;
   }
   if($("saveConnectionBtn")?.dataset.saved==="1" && user){
+    const exactNow=normalisePurpose(currentPublicPurpose||new URLSearchParams(location.search).get("sharetype")||new URLSearchParams(location.search).get("purpose"));
+    if(currentPublicTargetUserId&&exactNow){writeConnectionPurpose(currentPublicTargetUserId,exactNow);rememberReceivedPurpose(currentPublicTargetUserId,exactNow)}
     await openSavedConnectionList();
     return true;
   }
@@ -2986,7 +3001,7 @@ function setForm(card={}){
   $("show_phone").checked=card.show_phone!==false; $("show_email").checked=card.show_email!==false;
   const pv=card.privacy_view||localStorage.getItem("dshario-privacy-view")||"professional";
   $("privacy_view").value=pv; if($("shareView")) $("shareView").value=pv; if($("ownerDownloadView")) $("ownerDownloadView").value=pv;
-  photoData=card.photo_url||""; renderPhotoPreview();
+  photoData=card.photo_url||""; photoSourceData=""; photoPosition=0; photoZoom=1; if($("photoAdjuster"))$("photoAdjuster").classList.remove("show"); if($("photoAdjustToggle"))$("photoAdjustToggle").style.display="none"; renderPhotoPreview();
 }
 function getForm(){
   const o={}; formIds.forEach(id=>o[id]=$(id).value.trim());
@@ -3191,11 +3206,27 @@ async function deleteCard(){
   currentCard=null;setForm({card_color:"#eff6ff"});render(null);$("deleteBtn").style.display="none";setView("edit");msg("Card deleted.","info");
 }
 
+function renderAdjustedPhoto(){
+  if(!photoSourceData)return;
+  const img=new Image();
+  img.onload=()=>{
+    const size=220,c=document.createElement("canvas");c.width=c.height=size;const x=c.getContext("2d");
+    const base=Math.max(size/img.width,size/img.height),scale=base*Math.max(1,photoZoom||1),w=img.width*scale,h=img.height*scale;
+    const maxY=Math.max(0,(h-size)/2), yShift=(Math.max(-100,Math.min(100,photoPosition||0))/100)*maxY;
+    const dx=(size-w)/2, dy=(size-h)/2+yShift;
+    x.fillStyle="#fff";x.fillRect(0,0,size,size);x.drawImage(img,dx,dy,w,h);
+    photoData=c.toDataURL("image/jpeg",.76);renderPhotoPreview();
+  };
+  img.src=photoSourceData;
+}
 $("photo").addEventListener("change",e=>{
   const file=e.target.files?.[0]; if(!file)return; if(!file.type.startsWith("image/")){msg("Please choose an image file.","err");return}
-  const r=new FileReader(); r.onload=()=>{const img=new Image(); img.onload=()=>{const c=document.createElement("canvas");c.width=c.height=220;const x=c.getContext("2d"),s=Math.max(220/img.width,220/img.height),w=img.width*s,h=img.height*s;x.drawImage(img,(220-w)/2,(220-h)/2,w,h);photoData=c.toDataURL("image/jpeg",.68);renderPhotoPreview()};img.src=r.result};r.readAsDataURL(file);
+  const r=new FileReader(); r.onload=()=>{photoSourceData=String(r.result||"");photoPosition=0;photoZoom=1;if($("photoPosition"))$("photoPosition").value="0";if($("photoZoom"))$("photoZoom").value="100";if($("photoAdjustToggle"))$("photoAdjustToggle").style.display="inline-block";renderAdjustedPhoto()};r.readAsDataURL(file);
 });
-$("removePhoto").onclick=()=>{photoData="";$("photo").value="";renderPhotoPreview()};
+if($("photoAdjustToggle"))$("photoAdjustToggle").onclick=()=>$("photoAdjuster")?.classList.toggle("show");
+if($("photoPosition"))$("photoPosition").oninput=e=>{photoPosition=Number(e.target.value)||0;renderAdjustedPhoto()};
+if($("photoZoom"))$("photoZoom").oninput=e=>{photoZoom=(Number(e.target.value)||100)/100;renderAdjustedPhoto()};
+$("removePhoto").onclick=()=>{photoData="";photoSourceData="";photoPosition=0;photoZoom=1;$("photo").value="";if($("photoAdjuster"))$("photoAdjuster").classList.remove("show");if($("photoAdjustToggle"))$("photoAdjustToggle").style.display="none";renderPhotoPreview()};
 $("slug").addEventListener("input",()=>{$("slug").value=slugify($("slug").value)});
 
 $("saveCloudBtn").onclick=saveCloud; $("deleteBtn").onclick=deleteCard;
@@ -3590,8 +3621,11 @@ async function downloadCurrentCardAsImage(viewOverride,templateOverride){
   }else if(template==="modern"){
     bg="#ffffff";fg="#0f172a";mt="#64748b";x.fillStyle=bg;x.fillRect(0,0,W,H);
     x.fillStyle=accent;x.fillRect(0,0,360,H);
-    const g=x.createLinearGradient(360,0,520,0);g.addColorStop(0,accent);g.addColorStop(1,"#ffffff");x.globalAlpha=.22;x.fillStyle=g;x.fillRect(360,0,180,H);x.globalAlpha=1;
-    x.fillStyle="#ffffff";x.font="900 54px Arial, sans-serif";x.fillText("DS",86,720);
+    const g=x.createLinearGradient(360,0,560,0);g.addColorStop(0,accent);g.addColorStop(1,"#ffffff");x.globalAlpha=.20;x.fillStyle=g;x.fillRect(360,0,200,H);x.globalAlpha=1;
+    // Light fixed-template shades and watermark: decorative only, never affects card data.
+    x.save();x.globalAlpha=.055;x.fillStyle=accent;x.beginPath();x.arc(1260,120,250,0,Math.PI*2);x.fill();x.beginPath();x.arc(1120,760,330,0,Math.PI*2);x.fill();x.restore();
+    x.save();x.globalAlpha=.035;x.fillStyle="#0f172a";x.font="900 260px Arial, sans-serif";x.fillText("DS",760,315);x.restore();
+    x.fillStyle="#ffffff";x.font="900 54px Arial, sans-serif";x.fillText("DS",78,720);x.font="800 22px Arial, sans-serif";x.fillText("DShario",78,776);
   }else{
     x.fillStyle=bg;x.fillRect(0,0,W,H);x.strokeStyle="rgba(30,64,175,.16)";x.lineWidth=3;x.beginPath();if(x.roundRect)x.roundRect(30,30,W-60,H-60,38);else x.rect(30,30,W-60,H-60);x.stroke();
   }
@@ -3648,7 +3682,7 @@ async function downloadCurrentCardAsImage(viewOverride,templateOverride){
   try{const holder=document.createElement('div');holder.style.cssText='position:fixed;left:-9999px;top:-9999px;background:#fff';document.body.appendChild(holder);new QRCode(holder,{text:qrTarget,width:qrSize,height:qrSize,colorDark:'#000000',colorLight:'#ffffff',correctLevel:QRCode.CorrectLevel.M});await new Promise(r=>setTimeout(r,80));const q=holder.querySelector('canvas');if(q){const pad=14;x.fillStyle='#fff';x.fillRect(qrX-pad,qrY-pad,qrSize+pad*2,qrSize+58);x.drawImage(q,qrX,qrY,qrSize,qrSize);x.fillStyle='#334155';x.textAlign='center';x.textBaseline='top';x.font='700 16px Arial, sans-serif';x.fillText(window.currentLang==="bn"?"লাইভ DShario খুলুন":"Open live DShario",qrX+qrSize/2,qrY+qrSize+24)}holder.remove()}catch(e){console.warn('QR render failed',e)}
   x.textAlign="left";x.textBaseline='top';
   if(template!=="modern"){x.fillStyle=fg;x.font="900 30px Arial, sans-serif";x.fillText("DS",82,794);x.fillStyle=mt;x.font="20px Arial, sans-serif";x.fillText(window.currentLang==="bn"?"যোগাযোগ রাখুন।":"Keep in touch.",140,798)}
-  else{x.fillStyle=mt;x.font="20px Arial, sans-serif";x.fillText(window.currentLang==="bn"?"যোগাযোগ রাখুন।":"Keep in touch.",430,798)};
+  else{x.fillStyle=fg;x.font="900 24px Arial, sans-serif";x.fillText("DS",430,794);x.fillStyle=mt;x.font="20px Arial, sans-serif";x.fillText(window.currentLang==="bn"?"যোগাযোগ রাখুন।":"Keep in touch.",478,798)};
   c.toBlob(b=>{if(b)downloadBlob(b,safeName(name||d.full_name||"dshario")+"-"+view+"-"+template+"-card.png")},"image/png");
 }
 if($("pngBtn")) $("pngBtn").onclick=()=>downloadCurrentCardAsImage();
@@ -3848,8 +3882,13 @@ if($("wizAddPdfBtn"))$("wizAddPdfBtn").onclick=async()=>{await uploadDocument("w
 async function recordShare({share_type,recipient_user_id=null,recipient_handle=null,privacy_view,share_token=null,channel="link"}){
   const purposeNow=normalisePurpose(wizPurpose);
   try{
-    const payload={owner_user_id:user.id,share_type,recipient_user_id,recipient_handle,privacy_view,share_token,channel};
-    const q=await sb.from("share_records").insert(payload).select("id").maybeSingle();
+    const payload={owner_user_id:user.id,share_type,recipient_user_id,recipient_handle,privacy_view,share_token,channel,purpose:purposeNow||null};
+    let q=await sb.from("share_records").insert(payload).select("id").maybeSingle();
+    // Backward compatible until the one-time RC32.8 Supabase migration is applied.
+    if(q?.error&&String(q.error.message||"").toLowerCase().includes("purpose")){
+      const legacy={owner_user_id:user.id,share_type,recipient_user_id,recipient_handle,privacy_view,share_token,channel};
+      q=await sb.from("share_records").insert(legacy).select("id").maybeSingle();
+    }
     let recordId=q?.data?.id||null;
     if(!recordId){
       let latest=sb.from("share_records").select("id").eq("owner_user_id",user.id).eq("share_type",share_type).eq("privacy_view",privacy_view).eq("channel",channel);
@@ -3930,7 +3969,9 @@ function updateShareHistoryBulkState(){
 }
 async function loadShareHistory(){
   if(!user||!$("shareHistoryList"))return;
-  const {data,error}=await sb.from("share_records").select("id,share_type,recipient_handle,privacy_view,share_token,channel,created_at").eq("owner_user_id",user.id).order("created_at",{ascending:false}).limit(30);
+  let qh=await sb.from("share_records").select("id,share_type,recipient_handle,privacy_view,share_token,channel,created_at,purpose").eq("owner_user_id",user.id).order("created_at",{ascending:false}).limit(30);
+  if(qh.error&&String(qh.error.message||"").toLowerCase().includes("purpose")) qh=await sb.from("share_records").select("id,share_type,recipient_handle,privacy_view,share_token,channel,created_at").eq("owner_user_id",user.id).order("created_at",{ascending:false}).limit(30);
+  const data=qh.data,error=qh.error;
   const list=$("shareHistoryList");list.innerHTML="";
   if($("shareHistorySelectAll")){ $("shareHistorySelectAll").checked=false; $("shareHistorySelectAll").indeterminate=false; }
   if($("shareHistoryBulkBar")) $("shareHistoryBulkBar").style.display="none";
@@ -3941,7 +3982,7 @@ async function loadShareHistory(){
     let valid=true,expires="";
     if(r.share_type==="temporary"&&r.share_token){const q=await sb.from("share_links").select("expires_at,revoked").eq("token",r.share_token).eq("user_id",user.id).maybeSingle();valid=!!q.data&&!q.data.revoked&&new Date(q.data.expires_at)>new Date();expires=q.data?.expires_at?format12HourDate(q.data.expires_at):""}
     const who=r.recipient_handle?"@"+r.recipient_handle:(r.channel==="dshario"?"DShario user":"Anyone / Link");
-    const histPurpose=matchSharePurpose(r);
+    const histPurpose=normalisePurpose(r.purpose)||matchSharePurpose(r);
     const purposeMeta=histPurpose?" • Share type: "+purposeLabel(histPurpose):"";
     const it=document.createElement("div");it.className="shareHistoryItem";it.dataset.shareRecordId=r.id;
     it.innerHTML=`<div class="shareHistorySelectWrap"><input class="shareHistorySelect" type="checkbox" aria-label="Select shared card"><div class="shareHistorySelectBody"><div class="shareHistoryTop"><strong>${r.share_type==="temporary"?"Temporary":"Permanent"} • ${escHtml(who)}</strong><span>${escHtml((r.privacy_view||"professional").replace(/^./,x=>x.toUpperCase()))}</span></div><div class="shareHistoryMeta">Shared ${format12HourDate(r.created_at)}${purposeMeta}${expires?" • Expires "+escHtml(expires):""}${r.share_type==="temporary"?" • "+(valid?"Active":"Expired / revoked"):""}</div><div class="shareHistoryActions"></div></div></div>`;
@@ -4318,7 +4359,7 @@ async function saveIncomingConnection(c,label){
   try{await sb.rpc("mark_incoming_notice_seen",{target_user_id:c.connected_user_id})}catch(e){}
   try{if(c.connection_update_at)await sb.rpc("mark_connection_update_seen",{target_user_id:c.connected_user_id,update_at:c.connection_update_at})}catch(e){}
   // The latest received share type is authoritative for the saved connection.
-  const incomingShareType=normalisePurpose(currentPublicPurpose||restoreReceivedPurpose(c.connected_user_id));
+  const incomingShareType=normalisePurpose(readConnectionPurpose(c.connected_user_id)||restoreReceivedPurpose(c.connected_user_id));
   if(incomingShareType) writeConnectionPurpose(c.connected_user_id,incomingShareType);
   recordConnectionSave(c.connected_user_id,c.saved_privacy_view||"professional",c.source_type||"permanent");
   msg(t("✓ Connection saved."),"ok");
@@ -4413,6 +4454,7 @@ async function loadMyConnections(){
     $("newConnectionsList").innerHTML=e;$("savedConnectionsList").innerHTML=e;return;
   }
 
+  await syncDirectSharePurposes();
   const rows=Array.isArray(data)?data:[];
   const incoming=rows.filter(c=>c.is_saved===false);
   const saved=rows.filter(c=>c.is_saved!==false).sort((a,b)=>{
