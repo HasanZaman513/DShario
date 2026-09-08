@@ -277,6 +277,8 @@ body,button,input,textarea,select,.tab,.mini,.btn,.actionBtn,.accountPill,.lead,
 .connectionReminder.done{background:#f0fdf4;border-color:#bbf7d0;color:#166534;text-decoration:line-through}
 #notesPanel,#remindersPanel{display:none;position:fixed;z-index:121;right:16px;top:82px;width:min(420px,calc(100vw - 32px));max-height:68vh;overflow:auto;background:#fff;border:1px solid #dbe5f2;border-radius:18px;box-shadow:0 18px 55px rgba(15,23,42,.22);padding:14px}
 #notesPanel.show,#remindersPanel.show{display:block}
+#followupPopup{display:none;position:fixed;z-index:180;left:50%;top:92px;transform:translateX(-50%);width:min(430px,calc(100vw - 28px));background:#fff;border:1px solid #dbe5f2;border-radius:18px;box-shadow:0 20px 60px rgba(15,23,42,.28);padding:16px}
+#followupPopup.show{display:block}.followupPopupTitle{font-weight:900;font-size:17px;margin-bottom:5px}.followupPopupName{font-weight:850;margin-top:8px}.followupPopupActions{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
 .quickPanelHead{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:10px}.quickPanelHead strong{font-size:18px}
 .quickPanelItem{border:1px solid #e2e8f0;border-radius:13px;padding:11px;margin-top:8px;background:#f8fbff}.quickPanelItem strong{display:block}.quickPanelItem .hint{margin-top:4px}.quickPanelEmpty{padding:16px 4px;color:#64748b;text-align:center}
 .reminderActions{display:flex;gap:7px;flex-wrap:wrap;margin-top:8px}
@@ -1709,6 +1711,7 @@ QRCodeCore.createBytes = function(buffer, rsBlocks) {
 </div>
 <div id="notesPanel" aria-live="polite"><div class="quickPanelHead"><strong>📝 Connection Notes</strong><button id="closeNotesBtn" class="mini" type="button">Close</button></div><div class="hint">Private notes you saved for your connections.</div><div id="notesList"></div></div>
 <div id="remindersPanel" aria-live="polite"><div class="quickPanelHead"><strong>⏰ Follow-up Reminders</strong><button id="closeRemindersBtn" class="mini" type="button">Close</button></div><div class="hint">Upcoming and overdue follow-ups for your connections.</div><div id="remindersList"></div></div>
+<div id="followupPopup" role="dialog" aria-live="assertive" aria-label="Follow-up reminder"><div class="followupPopupTitle">⏰ Follow-up Reminder</div><div id="followupPopupBody"></div><div id="followupPopupActions" class="followupPopupActions"></div></div>
 <div id="messagePopup" class="messagePopup" role="dialog" aria-live="polite">
   <h3 id="messagePopupTitle">Message from sender</h3>
   <p id="messagePopupText"></p>
@@ -2141,7 +2144,7 @@ QRCodeCore.createBytes = function(buffer, rsBlocks) {
 
       <div class="connectionSection">
         <div class="connectionSectionTitle">Saved Connections</div>
-        <div id="savedSearchRow"><input id="savedConnectionsSearch" placeholder="Search name, @DShario, category, note or how you met"><button id="savedFavouriteFilter" class="mini favoriteSearchBtn" type="button" title="Show favourites only" aria-label="Show favourites only">☆</button><button id="savedSearchIcon" class="mini searchIcon" type="button">🔍</button></div><div class="hint" style="margin-top:7px">Favourite, category and private note are visible only to you. During beta they are stored on this browser/device.</div>
+        <div id="savedSearchRow"><input id="savedConnectionsSearch" placeholder="Search name, @DShario, category, note or how you met"><button id="savedFavouriteFilter" class="mini favoriteSearchBtn" type="button" title="Show favourites only" aria-label="Show favourites only">☆</button><button id="savedSearchIcon" class="mini searchIcon" type="button">🔍</button></div><div class="hint" style="margin-top:7px">Favourite, category, private note, connection context and follow-up reminder are visible only to you. During beta they are stored on this browser/device.</div>
         <div id="savedConnectionsList" class="connectionsList"></div>
       </div>
     </div>
@@ -4146,6 +4149,7 @@ function connectionItem(c,isNew){
   const metaInfo=getConnectionMeta(c.connected_user_id);
   item.dataset.searchtext=[c.card_slug,c.nickname,c.full_name,c.full_name_bn,metaInfo.category,metaInfo.note,metaInfo.howMet].filter(Boolean).join(" ").toLowerCase();
   item.dataset.favorite=metaInfo.favorite?"1":"0";
+  item.dataset.connectionId=String(c.connected_user_id||"");
   item.dataset.expired=expired?"1":"0";
 
   const name=c.full_name||t("DShario connection");
@@ -4217,6 +4221,14 @@ function connectionItem(c,isNew){
   const fav=document.createElement("button");fav.className="mini favoriteBtn"+(metaInfo.favorite?" isFavorite":"");fav.textContent=metaInfo.favorite?"★ Favourite":"☆ Favourite";
   fav.onclick=()=>{setConnectionMeta(c.connected_user_id,{favorite:!metaInfo.favorite});loadMyConnections();};
   acts.appendChild(fav);
+
+  if(metaInfo.note&&!expired){
+    const editNote=document.createElement("button");editNote.className="mini";editNote.textContent="✏️ Edit Note";
+    editNote.onclick=()=>{const ed=item.querySelector(".connectionOrganiseEditor");const m=getConnectionMeta(c.connected_user_id);ed.querySelector(".organiseLabel").value=c.nickname||"";ed.querySelector(".organiseCategory").value=connectionCategories.includes(m.category)?m.category:"Other";ed.querySelector(".organiseNote").value=m.note||"";ed.querySelector(".organiseHowMet").value=howMetOptions.includes(m.howMet)?m.howMet:"Other";ed.querySelector(".organiseReminder").value=m.reminderAt?toLocalDateTimeInput(m.reminderAt):"";ed.classList.add("show");ed.querySelector(".organiseNote").focus();};
+    const deleteNote=document.createElement("button");deleteNote.className="mini";deleteNote.textContent="🗑 Delete Note";
+    deleteNote.onclick=()=>{if(!confirm("Delete this private note? The connection will be kept."))return;setConnectionMeta(c.connected_user_id,{note:""});msg("Private note deleted. Connection kept.","ok");loadMyConnections();renderConnectionNotes();};
+    acts.append(editNote,deleteNote);
+  }
 
   if(!expired){
     const organise=document.createElement("button");organise.className="mini";organise.textContent="Organise";
@@ -4328,20 +4340,60 @@ async function renderConnectionNotes(){
   const list=$("notesList");if(!list)return;list.innerHTML='<div class="quickPanelEmpty">Loading…</div>';
   const rows=await connectionRowsForQuickPanels();const withNotes=rows.map(c=>({c,m:getConnectionMeta(c.connected_user_id)})).filter(x=>x.m.note).sort((a,b)=>String(a.c.full_name||a.c.card_slug||"").localeCompare(String(b.c.full_name||b.c.card_slug||"")));
   list.innerHTML="";if(!withNotes.length){list.innerHTML='<div class="quickPanelEmpty">No connection notes yet.</div>';return}
-  withNotes.forEach(({c,m})=>{const el=document.createElement("div");el.className="quickPanelItem";el.innerHTML=`<strong>${escHtml(c.full_name||c.card_slug||"Connection")}</strong><div class="hint">${escHtml(m.category||m.howMet||"Saved connection")}</div><div style="margin-top:7px">📝 ${escHtml(m.note)}</div>`;list.appendChild(el)});
+  withNotes.forEach(({c,m})=>{
+    const el=document.createElement("div");el.className="quickPanelItem";
+    el.innerHTML=`<strong>${escHtml(c.full_name||c.card_slug||"Connection")}</strong><div class="hint">${escHtml(m.category||m.howMet||"Saved connection")}</div><div style="margin-top:7px">📝 ${escHtml(m.note)}</div><div class="reminderActions"></div>`;
+    const a=el.querySelector(".reminderActions");
+    const view=document.createElement("button");view.className="mini";view.textContent="View Connection";view.onclick=()=>focusConnection(c.connected_user_id);
+    const edit=document.createElement("button");edit.className="mini";edit.textContent="✏️ Edit";edit.onclick=()=>editConnectionNote(c.connected_user_id);
+    const del=document.createElement("button");del.className="mini";del.textContent="🗑 Delete";del.onclick=()=>{if(!confirm("Delete this private note? The connection will be kept."))return;setConnectionMeta(c.connected_user_id,{note:""});renderConnectionNotes();loadMyConnections();msg("Private note deleted. Connection kept.","ok");};
+    a.append(view,edit,del);list.appendChild(el);
+  });
 }
+function focusConnection(targetId){
+  $("notesPanel")?.classList.remove("show");$("remindersPanel")?.classList.remove("show");$("followupPopup")?.classList.remove("show");
+  const panel=$("myConnectionsPanel");if(panel)panel.scrollIntoView({behavior:"smooth",block:"start"});
+  setTimeout(()=>{const item=document.querySelector(`#savedConnectionsList .connectionItem[data-connection-id="${CSS.escape(String(targetId))}"]`);if(item){item.scrollIntoView({behavior:"smooth",block:"center"});}},350);
+}
+function editConnectionNote(targetId){
+  $("notesPanel")?.classList.remove("show");focusConnection(targetId);
+  setTimeout(()=>{const item=document.querySelector(`#savedConnectionsList .connectionItem[data-connection-id="${CSS.escape(String(targetId))}"]`);const organise=[...item?.querySelectorAll(".connectionActions .mini")||[]].find(b=>b.textContent==="Organise");if(organise)organise.click();setTimeout(()=>item?.querySelector(".organiseNote")?.focus(),80);},450);
+}
+
 async function renderReminders(){
   const list=$("remindersList");if(!list)return;list.innerHTML='<div class="quickPanelEmpty">Loading…</div>';
   const rows=await connectionRowsForQuickPanels();const items=rows.map(c=>({c,m:getConnectionMeta(c.connected_user_id)})).filter(x=>x.m.reminderAt).sort((a,b)=>{if(a.m.reminderDone!==b.m.reminderDone)return a.m.reminderDone?1:-1;return new Date(a.m.reminderAt)-new Date(b.m.reminderAt)});
   list.innerHTML="";if(!items.length){list.innerHTML='<div class="quickPanelEmpty">No follow-up reminders yet.</div>';return}
-  items.forEach(({c,m})=>{const overdue=!m.reminderDone&&new Date(m.reminderAt).getTime()<Date.now();const el=document.createElement("div");el.className="quickPanelItem";el.innerHTML=`<strong>${escHtml(c.full_name||c.card_slug||"Connection")}</strong><div class="hint">${m.reminderDone?"Completed":(overdue?"Overdue":"Upcoming")} • ${escHtml(format12HourDate(m.reminderAt))}</div>${m.note?`<div style="margin-top:6px">📝 ${escHtml(m.note)}</div>`:""}<div class="reminderActions"></div>`;const a=el.querySelector(".reminderActions");const done=document.createElement("button");done.className="mini";done.textContent=m.reminderDone?"Mark active":"✓ Mark done";done.onclick=()=>{setConnectionMeta(c.connected_user_id,{reminderDone:!m.reminderDone});renderReminders();loadMyConnections();};const clear=document.createElement("button");clear.className="mini";clear.textContent="Clear";clear.onclick=()=>{setConnectionMeta(c.connected_user_id,{reminderAt:"",reminderDone:false});renderReminders();loadMyConnections();};a.append(done,clear);list.appendChild(el)});
+  items.forEach(({c,m})=>{const overdue=!m.reminderDone&&new Date(m.reminderAt).getTime()<Date.now();const el=document.createElement("div");el.className="quickPanelItem";el.innerHTML=`<strong>${escHtml(c.full_name||c.card_slug||"Connection")}</strong><div class="hint">${m.reminderDone?"Completed":(overdue?"Overdue":"Upcoming")} • ${escHtml(format12HourDate(m.reminderAt))}</div>${m.note?`<div style="margin-top:6px">📝 ${escHtml(m.note)}</div>`:""}<div class="reminderActions"></div>`;const a=el.querySelector(".reminderActions");const view=document.createElement("button");view.className="mini";view.textContent="View Connection";view.onclick=()=>focusConnection(c.connected_user_id);const done=document.createElement("button");done.className="mini";done.textContent=m.reminderDone?"Mark active":"✓ Mark done";done.onclick=()=>{setConnectionMeta(c.connected_user_id,{reminderDone:!m.reminderDone});renderReminders();loadMyConnections();};const clear=document.createElement("button");clear.className="mini";clear.textContent="Clear";clear.onclick=()=>{setConnectionMeta(c.connected_user_id,{reminderAt:"",reminderDone:false});renderReminders();loadMyConnections();};a.append(view,done,clear);list.appendChild(el)});
 }
+let followupPopupBusy=false;
+async function checkNearFollowupReminder(){
+  if(!user||publicMode||followupPopupBusy||$("followupPopup")?.classList.contains("show"))return;
+  followupPopupBusy=true;
+  try{
+    const rows=await connectionRowsForQuickPanels();const now=Date.now(),near=30*60*1000;
+    const due=rows.map(c=>({c,m:getConnectionMeta(c.connected_user_id)})).filter(x=>x.m.reminderAt&&!x.m.reminderDone).filter(x=>new Date(x.m.reminderAt).getTime()-now<=near).sort((a,b)=>new Date(a.m.reminderAt)-new Date(b.m.reminderAt))[0];
+    if(!due)return;
+    const key=`dshario-reminder-popup:${user.id}:${due.c.connected_user_id}:${due.m.reminderAt}`;
+    try{if(sessionStorage.getItem(key)==="1")return;sessionStorage.setItem(key,"1");}catch(e){}
+    const when=new Date(due.m.reminderAt).getTime(),mins=Math.round((when-now)/60000);
+    const timing=mins>1?`Follow up in ${mins} minutes`:mins>=0?"Follow up is due now":"Follow-up is overdue";
+    $("followupPopupBody").innerHTML=`<div class="followupPopupName">${escHtml(due.c.full_name||due.c.card_slug||"Connection")}</div><div class="hint">${escHtml(timing)} • ${escHtml(format12HourDate(due.m.reminderAt))}</div>${due.m.note?`<div style="margin-top:9px">📝 ${escHtml(due.m.note)}</div>`:""}`;
+    const a=$("followupPopupActions");a.innerHTML="";
+    const view=document.createElement("button");view.className="mini";view.textContent="View Connection";view.onclick=()=>focusConnection(due.c.connected_user_id);
+    const done=document.createElement("button");done.className="mini";done.textContent="✓ Done";done.onclick=()=>{setConnectionMeta(due.c.connected_user_id,{reminderDone:true});$("followupPopup").classList.remove("show");loadMyConnections();renderReminders();};
+    const later=document.createElement("button");later.className="mini";later.textContent="Remind in 30 min";later.onclick=()=>{setConnectionMeta(due.c.connected_user_id,{reminderAt:new Date(Date.now()+30*60*1000).toISOString(),reminderDone:false});$("followupPopup").classList.remove("show");loadMyConnections();renderReminders();};
+    a.append(view,done,later);$("followupPopup").classList.add("show");
+  }finally{followupPopupBusy=false;}
+}
+setInterval(checkNearFollowupReminder,60000);
+
 if($("notesBtn")) $("notesBtn").onclick=async()=>{closeQuickPanels("notes");$("notesPanel").classList.toggle("show");if($("notesPanel").classList.contains("show"))await renderConnectionNotes();};
 if($("remindersBtn")) $("remindersBtn").onclick=async()=>{closeQuickPanels("reminders");$("remindersPanel").classList.toggle("show");if($("remindersPanel").classList.contains("show"))await renderReminders();};
 if($("closeNotesBtn")) $("closeNotesBtn").onclick=()=>$("notesPanel").classList.remove("show");
 if($("closeRemindersBtn")) $("closeRemindersBtn").onclick=()=>$("remindersPanel").classList.remove("show");
 
-function updateHeaderConnectionTools(){const show=!!user&&!publicMode;$("notesBtn")?.classList.toggle("show",show);$("remindersBtn")?.classList.toggle("show",show);if(!show){$("notesPanel")?.classList.remove("show");$("remindersPanel")?.classList.remove("show");}}
+function updateHeaderConnectionTools(){const show=!!user&&!publicMode;$("notesBtn")?.classList.toggle("show",show);$("remindersBtn")?.classList.toggle("show",show);if(!show){$("notesPanel")?.classList.remove("show");$("remindersPanel")?.classList.remove("show");$("followupPopup")?.classList.remove("show");}else setTimeout(checkNearFollowupReminder,900);}
 
 function updateAccountSendType(){
   const temp=$("accountSendType")?.value==="temporary";
