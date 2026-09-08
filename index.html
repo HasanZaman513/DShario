@@ -135,6 +135,7 @@ button,input,textarea{font:inherit}button{cursor:pointer}.app{max-width:980px;ma
 #sendMyDsharioPanel{display:none!important}
 #shareViewBox,#actionGrid{display:none!important}
 .simpleShare{margin-top:16px;text-align:center}.shareWizard{display:none;margin-top:12px;padding:14px;border:1px solid #dbe5f2;border-radius:16px;background:#fff}.shareWizard.show{display:block}.wizStep{display:none}.wizStep.show{display:block}.wizChoices{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-top:10px}.wizChoice{min-height:60px;border:1px solid #cfdced;border-radius:14px;background:#f8fbff;font-weight:850}.wizActions{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin-top:12px}.wizTemp{display:none;margin-top:10px;text-align:left}.wizTemp.show{display:block}
+.purposePrompt{margin-bottom:14px}.purposeChoices{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-top:10px}.purposeChoice{min-height:62px;border:1px solid #cfdced;border-radius:14px;background:#f8fbff;color:#173d7d;font-weight:850;font-size:15px;display:flex;align-items:center;justify-content:center;gap:7px;padding:9px}.purposeChoice.active{border:2px solid #175fc0;background:#eef6ff;box-shadow:0 0 0 2px rgba(23,95,192,.08)}.purposeHint{margin-top:8px;font-size:12px;color:#64748b;line-height:1.4}.audienceBlock{margin-top:15px;padding-top:13px;border-top:1px solid #e3ebf5}.audienceBlock.disabled{opacity:.5;pointer-events:none}
 #savedSearchRow{display:flex;gap:8px;align-items:center}.searchIcon{min-width:46px;font-size:18px}
 #forgotPasswordBtn{border:0;background:transparent;color:#175fc0;font-weight:800;padding:7px 0;cursor:pointer;text-decoration:underline}
 #resetPasswordBox{display:none;margin-top:12px}.cardUpdateTag{display:inline-block;margin-top:6px;padding:4px 9px;border-radius:999px;background:#dcfce7;color:#166534;font-size:12px;font-weight:900}
@@ -1859,10 +1860,22 @@ QRCodeCore.createBytes = function(buffer, rsBlocks) {
 <div id="simpleShare" class="simpleShare"><button id="openShareWizardBtn" class="btn" type="button">Share Card</button></div>
   <div id="shareWizard" class="shareWizard">
     <div id="wiz1" class="wizStep show">
-      <strong>Who do you want to share with?</strong>
-      <div class="wizChoices">
-        <button id="wizAnyone" class="wizChoice">Anyone</button>
-        <button id="wizMember" class="wizChoice">DShario user</button>
+      <div class="purposePrompt">
+        <strong>What is the purpose of this connection?</strong>
+        <div class="purposeChoices">
+          <button id="purposeBusiness" class="purposeChoice" type="button">💼 Business</button>
+          <button id="purposeCareer" class="purposeChoice" type="button">👔 Career</button>
+          <button id="purposeNetworking" class="purposeChoice" type="button">🤝 Networking</button>
+          <button id="purposeSocial" class="purposeChoice" type="button">👥 Social</button>
+        </div>
+        <div id="purposeHint" class="purposeHint">Choose a purpose. DShario will recommend a privacy view, which you can change before sharing.</div>
+      </div>
+      <div id="wizAudienceBlock" class="audienceBlock disabled">
+        <strong>Share with</strong>
+        <div class="wizChoices">
+          <button id="wizAnyone" class="wizChoice">Anyone</button>
+          <button id="wizMember" class="wizChoice">DShario user</button>
+        </div>
       </div>
     </div>
     <div id="wiz2" class="wizStep">
@@ -1875,6 +1888,7 @@ QRCodeCore.createBytes = function(buffer, rsBlocks) {
     <div id="wiz3" class="wizStep">
       <div id="wizPrivacyWrap">
         <label style="font-weight:850">Privacy view</label>
+        <div id="wizPurposeSummary" class="purposeHint" style="margin:4px 0 7px">Recommended from your sharing purpose.</div>
         <select id="wizView">
           <option value="professional">Professional</option>
           <option value="business">Business</option>
@@ -2193,7 +2207,7 @@ QRCodeCore.createBytes = function(buffer, rsBlocks) {
     </div>
     <div class="helpSteps">
       <div class="helpStep"><strong id="hs1">1. Create your card</strong><span id="hb1">Add the professional and contact information you want to use. Keep optional details blank when you do not need them.</span></div>
-      <div class="helpStep"><strong id="hs2">2. Choose a privacy view</strong><span id="hb2">Professional, Business, Social or Full controls what the recipient can see.</span></div>
+      <div class="helpStep"><strong id="hs2">2. Choose a sharing purpose and privacy view</strong><span id="hb2">Choose Business, Career, Networking or Social. DShario recommends a suitable privacy view, and you can change it before sharing.</span></div>
       <div class="helpStep"><strong id="hs3">3. Choose how to share</strong><span id="hb3">My DShario Link is your permanent card address. Temporary Share lasts 24 hours, 7 days or 30 days and can be revoked early.</span></div>
       <div class="helpStep"><strong id="hs4">4. Add PDFs to Temporary Share</strong><span id="hb4">Add an optional message and upload up to 2 PDFs, maximum 2 MB each. The message and PDFs stay available only while the Temporary Share is valid. Expiry or revocation stops future DShario access, but cannot remove a copy already downloaded by the recipient.</span></div>
       <div class="helpStep"><strong id="hs5">5. Share, QR and download</strong><span id="hb5">Send a link or QR. You can also download a digital-card image; its QR returns to the live DShario card.</span></div>
@@ -3671,10 +3685,23 @@ function updateWizPrivacyHelp(){
   };
   box.textContent=window.currentLang==="bn"?(bn[v]||bn.professional):en;
 }
-if($("wizView")) $("wizView").addEventListener("change",updateWizPrivacyHelp);
+if($("wizView")) $("wizView").addEventListener("change",()=>{updateWizPrivacyHelp();if(wizPurpose&&$("wizPurposeSummary"))$("wizPurposeSummary").textContent=`Sharing purpose: ${wizPurposeLabel[wizPurpose]}. Privacy view manually set to ${$("wizView").value[0].toUpperCase()+$("wizView").value.slice(1)}.`;});
 
-let wizAudience="",wizType="",wizRecipients=[];
+let wizAudience="",wizType="",wizRecipients=[],wizPurpose="";
+const wizPurposeMap={business:"business",career:"professional",networking:"professional",social:"social"};
+const wizPurposeLabel={business:"Business",career:"Career",networking:"Networking",social:"Social"};
 function wizStep(id){["wiz1","wiz2","wiz3"].forEach(x=>$(x)?.classList.remove("show"));$(id)?.classList.add("show")}
+function setWizPurpose(p){
+  wizPurpose=p;
+  ["business","career","networking","social"].forEach(x=>$("purpose"+x[0].toUpperCase()+x.slice(1))?.classList.toggle("active",x===p));
+  const v=wizPurposeMap[p]||"professional";
+  if($("wizView"))$("wizView").value=v;
+  updateWizPrivacyHelp();
+  if($("wizAudienceBlock"))$("wizAudienceBlock").classList.remove("disabled");
+  if($("purposeHint"))$("purposeHint").textContent=`${wizPurposeLabel[p]} selected — recommended ${v[0].toUpperCase()+v.slice(1)} privacy view. You can change it before sharing.`;
+  if($("wizPurposeSummary"))$("wizPurposeSummary").textContent=`Sharing purpose: ${wizPurposeLabel[p]}. Recommended view selected; you remain in control.`;
+}
+[["purposeBusiness","business"],["purposeCareer","career"],["purposeNetworking","networking"],["purposeSocial","social"]].forEach(([id,p])=>{if($(id))$(id).onclick=()=>setWizPurpose(p)});
 function renderWizDocs(){
   const b=$("wizDocs");if(!b)return;b.innerHTML="";
   if(!ownerDocuments?.length){b.innerHTML='<div class="hint">No PDFs uploaded.</div>';return}
@@ -3686,10 +3713,10 @@ function renderWizDocs(){
     row.appendChild(rm);b.appendChild(row);
   });
 }
-$("openShareWizardBtn").onclick=async()=>{await loadOwnerDocuments();renderWizDocs();wizRecipients=[];renderWizRecipients();$("shareWizard").classList.add("show");wizStep("wiz1");updateWizPrivacyHelp();loadShareHistory()};
+$("openShareWizardBtn").onclick=async()=>{await loadOwnerDocuments();renderWizDocs();wizRecipients=[];renderWizRecipients();wizPurpose="";wizAudience="";wizType="";["purposeBusiness","purposeCareer","purposeNetworking","purposeSocial"].forEach(id=>$(id)?.classList.remove("active"));if($("wizAudienceBlock"))$("wizAudienceBlock").classList.add("disabled");if($("purposeHint"))$("purposeHint").textContent="Choose a purpose. DShario will recommend a privacy view, which you can change before sharing.";$("shareWizard").classList.add("show");wizStep("wiz1");updateWizPrivacyHelp();loadShareHistory()};
 $("wizClose").onclick=()=>$("shareWizard").classList.remove("show");
-$("wizAnyone").onclick=()=>{wizAudience="anyone";wizStep("wiz2")};
-$("wizMember").onclick=()=>{wizAudience="member";wizStep("wiz2")};
+$("wizAnyone").onclick=()=>{if(!wizPurpose)return;wizAudience="anyone";wizStep("wiz2")};
+$("wizMember").onclick=()=>{if(!wizPurpose)return;wizAudience="member";wizStep("wiz2")};
 function chooseWiz(t){
   wizType=t;wizStep("wiz3");
   $("wizTemp").classList.toggle("show",t==="temporary");
