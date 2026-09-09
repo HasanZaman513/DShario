@@ -3607,61 +3607,114 @@ if($("connectionOnlyVcfBtn")) $("connectionOnlyVcfBtn").onclick=saveCurrentCardT
 function loadImg(src){return new Promise((resolve,reject)=>{const i=new Image();i.onload=()=>resolve(i);i.onerror=reject;i.src=src})}
 async function downloadCurrentCardAsImage(viewOverride,templateOverride){
   const d=currentCard||{}, view=viewOverride||activePrivacyView(), template=templateOverride||"classic";
-  // RC27: preserve RC26 high-resolution 90:55 layout; refine only the downloaded WhatsApp icon.
-  // RC26: high-resolution 90:55-style landscape proportion for cleaner screen sharing and standard-card printing.
   const W=1440,H=880;
   const c=document.createElement("canvas"); c.width=W; c.height=H;
   const accent=d.card_color||"#eff6ff";
   let bg=accent,fg=contrast(bg),mt=muted(bg);
   const x=c.getContext("2d");
+  const rr=(cx,cy,w,h,r)=>{x.beginPath();if(x.roundRect)x.roundRect(cx,cy,w,h,r);else x.rect(cx,cy,w,h)};
+
   if(template==="clean"){
-    // RC32.9 Elegant template: refined line-card layout inspired by classic printed cards.
-    bg="#fffdfa";fg="#251f1c";mt="#75645c";x.fillStyle=bg;x.fillRect(0,0,W,H);
-    // very light accent wash so the template follows the user's selected card colour without looking busy
-    x.save();x.globalAlpha=.10;x.fillStyle=accent;x.fillRect(0,0,W,H);x.restore();
-    const line="#9a7768";x.strokeStyle=line;x.lineWidth=2;
-    // top-right and left/bottom framing lines
-    x.beginPath();x.moveTo(760,62);x.lineTo(1335,62);x.lineTo(1335,300);x.stroke();
-    x.beginPath();x.moveTo(210,335);x.lineTo(210,775);x.lineTo(1060,775);x.stroke();
-    // subtle DS watermark, intentionally very faint
-    x.save();x.globalAlpha=.035;x.fillStyle="#6f5147";x.font="900 250px Arial, sans-serif";x.fillText("DS",905,430);x.restore();
+    // Elegant: warm printed-card styling, square photo, fine lines, no watermark.
+    bg="#fffaf5"; fg="#33231c"; mt="#806c61";
+    x.fillStyle=bg; x.fillRect(0,0,W,H);
+    x.save(); x.globalAlpha=.065; x.fillStyle=accent; x.fillRect(0,0,W,H); x.restore();
+    x.strokeStyle="#a27b67"; x.lineWidth=2;
+    rr(26,26,W-52,H-52,26); x.stroke();
+    x.beginPath(); x.moveTo(620,62); x.lineTo(1340,62); x.lineTo(1340,300); x.stroke();
+    x.beginPath(); x.moveTo(455,745); x.lineTo(1330,745); x.stroke();
   }else if(template==="modern"){
-    bg="#ffffff";fg="#0f172a";mt="#64748b";x.fillStyle=bg;x.fillRect(0,0,W,H);
-    x.fillStyle=accent;x.fillRect(0,0,360,H);
-    const g=x.createLinearGradient(360,0,560,0);g.addColorStop(0,accent);g.addColorStop(1,"#ffffff");x.globalAlpha=.20;x.fillStyle=g;x.fillRect(360,0,200,H);x.globalAlpha=1;
-    // Light fixed-template shades and watermark: decorative only, never affects card data.
-    x.save();x.globalAlpha=.055;x.fillStyle=accent;x.beginPath();x.arc(1260,120,250,0,Math.PI*2);x.fill();x.beginPath();x.arc(1120,760,330,0,Math.PI*2);x.fill();x.restore();
-    x.save();x.globalAlpha=.035;x.fillStyle="#0f172a";x.font="900 260px Arial, sans-serif";x.fillText("DS",760,315);x.restore();
-    x.fillStyle="#ffffff";x.font="900 54px Arial, sans-serif";x.fillText("DS",78,720);x.font="800 22px Arial, sans-serif";x.fillText("DShario",78,776);
+    // Modern: white, cool blue accents, oval portrait, soft bottom waves, no watermark/logo block.
+    bg="#ffffff"; fg="#0f274a"; mt="#5d7392";
+    x.fillStyle=bg; x.fillRect(0,0,W,H);
+    x.strokeStyle="rgba(72,139,226,.34)"; x.lineWidth=2;
+    rr(26,26,W-52,H-52,28); x.stroke();
+    // subtle waves along the bottom only
+    x.save();
+    x.globalAlpha=.22; x.fillStyle="#a9cef8";
+    x.beginPath();x.moveTo(26,690);x.bezierCurveTo(300,770,510,760,760,715);x.bezierCurveTo(1010,670,1190,790,1414,720);x.lineTo(1414,854);x.lineTo(26,854);x.closePath();x.fill();
+    x.globalAlpha=.18; x.fillStyle="#6fa9ef";
+    x.beginPath();x.moveTo(26,760);x.bezierCurveTo(330,690,600,805,860,755);x.bezierCurveTo(1110,705,1240,840,1414,780);x.lineTo(1414,854);x.lineTo(26,854);x.closePath();x.fill();
+    x.restore();
   }else{
-    x.fillStyle=bg;x.fillRect(0,0,W,H);x.strokeStyle="rgba(30,64,175,.16)";x.lineWidth=3;x.beginPath();if(x.roundRect)x.roundRect(30,30,W-60,H-60,38);else x.rect(30,30,W-60,H-60);x.stroke();
+    x.fillStyle=bg;x.fillRect(0,0,W,H);x.strokeStyle="rgba(30,64,175,.16)";x.lineWidth=3;rr(30,30,W-60,H-60,38);x.stroke();
   }
+
   let hasPhoto=!!d.photo_url;
-  if(hasPhoto){try{const img=await loadImg(d.photo_url);x.save();let px=82,py=76,pw=220,ph=220;if(template==="clean"){px=82;py=72;pw=220;ph=245;x.beginPath();if(x.roundRect)x.roundRect(px,py,pw,ph,24);else x.rect(px,py,pw,ph)}else if(template==="modern"){px=70;py=90;pw=220;ph=220;x.beginPath();x.arc(px+pw/2,py+ph/2,pw/2,0,Math.PI*2)}else{x.beginPath();if(x.roundRect)x.roundRect(px,py,pw,ph,32);else x.rect(px,py,pw,ph)}x.clip();const sc=Math.max(pw/img.width,ph/img.height),w=img.width*sc,h=img.height*sc;x.drawImage(img,px+(pw-w)/2,py+(ph-h)/2,w,h);x.restore()}catch{hasPhoto=false}}
+  if(hasPhoto){
+    try{
+      const img=await loadImg(d.photo_url); x.save();
+      let px=82,py=76,pw=220,ph=220;
+      if(template==="clean"){
+        px=70;py=82;pw=205;ph=205;
+        rr(px,py,pw,ph,18);x.clip();
+      }else if(template==="modern"){
+        px=72;py=70;pw=205;ph=250;
+        x.beginPath();x.ellipse(px+pw/2,py+ph/2,pw/2,ph/2,0,0,Math.PI*2);x.clip();
+      }else{
+        rr(px,py,pw,ph,32);x.clip();
+      }
+      const sc=Math.max(pw/img.width,ph/img.height),w=img.width*sc,h=img.height*sc;
+      x.drawImage(img,px+(pw-w)/2,py+(ph-h)/2,w,h);x.restore();
+      // light portrait border
+      if(template==="modern"){
+        x.save();x.strokeStyle="rgba(74,144,226,.32)";x.lineWidth=2;x.beginPath();x.ellipse(px+pw/2,py+ph/2,pw/2,ph/2,0,0,Math.PI*2);x.stroke();x.restore();
+      }else if(template==="clean"){
+        x.save();x.strokeStyle="rgba(155,119,101,.36)";x.lineWidth=2;rr(px,py,pw,ph,18);x.stroke();x.restore();
+      }
+    }catch{hasPhoto=false}
+  }
+
   function fit(v,maxW,fontSize=22,weight=600){v=String(v||"").trim();if(!v)return "";x.font=`${weight} ${fontSize}px Arial, sans-serif`;if(x.measureText(v).width<=maxW)return v;while(v.length>1&&x.measureText(v+"…").width>maxW)v=v.slice(0,-1);return v+"…"}
   function socialHandle(v){try{const u=new URL(cleanUrl(v));let p=u.pathname.split('/').filter(Boolean),z=p.pop()||u.hostname.replace(/^www\./,'');if(['share','profile.php','people'].includes(z.toLowerCase()))z=u.hostname.replace(/^www\./,'');return z.length>34?z.slice(0,31)+'…':z}catch{return String(v||'').slice(0,34)}}
   function iconCircle(cx,cy,kind){
-    const r=27;x.save();x.lineWidth=2;x.strokeStyle='rgba(30,64,175,.15)';x.fillStyle='rgba(255,255,255,.72)';x.beginPath();x.arc(cx,cy,r,0,Math.PI*2);x.fill();x.stroke();
+    const elegant=template==="clean", modern=template==="modern", r=27;
+    x.save();x.lineWidth=2;
+    if(elegant){x.strokeStyle='rgba(145,103,78,.28)';x.fillStyle='#9b6d50';}
+    else{x.strokeStyle='rgba(30,64,175,.15)';x.fillStyle='rgba(255,255,255,.84)';}
+    x.beginPath();x.arc(cx,cy,r,0,Math.PI*2);x.fill();x.stroke();
     x.textAlign='center';x.textBaseline='middle';x.font='700 27px Arial, sans-serif';
+    if(elegant){
+      x.fillStyle='#fff';
+      if(kind==='linkedin'){x.font='800 23px Arial, sans-serif';x.fillText('in',cx,cy+1)}
+      else if(kind==='facebook'){x.font='900 32px Arial, sans-serif';x.fillText('f',cx,cy+4)}
+      else if(kind==='instagram'){x.strokeStyle='#fff';x.lineWidth=3;x.beginPath();if(x.roundRect)x.roundRect(cx-14,cy-14,28,28,8);else x.rect(cx-14,cy-14,28,28);x.stroke();x.beginPath();x.arc(cx,cy,7,0,Math.PI*2);x.stroke();}
+      else if(kind==='whatsapp'){x.font='700 23px Arial, sans-serif';x.fillText('◉',cx,cy)}
+      else if(kind==='phone'){x.font='700 24px Arial, sans-serif';x.fillText('☎',cx,cy+1)}
+      else if(kind==='email'){x.font='700 23px Arial, sans-serif';x.fillText('✉',cx,cy)}
+      else if(kind==='location'){x.font='700 25px Arial, sans-serif';x.fillText('●',cx,cy-4);x.beginPath();x.moveTo(cx-7,cy+4);x.lineTo(cx,cy+16);x.lineTo(cx+7,cy+4);x.closePath();x.fill();}
+      else if(kind==='website'){x.font='700 24px Arial, sans-serif';x.fillText('◎',cx,cy)}
+      x.restore(); return;
+    }
     if(kind==='linkedin'){x.fillStyle='#0A66C2';x.beginPath();x.arc(cx,cy,23,0,Math.PI*2);x.fill();x.fillStyle='#fff';x.font='800 25px Arial, sans-serif';x.fillText('in',cx,cy+1)}
     else if(kind==='facebook'){x.fillStyle='#1877F2';x.beginPath();x.arc(cx,cy,23,0,Math.PI*2);x.fill();x.fillStyle='#fff';x.font='900 34px Arial, sans-serif';x.fillText('f',cx,cy+4)}
     else if(kind==='instagram'){x.strokeStyle='#C13584';x.lineWidth=4;x.beginPath();if(x.roundRect)x.roundRect(cx-16,cy-16,32,32,9);else x.rect(cx-16,cy-16,32,32);x.stroke();x.beginPath();x.arc(cx,cy,8,0,Math.PI*2);x.stroke();x.fillStyle='#C13584';x.beginPath();x.arc(cx+10,cy-10,3,0,Math.PI*2);x.fill()}
-    else if(kind==='whatsapp'){/* RC28: use the same recognizable WhatsApp glyph as the live card, scaled into the download canvas. */x.fillStyle='#25D366';x.beginPath();x.arc(cx,cy,23,0,Math.PI*2);x.fill();x.fillStyle='#fff';const wp=new Path2D('M20.5 3.5A11.8 11.8 0 0 0 12.1 0C5.6 0 .3 5.3.3 11.8c0 2.1.5 4.1 1.6 5.9L.2 24l6.5-1.7a11.7 11.7 0 0 0 5.4 1.4h.1c6.5 0 11.8-5.3 11.8-11.8 0-3.2-1.2-6.1-3.5-8.4ZM12.2 21.7h-.1c-1.7 0-3.5-.5-5-1.4l-.4-.2-3.8 1 1-3.7-.2-.4a9.8 9.8 0 1 1 8.5 4.7Zm5.4-7.3c-.3-.1-1.7-.8-2-.9-.3-.1-.5-.1-.7.2-.2.3-.8.9-1 1.1-.2.2-.4.2-.7.1-.3-.1-1.3-.5-2.4-1.5-.9-.8-1.5-1.8-1.7-2.1-.2-.3 0-.5.1-.6l.5-.6c.2-.2.2-.3.3-.5.1-.2 0-.4 0-.5-.1-.1-.7-1.7-1-2.3-.3-.6-.5-.5-.7-.5h-.6c-.2 0-.5.1-.8.4-.3.3-1 1-1 2.5s1.1 2.9 1.2 3.1c.1.2 2.2 3.3 5.3 4.6.7.3 1.3.5 1.8.6.8.2 1.5.2 2 .1.6-.1 1.7-.7 1.9-1.4.2-.7.2-1.3.2-1.4-.1-.2-.3-.3-.6-.4Z');x.save();x.translate(cx-17,cy-17);x.scale(34/24,34/24);x.fill(wp);x.restore()}
-    else if(kind==='phone'){x.fillStyle='#2563EB';x.font='700 25px Arial, sans-serif';x.fillText('☎',cx,cy+1)}
-    else if(kind==='email'){x.fillStyle='#DC2626';x.font='700 25px Arial, sans-serif';x.fillText('✉',cx,cy)}
-    else if(kind==='location'){x.fillStyle='#EA4335';x.font='700 28px Arial, sans-serif';x.fillText('●',cx,cy-4);x.beginPath();x.moveTo(cx-8,cy+4);x.lineTo(cx,cy+17);x.lineTo(cx+8,cy+4);x.closePath();x.fill();x.fillStyle='#fff';x.beginPath();x.arc(cx,cy-4,4,0,Math.PI*2);x.fill()}
-    else if(kind==='website'){x.fillStyle='#475569';x.font='700 26px Arial, sans-serif';x.fillText('◎',cx,cy)}
+    else if(kind==='whatsapp'){x.fillStyle='#25D366';x.beginPath();x.arc(cx,cy,23,0,Math.PI*2);x.fill();x.fillStyle='#fff';const wp=new Path2D('M20.5 3.5A11.8 11.8 0 0 0 12.1 0C5.6 0 .3 5.3.3 11.8c0 2.1.5 4.1 1.6 5.9L.2 24l6.5-1.7a11.7 11.7 0 0 0 5.4 1.4h.1c6.5 0 11.8-5.3 11.8-11.8 0-3.2-1.2-6.1-3.5-8.4ZM12.2 21.7h-.1c-1.7 0-3.5-.5-5-1.4l-.4-.2-3.8 1 1-3.7-.2-.4a9.8 9.8 0 1 1 8.5 4.7Zm5.4-7.3c-.3-.1-1.7-.8-2-.9-.3-.1-.5-.1-.7.2-.2.3-.8.9-1 1.1-.2.2-.4.2-.7.1-.3-.1-1.3-.5-2.4-1.5-.9-.8-1.5-1.8-1.7-2.1-.2-.3 0-.5.1-.6l.5-.6c.2-.2.2-.3.3-.5.1-.2 0-.4 0-.5-.1-.1-.7-1.7-1-2.3-.3-.6-.5-.5-.7-.5h-.6c-.2 0-.5.1-.8.4-.3.3-1 1-1 2.5s1.1 2.9 1.2 3.1c.1.2 2.2 3.3 5.3 4.6.7.3 1.3.5 1.8.6.8.2 1.5.2 2 .1.6-.1 1.7-.7 1.9-1.4.2-.7.2-1.3.2-1.4-.1-.2-.3-.3-.6-.4Z');x.save();x.translate(cx-17,cy-17);x.scale(34/24,34/24);x.fill(wp);x.restore()}
+    else if(kind==='phone'){x.fillStyle='#3b82f6';x.font='700 25px Arial, sans-serif';x.fillText('☎',cx,cy+1)}
+    else if(kind==='email'){x.fillStyle='#ef4444';x.font='700 25px Arial, sans-serif';x.fillText('✉',cx,cy)}
+    else if(kind==='location'){x.fillStyle='#ef4444';x.font='700 28px Arial, sans-serif';x.fillText('●',cx,cy-4);x.beginPath();x.moveTo(cx-8,cy+4);x.lineTo(cx,cy+17);x.lineTo(cx+8,cy+4);x.closePath();x.fill();x.fillStyle='#fff';x.beginPath();x.arc(cx,cy-4,4,0,Math.PI*2);x.fill()}
+    else if(kind==='website'){x.fillStyle='#64748b';x.font='700 26px Arial, sans-serif';x.fillText('◎',cx,cy)}
     x.restore();
   }
-  const name=localizedCardText(d,"full_name")||t("My DShario"), tx=template==="modern"?430:(template==="clean"?(hasPhoto?760:700):(hasPhoto?350:88)), maxW=template==="modern"?900:(template==="clean"?(hasPhoto?560:640):(hasPhoto?980:1240));
-  const nameFs=name.length>30?42:name.length>22?47:(hasPhoto?51:58);
-  x.textBaseline="top";x.fillStyle=fg;x.font=`900 ${nameFs}px Arial, sans-serif`;
-  if(template==="clean"){x.textAlign="right";x.fillText(fit(name,maxW,nameFs,900),1330,84);}else{x.textAlign="left";x.fillText(fit(name,maxW,nameFs,900),tx,82);}
-  let y=82+nameFs+17;
-  if(view!=="social"){
-    const lines=[[localizedCardText(d,"job_title"),29,mt,700],[localizedCardText(d,"company"),28,fg,800],[localizedCardText(d,"description"),22,mt,500]];
-    for(const [v,fs,col,w] of lines){if(v){x.fillStyle=col;x.font=`${w} ${fs}px Arial, sans-serif`;if(template==="clean"){x.textAlign="right";x.fillText(fit(v,maxW,fs,w),1330,y)}else{x.textAlign="left";x.fillText(fit(v,maxW,fs,w),tx,y)}y+=fs+14}}
+
+  const name=localizedCardText(d,"full_name")||t("My DShario");
+  let tx,maxW,nameY=76,nameAlign='left';
+  if(template==="modern"){
+    tx=hasPhoto?330:90; maxW=hasPhoto?760:1000;
+  }else if(template==="clean"){
+    tx=1320; maxW=hasPhoto?700:980; nameAlign='right'; nameY=78;
+  }else{
+    tx=hasPhoto?350:88; maxW=hasPhoto?980:1240;
   }
+  const nameFs=name.length>30?40:name.length>22?46:(hasPhoto?50:56);
+  x.textBaseline="top";x.fillStyle=fg;x.font=`900 ${nameFs}px Arial, sans-serif`;x.textAlign=nameAlign;
+  x.fillText(fit(name,maxW,nameFs,900),tx,nameY);
+  let y=nameY+nameFs+14;
+  if(view!=="social"){
+    const lines=[[localizedCardText(d,"job_title"),28,mt,700],[localizedCardText(d,"company"),27,fg,800],[localizedCardText(d,"description"),21,mt,500]];
+    for(const [v,fs,col,w] of lines){if(v){x.fillStyle=col;x.font=`${w} ${fs}px Arial, sans-serif`;x.textAlign=nameAlign;x.fillText(fit(v,maxW,fs,w),tx,y);y+=fs+12}}
+  }
+
   const direct=view==="business"||view==="full", items=[];
   if(d.location&&direct)items.push([t("Location"),d.location,'location']);
   if(d.phone&&direct&&d.show_phone!==false)items.push([window.currentLang==="bn"?"মোবাইল":"Mobile",d.phone,'phone']);
@@ -3672,29 +3725,46 @@ async function downloadCurrentCardAsImage(viewOverride,templateOverride){
   if(d.facebook_url&&(view==="social"||view==="full"))items.push([t("Facebook"),socialHandle(d.facebook_url),'facebook']);
   if(d.instagram_url&&(view==="social"||view==="full"))items.push([t("Instagram"),socialHandle(d.instagram_url),'instagram']);
 
-  const isSparseSocial=view==="social"&&items.length<=3;
-  const qrSize=template==="modern"?170:(template==="clean"?190:(isSparseSocial?250:190)), qrX=template==="modern"?95:(template==="clean"?1120:(isSparseSocial?1080:1160)), qrY=template==="modern"?500:(template==="clean"?520:(isSparseSocial?370:570));
-  const rows=Math.ceil(items.length/2), colX=template==="modern"?[430,900]:(template==="clean"?[245,650]:[92,625]), colW=template==="modern"?350:(template==="clean"?330:410);
-  const minStart=template==="clean"?360:(hasPhoto?Math.max(350,y+25):Math.max(285,y+30));
-  const rowH=rows<=2?108:rows===3?94:rows===4?82:70;
-  const valueFs=items.length>6?19:22;
-  const maxBlockH=Math.max(0,(rows-1)*rowH), startY=isSparseSocial?Math.max(320,minStart):Math.min(minStart,680-maxBlockH);
+  let qrSize,qrX,qrY,colX,colW,minStart;
+  if(template==="modern"){
+    qrSize=185; qrX=1165; qrY=165; // deliberately higher for balance
+    colX=hasPhoto?[330,825]:[90,590]; colW=390; minStart=Math.max(320,y+24);
+  }else if(template==="clean"){
+    qrSize=185; qrX=1155; qrY=510;
+    colX=hasPhoto?[300,745]:[90,610]; colW=360; minStart=hasPhoto?340:300;
+    // vertical divider after photo area when a photo exists
+    if(hasPhoto){x.save();x.strokeStyle="#a27b67";x.lineWidth=2;x.beginPath();x.moveTo(286,325);x.lineTo(286,710);x.stroke();x.restore();}
+  }else{
+    const isSparseSocial=view==="social"&&items.length<=3;
+    qrSize=isSparseSocial?250:190; qrX=isSparseSocial?1080:1160; qrY=isSparseSocial?370:570;
+    colX=[92,625];colW=410;minStart=hasPhoto?Math.max(350,y+25):Math.max(285,y+30);
+  }
+  const rows=Math.ceil(items.length/2), rowH=rows<=2?108:rows===3?94:rows===4?82:70, valueFs=items.length>6?19:22;
+  const maxBlockH=Math.max(0,(rows-1)*rowH), startY=Math.min(minStart,690-maxBlockH);
   items.forEach((it,i)=>{
     const col=i%2,row=Math.floor(i/2),baseX=colX[col],yy=startY+row*rowH,icx=baseX+27,icy=yy+30,txtX=baseX+72;
-    if(yy+58>745)return;
+    if(yy+58>735)return;
     iconCircle(icx,icy,it[2]);
     x.textAlign='left';x.textBaseline='top';x.fillStyle=mt;x.font='700 15px Arial, sans-serif';x.fillText(it[0],txtX,yy+4);
     x.fillStyle=fg;x.font=`600 ${valueFs}px Arial, sans-serif`;x.fillText(fit(it[1],colW,valueFs,600),txtX,yy+27);
   });
+
   const qrTarget=publicMode?((currentPublicSourceType==="temporary"&&currentPublicShareToken)?location.origin+location.pathname+"?share="+encodeURIComponent(currentPublicShareToken):shareUrl(d)):(d?.slug?location.origin+location.pathname+"?card="+encodeURIComponent(d.slug)+"&view=full":shareUrl(d));
-  try{const holder=document.createElement('div');holder.style.cssText='position:fixed;left:-9999px;top:-9999px;background:#fff';document.body.appendChild(holder);new QRCode(holder,{text:qrTarget,width:qrSize,height:qrSize,colorDark:'#000000',colorLight:'#ffffff',correctLevel:QRCode.CorrectLevel.M});await new Promise(r=>setTimeout(r,80));const q=holder.querySelector('canvas');if(q){const pad=14;x.fillStyle='#fff';x.fillRect(qrX-pad,qrY-pad,qrSize+pad*2,qrSize+58);x.drawImage(q,qrX,qrY,qrSize,qrSize);x.fillStyle='#334155';x.textAlign='center';x.textBaseline='top';x.font='700 16px Arial, sans-serif';x.fillText(window.currentLang==="bn"?"লাইভ DShario খুলুন":"Open live DShario",qrX+qrSize/2,qrY+qrSize+24)}holder.remove()}catch(e){console.warn('QR render failed',e)}
+  try{const holder=document.createElement('div');holder.style.cssText='position:fixed;left:-9999px;top:-9999px;background:#fff';document.body.appendChild(holder);new QRCode(holder,{text:qrTarget,width:qrSize,height:qrSize,colorDark:'#000000',colorLight:'#ffffff',correctLevel:QRCode.CorrectLevel.M});await new Promise(r=>setTimeout(r,80));const q=holder.querySelector('canvas');if(q){const pad=14;x.fillStyle='#fff';x.fillRect(qrX-pad,qrY-pad,qrSize+pad*2,qrSize+56);x.drawImage(q,qrX,qrY,qrSize,qrSize);x.fillStyle=template==="clean"?"#6f5147":"#334155";x.textAlign='center';x.textBaseline='top';x.font='700 16px Arial, sans-serif';x.fillText(window.currentLang==="bn"?"লাইভ DShario খুলুন":"Open live DShario",qrX+qrSize/2,qrY+qrSize+22)}holder.remove()}catch(e){console.warn('QR render failed',e)}
+
+  // Footer kept deliberately simple on both approved templates.
   x.textAlign="left";x.textBaseline='top';
   if(template==="clean"){
-    x.fillStyle=fg;x.font="900 30px Arial, sans-serif";x.fillText("DS",82,804);
-    x.fillStyle=mt;x.font="800 21px Arial, sans-serif";x.fillText("DShario",140,804);
-    x.font="18px Arial, sans-serif";x.fillText(window.currentLang==="bn"?"যোগাযোগ রাখুন।":"Keep in touch.",230,806);
-  }else if(template!=="modern"){x.fillStyle=fg;x.font="900 30px Arial, sans-serif";x.fillText("DS",82,794);x.fillStyle=mt;x.font="20px Arial, sans-serif";x.fillText(window.currentLang==="bn"?"যোগাযোগ রাখুন।":"Keep in touch.",140,798)}
-  else{x.fillStyle=fg;x.font="900 24px Arial, sans-serif";x.fillText("DS",430,794);x.fillStyle=mt;x.font="20px Arial, sans-serif";x.fillText(window.currentLang==="bn"?"যোগাযোগ রাখুন।":"Keep in touch.",478,798)};
+    x.fillStyle=fg;x.font="900 30px Arial, sans-serif";x.fillText("DS",52,792);
+    x.strokeStyle="#9a7768";x.lineWidth=2;x.beginPath();x.moveTo(108,790);x.lineTo(108,827);x.stroke();
+    x.fillStyle=mt;x.font="20px Arial, sans-serif";x.fillText(window.currentLang==="bn"?"যোগাযোগ রাখুন।":"Keep in touch.",126,798);
+  }else if(template==="modern"){
+    x.fillStyle=fg;x.font="900 30px Arial, sans-serif";x.fillText("DS",52,792);
+    x.strokeStyle="rgba(72,139,226,.5)";x.lineWidth=2;x.beginPath();x.moveTo(108,790);x.lineTo(108,827);x.stroke();
+    x.fillStyle=mt;x.font="20px Arial, sans-serif";x.fillText(window.currentLang==="bn"?"যোগাযোগ রাখুন।":"Keep in touch.",126,798);
+  }else{
+    x.fillStyle=fg;x.font="900 30px Arial, sans-serif";x.fillText("DS",82,794);x.fillStyle=mt;x.font="20px Arial, sans-serif";x.fillText(window.currentLang==="bn"?"যোগাযোগ রাখুন।":"Keep in touch.",140,798)
+  }
   c.toBlob(b=>{if(b)downloadBlob(b,safeName(name||d.full_name||"dshario")+"-"+view+"-"+template+"-card.png")},"image/png");
 }
 if($("pngBtn")) $("pngBtn").onclick=()=>downloadCurrentCardAsImage();
@@ -3704,7 +3774,7 @@ if($("ownerDownloadToggleBtn")) $("ownerDownloadToggleBtn").onclick=()=>{
 };
 if($("ownerDownloadTemplate")) $("ownerDownloadTemplate").addEventListener("change",()=>{
   const v=$("ownerDownloadTemplate").value,h=$("ownerTemplateHint");if(!h)return;
-  h.textContent=v==="clean"?"Elegant — refined line layout with photo at the top-left.":v==="modern"?"Modern — bold accent panel with a contemporary layout.":"Classic — traditional DShario colour card.";
+  h.textContent=v==="clean"?"Elegant — warm refined layout with a square photo and fine framing.":v==="modern"?"Modern — clean blue layout with an oval photo and soft wave accents.":"Classic — traditional DShario colour card.";
 });
 if($("ownerDownloadBtn")) $("ownerDownloadBtn").onclick=()=>{
   if(!currentCard?.slug){msg(window.currentLang==="bn"?"প্রথমে আপনার DShario কার্ড তৈরি ও সেভ করুন।":"Create and save your DShario card first.","info");return;}
