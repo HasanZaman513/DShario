@@ -1,5 +1,5 @@
 <!doctype html>
-<!-- DShario WORKING RC26 — RC25 baseline + isolated printable downloaded-card layout/icons refinement. -->
+<!-- DShario RC32.20 WORKING — findings-only fixes on RC32.19: purpose-based download labels, card footer clearance, slightly larger top navigation. -->
 <html lang="en">
 <head>
 <meta charset="utf-8">
@@ -1779,6 +1779,13 @@ input,select,textarea{border-color:#cbdcf0!important;background:#fbfdff!importan
 .connectionItem{background:linear-gradient(145deg,#fff,#f8fbff);border-radius:17px}.connectionTag{background:#eaf3ff;border-color:#cfe0f5;color:#245d9b}.connectionBadge{background:#fff7e8;border-color:#f4d8a5;color:#8a5a12}
 #notesPanel,#remindersPanel,#notificationPanel{border-color:#cfe0f5!important;box-shadow:0 16px 38px rgba(6,43,85,.14)!important}.quickPanelHead,.notificationHead{color:var(--ds-navy)}
 @media(max-width:560px){body{background:linear-gradient(180deg,#edf6ff 0,#fff 520px)}.header{border-radius:0 0 18px 18px}.tabs{margin-top:10px}.purposeChoice{min-height:68px}.cardWrap{border-radius:18px}}
+/* RC32.20 FINDINGS-ONLY FIXES: preserve layout/functionality; fix card footer clearance, tab readability, purpose-based download labels. */
+.tabs .tab{font-size:16px!important;}
+@media(max-width:720px){.tabs .tab{font-size:14px!important;}}
+#card.ownerCardHasQr{padding-bottom:112px!important;}
+.connectionOnlyMode #card.ownerCardHasQr{padding-bottom:112px!important;}
+@media(max-width:520px){#card.ownerCardHasQr{padding-bottom:112px!important;}#card.ownerCardHasQr .cl{left:18px;bottom:18px;}#card.ownerCardHasQr #ownerInlineQr{bottom:18px;}}
+
 </style>
 
 </head>
@@ -1930,10 +1937,11 @@ input,select,textarea{border-color:#cbdcf0!important;background:#fbfdff!importan
   <div id="ownerDownloadOptions" class="ownerDownloadOptions">
     <div class="ownerDownloadField"><label for="ownerDownloadView">Card view</label>
       <select id="ownerDownloadView">
-        <option value="professional">Professional</option>
-        <option value="business">Business</option>
-        <option value="social">Social</option>
-        <option value="full">Full</option>
+        <option value="business">💼 Business</option>
+        <option value="career">👔 Career</option>
+        <option value="networking">🤝 Networking</option>
+        <option value="social">👥 Social</option>
+        <option value="full">📇 Full</option>
       </select>
     </div>
     <div class="ownerDownloadField"><label for="ownerDownloadTemplate">Template</label>
@@ -3121,7 +3129,7 @@ function setForm(card={}){
   if($("whatsapp_username")) $("whatsapp_username").value=wa.username;
   $("show_phone").checked=card.show_phone!==false; $("show_email").checked=card.show_email!==false;
   const pv=card.privacy_view||localStorage.getItem("dshario-privacy-view")||"professional";
-  $("privacy_view").value=pv; if($("shareView")) $("shareView").value=pv; if($("ownerDownloadView")) $("ownerDownloadView").value=pv;
+  $("privacy_view").value=pv; if($("shareView")) $("shareView").value=pv; if($("ownerDownloadView")) $("ownerDownloadView").value=(pv==="professional"?"career":pv);
   photoData=card.photo_url||""; photoSourceData=""; photoPosition=0; photoZoom=1; if($("photoAdjuster"))$("photoAdjuster").classList.remove("show"); if($("photoAdjustToggle"))$("photoAdjustToggle").style.display="none"; renderPhotoPreview();
 }
 function getForm(){
@@ -3664,7 +3672,7 @@ $("shareType").addEventListener("change",async()=>{await invalidateShareLink(tru
 $("shareExpiry").addEventListener("change",async()=>{if($("shareType").value==="temporary") await invalidateShareLink(true)});
 $("privacy_view").addEventListener("change",async()=>{
   $("shareView").value=$("privacy_view").value;
-  if($("ownerDownloadView")) $("ownerDownloadView").value=$("privacy_view").value;
+  if($("ownerDownloadView")){const pv=$("privacy_view").value;$("ownerDownloadView").value=(pv==="professional"?"career":pv);}
   try{localStorage.setItem("dshario-privacy-view",$("privacy_view").value)}catch(e){}
   await invalidateShareLink(true);
   if(currentCard) render(currentCard);
@@ -3928,7 +3936,8 @@ if($("ownerDownloadTemplate")) $("ownerDownloadTemplate").addEventListener("chan
 });
 if($("ownerDownloadBtn")) $("ownerDownloadBtn").onclick=()=>{
   if(!currentCard?.slug){msg(window.currentLang==="bn"?"প্রথমে আপনার DShario কার্ড তৈরি ও সেভ করুন।":"Create and save your DShario card first.","info");return;}
-  const selected=$("ownerDownloadView")?.value||$("privacy_view")?.value||"full";
+  const selectedPurpose=$("ownerDownloadView")?.value||"full";
+  const selected=(selectedPurpose==="career"||selectedPurpose==="networking")?"professional":selectedPurpose;
   const template=$("ownerDownloadTemplate")?.value||"classic";
   downloadCurrentCardAsImage(selected,template);
 };
