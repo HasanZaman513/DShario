@@ -6,7 +6,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>DShario WORKING RC25</title>
 <meta name="theme-color" content="#ffffff">
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2">// RC32.8: polished Modern download template, adjustable photo crop, and reliable share-type synchronization. Exact direct @DShario synchronization uses the companion one-time Supabase migration.
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2">// RC32.9: adds an Elegant printed-card-inspired template while preserving RC32.8 photo adjustment and share-type synchronization. Exact direct @DShario synchronization uses the companion one-time Supabase migration.
 </script>
 <style>
 :root{--navy:#123a78;--blue:#3478ee;--ink:#0f172a;--muted:#64748b;--line:#dbe5f2;--soft:#f8fbff;--green:#16a34a;--shadow:0 12px 32px rgba(15,23,42,.10)}
@@ -1868,7 +1868,7 @@ QRCodeCore.createBytes = function(buffer, rsBlocks) {
     <div class="ownerDownloadField"><label for="ownerDownloadTemplate">Template</label>
       <select id="ownerDownloadTemplate">
         <option value="classic">Classic</option>
-        <option value="clean">Clean</option>
+        <option value="clean">Elegant</option>
         <option value="modern">Modern</option>
       </select>
     </div>
@@ -3615,9 +3615,16 @@ async function downloadCurrentCardAsImage(viewOverride,templateOverride){
   let bg=accent,fg=contrast(bg),mt=muted(bg);
   const x=c.getContext("2d");
   if(template==="clean"){
-    bg="#ffffff";fg="#0f172a";mt="#64748b";x.fillStyle=bg;x.fillRect(0,0,W,H);
-    x.fillStyle=accent;x.fillRect(84,58,150,10);
-    x.fillStyle="#eef2f7";x.fillRect(84,H-66,W-168,2);
+    // RC32.9 Elegant template: refined line-card layout inspired by classic printed cards.
+    bg="#fffdfa";fg="#251f1c";mt="#75645c";x.fillStyle=bg;x.fillRect(0,0,W,H);
+    // very light accent wash so the template follows the user's selected card colour without looking busy
+    x.save();x.globalAlpha=.10;x.fillStyle=accent;x.fillRect(0,0,W,H);x.restore();
+    const line="#9a7768";x.strokeStyle=line;x.lineWidth=2;
+    // top-right and left/bottom framing lines
+    x.beginPath();x.moveTo(760,62);x.lineTo(1335,62);x.lineTo(1335,300);x.stroke();
+    x.beginPath();x.moveTo(210,335);x.lineTo(210,775);x.lineTo(1060,775);x.stroke();
+    // subtle DS watermark, intentionally very faint
+    x.save();x.globalAlpha=.035;x.fillStyle="#6f5147";x.font="900 250px Arial, sans-serif";x.fillText("DS",905,430);x.restore();
   }else if(template==="modern"){
     bg="#ffffff";fg="#0f172a";mt="#64748b";x.fillStyle=bg;x.fillRect(0,0,W,H);
     x.fillStyle=accent;x.fillRect(0,0,360,H);
@@ -3630,7 +3637,7 @@ async function downloadCurrentCardAsImage(viewOverride,templateOverride){
     x.fillStyle=bg;x.fillRect(0,0,W,H);x.strokeStyle="rgba(30,64,175,.16)";x.lineWidth=3;x.beginPath();if(x.roundRect)x.roundRect(30,30,W-60,H-60,38);else x.rect(30,30,W-60,H-60);x.stroke();
   }
   let hasPhoto=!!d.photo_url;
-  if(hasPhoto){try{const img=await loadImg(d.photo_url);x.save();let px=82,py=76,pw=220,ph=220;if(template==="clean"){px=90;py=88;pw=170;ph=170;x.beginPath();x.arc(px+pw/2,py+ph/2,pw/2,0,Math.PI*2)}else if(template==="modern"){px=70;py=90;pw=220;ph=220;x.beginPath();x.arc(px+pw/2,py+ph/2,pw/2,0,Math.PI*2)}else{x.beginPath();if(x.roundRect)x.roundRect(px,py,pw,ph,32);else x.rect(px,py,pw,ph)}x.clip();const sc=Math.max(pw/img.width,ph/img.height),w=img.width*sc,h=img.height*sc;x.drawImage(img,px+(pw-w)/2,py+(ph-h)/2,w,h);x.restore()}catch{hasPhoto=false}}
+  if(hasPhoto){try{const img=await loadImg(d.photo_url);x.save();let px=82,py=76,pw=220,ph=220;if(template==="clean"){px=82;py=72;pw=220;ph=245;x.beginPath();if(x.roundRect)x.roundRect(px,py,pw,ph,24);else x.rect(px,py,pw,ph)}else if(template==="modern"){px=70;py=90;pw=220;ph=220;x.beginPath();x.arc(px+pw/2,py+ph/2,pw/2,0,Math.PI*2)}else{x.beginPath();if(x.roundRect)x.roundRect(px,py,pw,ph,32);else x.rect(px,py,pw,ph)}x.clip();const sc=Math.max(pw/img.width,ph/img.height),w=img.width*sc,h=img.height*sc;x.drawImage(img,px+(pw-w)/2,py+(ph-h)/2,w,h);x.restore()}catch{hasPhoto=false}}
   function fit(v,maxW,fontSize=22,weight=600){v=String(v||"").trim();if(!v)return "";x.font=`${weight} ${fontSize}px Arial, sans-serif`;if(x.measureText(v).width<=maxW)return v;while(v.length>1&&x.measureText(v+"…").width>maxW)v=v.slice(0,-1);return v+"…"}
   function socialHandle(v){try{const u=new URL(cleanUrl(v));let p=u.pathname.split('/').filter(Boolean),z=p.pop()||u.hostname.replace(/^www\./,'');if(['share','profile.php','people'].includes(z.toLowerCase()))z=u.hostname.replace(/^www\./,'');return z.length>34?z.slice(0,31)+'…':z}catch{return String(v||'').slice(0,34)}}
   function iconCircle(cx,cy,kind){
@@ -3646,13 +3653,14 @@ async function downloadCurrentCardAsImage(viewOverride,templateOverride){
     else if(kind==='website'){x.fillStyle='#475569';x.font='700 26px Arial, sans-serif';x.fillText('◎',cx,cy)}
     x.restore();
   }
-  const name=localizedCardText(d,"full_name")||t("My DShario"), tx=template==="modern"?430:(hasPhoto?(template==="clean"?310:350):88), maxW=template==="modern"?900:(hasPhoto?980:1240);
+  const name=localizedCardText(d,"full_name")||t("My DShario"), tx=template==="modern"?430:(template==="clean"?(hasPhoto?760:700):(hasPhoto?350:88)), maxW=template==="modern"?900:(template==="clean"?(hasPhoto?560:640):(hasPhoto?980:1240));
   const nameFs=name.length>30?42:name.length>22?47:(hasPhoto?51:58);
-  x.textAlign="left";x.textBaseline="top";x.fillStyle=fg;x.font=`900 ${nameFs}px Arial, sans-serif`;x.fillText(fit(name,maxW,nameFs,900),tx,82);
+  x.textBaseline="top";x.fillStyle=fg;x.font=`900 ${nameFs}px Arial, sans-serif`;
+  if(template==="clean"){x.textAlign="right";x.fillText(fit(name,maxW,nameFs,900),1330,84);}else{x.textAlign="left";x.fillText(fit(name,maxW,nameFs,900),tx,82);}
   let y=82+nameFs+17;
   if(view!=="social"){
     const lines=[[localizedCardText(d,"job_title"),29,mt,700],[localizedCardText(d,"company"),28,fg,800],[localizedCardText(d,"description"),22,mt,500]];
-    for(const [v,fs,col,w] of lines){if(v){x.fillStyle=col;x.font=`${w} ${fs}px Arial, sans-serif`;x.fillText(fit(v,maxW,fs,w),tx,y);y+=fs+14}}
+    for(const [v,fs,col,w] of lines){if(v){x.fillStyle=col;x.font=`${w} ${fs}px Arial, sans-serif`;if(template==="clean"){x.textAlign="right";x.fillText(fit(v,maxW,fs,w),1330,y)}else{x.textAlign="left";x.fillText(fit(v,maxW,fs,w),tx,y)}y+=fs+14}}
   }
   const direct=view==="business"||view==="full", items=[];
   if(d.location&&direct)items.push([t("Location"),d.location,'location']);
@@ -3665,9 +3673,9 @@ async function downloadCurrentCardAsImage(viewOverride,templateOverride){
   if(d.instagram_url&&(view==="social"||view==="full"))items.push([t("Instagram"),socialHandle(d.instagram_url),'instagram']);
 
   const isSparseSocial=view==="social"&&items.length<=3;
-  const qrSize=template==="modern"?170:(isSparseSocial?250:190), qrX=template==="modern"?95:(isSparseSocial?1080:1160), qrY=template==="modern"?500:(isSparseSocial?370:570);
-  const rows=Math.ceil(items.length/2), colX=template==="modern"?[430,900]:[92,625], colW=template==="modern"?350:410;
-  const minStart=hasPhoto?Math.max(350,y+25):Math.max(285,y+30);
+  const qrSize=template==="modern"?170:(template==="clean"?190:(isSparseSocial?250:190)), qrX=template==="modern"?95:(template==="clean"?1120:(isSparseSocial?1080:1160)), qrY=template==="modern"?500:(template==="clean"?520:(isSparseSocial?370:570));
+  const rows=Math.ceil(items.length/2), colX=template==="modern"?[430,900]:(template==="clean"?[245,650]:[92,625]), colW=template==="modern"?350:(template==="clean"?330:410);
+  const minStart=template==="clean"?360:(hasPhoto?Math.max(350,y+25):Math.max(285,y+30));
   const rowH=rows<=2?108:rows===3?94:rows===4?82:70;
   const valueFs=items.length>6?19:22;
   const maxBlockH=Math.max(0,(rows-1)*rowH), startY=isSparseSocial?Math.max(320,minStart):Math.min(minStart,680-maxBlockH);
@@ -3681,7 +3689,11 @@ async function downloadCurrentCardAsImage(viewOverride,templateOverride){
   const qrTarget=publicMode?((currentPublicSourceType==="temporary"&&currentPublicShareToken)?location.origin+location.pathname+"?share="+encodeURIComponent(currentPublicShareToken):shareUrl(d)):(d?.slug?location.origin+location.pathname+"?card="+encodeURIComponent(d.slug)+"&view=full":shareUrl(d));
   try{const holder=document.createElement('div');holder.style.cssText='position:fixed;left:-9999px;top:-9999px;background:#fff';document.body.appendChild(holder);new QRCode(holder,{text:qrTarget,width:qrSize,height:qrSize,colorDark:'#000000',colorLight:'#ffffff',correctLevel:QRCode.CorrectLevel.M});await new Promise(r=>setTimeout(r,80));const q=holder.querySelector('canvas');if(q){const pad=14;x.fillStyle='#fff';x.fillRect(qrX-pad,qrY-pad,qrSize+pad*2,qrSize+58);x.drawImage(q,qrX,qrY,qrSize,qrSize);x.fillStyle='#334155';x.textAlign='center';x.textBaseline='top';x.font='700 16px Arial, sans-serif';x.fillText(window.currentLang==="bn"?"লাইভ DShario খুলুন":"Open live DShario",qrX+qrSize/2,qrY+qrSize+24)}holder.remove()}catch(e){console.warn('QR render failed',e)}
   x.textAlign="left";x.textBaseline='top';
-  if(template!=="modern"){x.fillStyle=fg;x.font="900 30px Arial, sans-serif";x.fillText("DS",82,794);x.fillStyle=mt;x.font="20px Arial, sans-serif";x.fillText(window.currentLang==="bn"?"যোগাযোগ রাখুন।":"Keep in touch.",140,798)}
+  if(template==="clean"){
+    x.fillStyle=fg;x.font="900 30px Arial, sans-serif";x.fillText("DS",82,804);
+    x.fillStyle=mt;x.font="800 21px Arial, sans-serif";x.fillText("DShario",140,804);
+    x.font="18px Arial, sans-serif";x.fillText(window.currentLang==="bn"?"যোগাযোগ রাখুন।":"Keep in touch.",230,806);
+  }else if(template!=="modern"){x.fillStyle=fg;x.font="900 30px Arial, sans-serif";x.fillText("DS",82,794);x.fillStyle=mt;x.font="20px Arial, sans-serif";x.fillText(window.currentLang==="bn"?"যোগাযোগ রাখুন।":"Keep in touch.",140,798)}
   else{x.fillStyle=fg;x.font="900 24px Arial, sans-serif";x.fillText("DS",430,794);x.fillStyle=mt;x.font="20px Arial, sans-serif";x.fillText(window.currentLang==="bn"?"যোগাযোগ রাখুন।":"Keep in touch.",478,798)};
   c.toBlob(b=>{if(b)downloadBlob(b,safeName(name||d.full_name||"dshario")+"-"+view+"-"+template+"-card.png")},"image/png");
 }
@@ -3692,7 +3704,7 @@ if($("ownerDownloadToggleBtn")) $("ownerDownloadToggleBtn").onclick=()=>{
 };
 if($("ownerDownloadTemplate")) $("ownerDownloadTemplate").addEventListener("change",()=>{
   const v=$("ownerDownloadTemplate").value,h=$("ownerTemplateHint");if(!h)return;
-  h.textContent=v==="clean"?"Clean — white, minimal and spacious.":v==="modern"?"Modern — bold accent panel with a contemporary layout.":"Classic — traditional DShario colour card.";
+  h.textContent=v==="clean"?"Elegant — refined line layout with photo at the top-left.":v==="modern"?"Modern — bold accent panel with a contemporary layout.":"Classic — traditional DShario colour card.";
 });
 if($("ownerDownloadBtn")) $("ownerDownloadBtn").onclick=()=>{
   if(!currentCard?.slug){msg(window.currentLang==="bn"?"প্রথমে আপনার DShario কার্ড তৈরি ও সেভ করুন।":"Create and save your DShario card first.","info");return;}
