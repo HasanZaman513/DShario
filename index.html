@@ -325,6 +325,13 @@ body{background:linear-gradient(180deg,#edf6ff 0,#fff 620px);color:var(--ds-ink)
 @media(max-width:820px){.landingHeroNew{grid-template-columns:1fr;padding:38px 24px}.landingPhoneStage{min-height:430px}.landingPurposes{grid-template-columns:repeat(5,1fr)}.landingSteps{grid-template-columns:1fr 1fr}.landingBenefits{grid-template-columns:1fr;margin:8px 16px}.landingBenefits>div{border-right:0;border-bottom:1px solid #d6e5f3;padding:14px}.landingBenefits>div:last-child{border-bottom:0}}
 @media(max-width:560px){.landingTopbar{height:68px;padding:0 18px}.landingBrand{font-size:26px}.landingHeroNew{padding:32px 18px 34px}.landingEyebrow{font-size:11px;letter-spacing:.17em}.landingHeroNew h1{font-size:46px}.landingHeroNew p{font-size:17px}.landingPurposes{grid-template-columns:repeat(2,1fr)}.landingPurpose:last-child{grid-column:1/-1}.landingHeroActions{display:grid;grid-template-columns:1fr}.landingPhoneStage{min-height:390px}.landingBackCard{width:210px;height:285px;transform:rotate(-7deg) translate(-50px,5px)}.landingPhone{width:235px;border-width:8px;border-radius:32px}.landingHow{padding:36px 18px 20px}.landingHow h2{font-size:31px}.landingSteps{grid-template-columns:1fr 1fr;gap:8px}.landingSteps span{width:62px;height:62px;font-size:25px}.landingBottom{border-radius:42% 42% 0 0/8% 8% 0 0}.tabs{grid-template-columns:1fr 1fr 1fr}.tab{font-size:12px;padding:7px 4px}}
 
+
+/* RC32.22 — Personal DShario Address trial */
+.personalAddressBox{margin-top:8px;padding:10px 12px;border:1px solid #bfdbfe;background:#eff6ff;border-radius:12px}
+.personalAddressValue{font-weight:850;color:#0b3b7a;word-break:break-all;margin-top:3px}
+.usernameStatus{display:block;margin-top:5px;font-size:12px;font-weight:750}
+.usernameStatus.ok{color:#15803d}.usernameStatus.err{color:#b91c1c}.usernameStatus.info{color:#475569}
+.usernameConfirm{display:flex;gap:8px;align-items:flex-start;margin-top:9px;font-size:12px;color:#334155}
 </style>
 <script>
 /* Built-in QR generator: no external CDN request. */
@@ -1831,7 +1838,7 @@ input,select,textarea{border-color:#cbdcf0!important;background:#fbfdff!importan
 <div class="cardWrap">
   <div id="card" class="card">
     <img id="pPhoto" class="profile" alt="Profile image">
-    <div id="pName" class="name">Your name</div><div id="pHandle" class="hint" style="margin-top:2px"></div>
+    <div id="pName" class="name">Your name</div><div id="pHandle" class="hint" style="margin-top:2px"></div><div id="pPersonalAddress" class="hint" style="margin-top:3px;font-weight:750;color:#1d4ed8"></div>
     <div id="pRole" class="role">Professional title</div>
     <div id="pCompany" class="company">Company / organisation</div>
     <p id="pTagline" class="tagline">Your short introduction will appear here.</p>
@@ -2133,7 +2140,7 @@ input,select,textarea{border-color:#cbdcf0!important;background:#fbfdff!importan
     <div class="editSectionBody">
       <div class="editIntro">Your full name is required. Add only the professional information you want to share.</div>
       <div class="grid">
-        <div class="field"><label>Personal DShario name *</label><input id="slug" placeholder="e.g. hasan-zaman"><span class="hint">Your permanent link will use this name. Letters, numbers and hyphens only.</span></div>
+        <div class="field"><label>Personal DShario username *</label><input id="slug" placeholder="e.g. hasan-zaman" autocomplete="off"><span class="hint">Required. Letters, numbers and hyphens only. Your username creates your Personal DShario Address.</span><div class="personalAddressBox"><div class="hint">Your Personal DShario Address</div><div id="personalAddressPreview" class="personalAddressValue">dshario.com/@username</div><span id="usernameStatus" class="usernameStatus info">Choose a username to check availability.</span><label class="usernameConfirm"><input id="confirmUsername" type="checkbox"> <span>I confirm this username and understand it will be used in my Personal DShario Address.</span></label></div></div>
         <div class="field"><label>Full name *</label><input id="full_name" placeholder="Your name"></div>
         <input id="full_name_bn" type="hidden" value="">
         <div class="field"><label>Profession / job title</label><input id="job_title" placeholder="e.g. Industrial Pharmacist"></div>
@@ -2532,6 +2539,10 @@ try{ localStorage.setItem("dshario-lang","en"); }catch(e){}
 try{ Object.defineProperty(window,"currentLang",{value:"en",writable:false,configurable:false}); }
 catch(e){ window.currentLang="en"; }
 function t(en){ return en; }
+const personalPathMatch=decodeURIComponent(location.pathname).match(/\/@([a-z0-9-]+)\/?$/i);
+if(personalPathMatch && !new URLSearchParams(location.search).get("card")){
+  const u=new URL(location.href);u.searchParams.set("card",personalPathMatch[1].toLowerCase());u.searchParams.set("view","professional");history.replaceState(null,"",u.pathname+u.search+u.hash);
+}
 const createMode = new URLSearchParams(location.search).get("create") === "1";
 
 const formIds = ["slug","full_name","job_title","company","description","location","website","phone","email","whatsapp","linkedin_url","facebook_url","instagram_url","card_color"];
@@ -2543,6 +2554,31 @@ function msg(text,type="ok"){
 }
 function cleanUrl(v){if(!v)return ""; return /^https?:\/\//i.test(v)?v:"https://"+v;}
 function slugify(v){return (v||"").toLowerCase().trim().replace(/[^a-z0-9-]+/g,"-").replace(/-+/g,"-").replace(/^-|-$/g,"").slice(0,60);}
+const RESERVED_DSHARIO_NAMES=new Set(["admin","account","login","signin","signup","help","about","privacy","terms","contact","support","share","card","create","edit","api","www","mail","dshario"]);
+let usernameCheckTimer=null, usernameCheckState={slug:"",available:false};
+function personalAddressFor(slug){return location.origin+"/@"+encodeURIComponent(slug||"username");}
+function updatePersonalAddressPreview(){
+  const slug=slugify($("slug")?.value||"");
+  if($("personalAddressPreview")) $("personalAddressPreview").textContent=(location.host||"dshario.com")+"/@"+(slug||"username");
+  if($("confirmUsername") && slug!==String(currentCard?.slug||"")) $("confirmUsername").checked=false;
+}
+function setUsernameStatus(text,kind="info",slug="",available=false){const el=$("usernameStatus");if(el){el.textContent=text;el.className="usernameStatus "+kind}usernameCheckState={slug,available};}
+async function checkUsernameAvailability(slug,show=true){
+  slug=slugify(slug);
+  if(!slug){setUsernameStatus("Choose a username to check availability.","info");return false}
+  if(slug.length<3){setUsernameStatus("Use at least 3 characters.","err",slug,false);return false}
+  if(RESERVED_DSHARIO_NAMES.has(slug)){setUsernameStatus("This username is reserved. Please choose another.","err",slug,false);return false}
+  if(currentCard?.slug===slug){setUsernameStatus("✓ This is your current username.","ok",slug,true);return true}
+  if(show)setUsernameStatus("Checking availability…","info",slug,false);
+  try{
+    const {data,error}=await sb.rpc("get_public_card_bilingual",{card_slug:slug});
+    if(error){setUsernameStatus("Availability will be confirmed when you save.","info",slug,true);return true}
+    const found=Array.isArray(data)?data[0]:data;
+    if(found){setUsernameStatus("Username already taken. Please choose another.","err",slug,false);return false}
+    setUsernameStatus("✓ Username available.","ok",slug,true);return true
+  }catch(e){setUsernameStatus("Availability will be confirmed when you save.","info",slug,true);return true}
+}
+
 function safeName(v){return (v||"dshario").toLowerCase().replace(/[^a-z0-9]+/g,"-").replace(/^-|-$/g,"")||"dshario";}
 function format12HourDate(v){try{return new Intl.DateTimeFormat(window.currentLang==="bn"?"bn-BD":"en-GB",{day:"2-digit",month:"2-digit",year:"numeric",hour:"numeric",minute:"2-digit",second:"2-digit",hour12:true}).format(new Date(v))}catch(e){return ""}}
 function contrast(bg){const h=(bg||"#eff6ff").replace("#","");if(h.length!==6)return "#0f172a";const r=parseInt(h.slice(0,2),16),g=parseInt(h.slice(2,4),16),b=parseInt(h.slice(4,6),16);return ((r*299+g*587+b*114)/1000)>160?"#0f172a":"#ffffff";}
@@ -3202,7 +3238,7 @@ function render(card){
   const roleText=localizedCardText(c,"job_title");
   const companyText=localizedCardText(c,"company");
   const introText=localizedCardText(c,"description");
-  $("pName").textContent=nameText||t("Your name"); if($("pHandle")) $("pHandle").textContent=c.slug?"@"+c.slug:"";
+  $("pName").textContent=nameText||t("Your name"); if($("pHandle")) $("pHandle").textContent=c.slug?"@"+c.slug:""; if($("pPersonalAddress")) $("pPersonalAddress").textContent=c.slug?(location.host||"dshario.com")+"/@"+c.slug:"";
   $("pRole").textContent=roleText; $("pRole").style.display=roleText?"block":"none";
   $("pCompany").textContent=companyText; $("pCompany").style.display=companyText?"block":"none";
   $("pTagline").textContent=introText; $("pTagline").style.display=introText?"block":"none";
@@ -3231,7 +3267,7 @@ function render(card){
   if(!connectionOnlyMode && c.slug && $("ownerInlineQr")){
     const liveQr=publicMode
       ? (currentPublicSourceType==="temporary"&&currentPublicShareToken ? location.origin+location.pathname+"?share="+encodeURIComponent(currentPublicShareToken) : location.origin+location.pathname+"?card="+encodeURIComponent(c.slug)+"&view="+encodeURIComponent(activePrivacyView()))
-      : location.origin+location.pathname+"?card="+encodeURIComponent(c.slug)+"&view=full";
+      : personalAddressFor(c.slug);
     setLocalQr("ownerInlineQr",liveQr,170);
     $("card")?.classList.add("ownerCardHasQr");
     $("ownerInlineQr").classList.toggle("connectionQr",publicMode);
@@ -3260,7 +3296,7 @@ async function loadOwnerCard(){
   setShareHistoryOpen(false);
   const {data,error}=await sb.from("cards").select("*").eq("user_id",user.id).limit(1).maybeSingle();
   if(error){msg("Could not load My Card: "+error.message,"err");return}
-  currentCard=data||null; $("editTab").textContent=data?"✎ Edit My Card":"✎ Create My DShario"; updateSignedInHandle(); if(data){setForm(data);render(data);$("deleteBtn").style.display="inline-block"} else {setForm({card_color:"#eff6ff",privacy_view:localStorage.getItem("dshario-privacy-view")||"professional"});render(null);$("deleteBtn").style.display="none"}
+  currentCard=data||null; $("editTab").textContent=data?"✎ Edit My Card":"✎ Create My DShario"; updateSignedInHandle(); if(data){setForm(data);updatePersonalAddressPreview();if($("confirmUsername"))$("confirmUsername").checked=true;checkUsernameAvailability(data.slug,false);render(data);$("deleteBtn").style.display="inline-block"} else {setForm({card_color:"#eff6ff",privacy_view:localStorage.getItem("dshario-privacy-view")||"professional"});render(null);$("deleteBtn").style.display="none"}
 }
 async function loadPublicCard(slug){
   publicMode=true; pendingSharedAction=savedSharedIntent(); document.body.classList.remove("expiredPublic"); document.body.classList.add("publicMode"); $("tabs").style.display="none"; $("publicHeader").style.display="block"; $("accountPill").style.display="none";
@@ -3320,7 +3356,7 @@ async function saveCloud(){
   const beforeCard=currentCard?{...currentCard}:null;
   const wasExistingCard=!!currentCard?.id;
   if(!user){msg("Please sign in before saving your DShario online.","info");setView("account");return}
-  const d=getForm(); if(!d.full_name){msg("Please enter your full name.","err");return} if(!d.slug){msg("Please choose your personal DShario name.","err");return} if(d.email&&!isValidEmailAddress(d.email)){msg("Please enter a valid email address or leave the email field blank.","err");return}
+  const d=getForm(); if(!d.full_name){msg("Please enter your full name.","err");return} if(!d.slug){msg("Please choose your Personal DShario username.","err");return} if(d.slug.length<3||RESERVED_DSHARIO_NAMES.has(d.slug)){msg("Please choose a valid Personal DShario username.","err");return} const available=await checkUsernameAvailability(d.slug); if(!available){msg("That username is not available. Please choose another.","err");return} if(!$("confirmUsername")?.checked && d.slug!==String(currentCard?.slug||"")){msg("Please confirm your Personal DShario username before saving.","err");return} if(d.email&&!isValidEmailAddress(d.email)){msg("Please enter a valid email address or leave the email field blank.","err");return}
   const {privacy_view,...dbCard}=d; try{localStorage.setItem("dshario-privacy-view",privacy_view)}catch(e){} const payload={...dbCard,user_id:user.id,updated_at:new Date().toISOString()};
   let res;
   if(currentCard?.id) res=await sb.from("cards").update(payload).eq("id",currentCard.id).select().single();
@@ -3363,7 +3399,8 @@ if($("photoAdjustToggle"))$("photoAdjustToggle").onclick=()=>$("photoAdjuster")?
 if($("photoPosition"))$("photoPosition").oninput=e=>{photoPosition=Number(e.target.value)||0;renderAdjustedPhoto()};
 if($("photoZoom"))$("photoZoom").oninput=e=>{photoZoom=(Number(e.target.value)||100)/100;renderAdjustedPhoto()};
 $("removePhoto").onclick=()=>{photoData="";photoSourceData="";photoPosition=0;photoZoom=1;$("photo").value="";if($("photoAdjuster"))$("photoAdjuster").classList.remove("show");if($("photoAdjustToggle"))$("photoAdjustToggle").style.display="none";renderPhotoPreview()};
-$("slug").addEventListener("input",()=>{$("slug").value=slugify($("slug").value)});
+$("slug").addEventListener("input",()=>{const el=$("slug");el.value=slugify(el.value);updatePersonalAddressPreview();setUsernameStatus("Checking availability…","info",el.value,false);clearTimeout(usernameCheckTimer);usernameCheckTimer=setTimeout(()=>checkUsernameAvailability(el.value),450)});
+$("slug").addEventListener("blur",()=>checkUsernameAvailability($("slug").value));
 
 $("saveCloudBtn").onclick=saveCloud; $("deleteBtn").onclick=deleteCard;
 $("previewBtn").onclick=()=>{const d=getForm(); render({...d,id:currentCard?.id}); setView("card")};
