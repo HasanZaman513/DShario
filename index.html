@@ -2576,8 +2576,25 @@ catch(e){ window.currentLang="en"; }
 function t(en){ return en; }
 const personalPathMatch=decodeURIComponent(location.pathname).match(/\/@([a-z0-9-]+)\/?$/i);
 const personalAddressSlug=personalPathMatch?personalPathMatch[1].toLowerCase():"";
+let personalRouteSessionSlug="";
+try{
+  personalRouteSessionSlug=(sessionStorage.getItem("dshario-personal-route")||"").toLowerCase();
+  sessionStorage.removeItem("dshario-personal-route");
+}catch(e){}
+let initialDsharioUrl;
+try{initialDsharioUrl=new URL(DSHARIO_AUTH_CALLBACK_URL)}catch(e){initialDsharioUrl=new URL(location.href)}
+const initialDsharioParams=initialDsharioUrl.searchParams;
+const initialPersonalPath=decodeURIComponent(initialDsharioUrl.pathname||"").match(/\/@([a-z0-9-]+)\/?$/i);
+const initialCardSlug=(initialDsharioParams.get("card")||"").toLowerCase();
+const PERSONAL_ADDRESS_ROUTE=!!(
+  personalPathMatch ||
+  initialPersonalPath ||
+  initialDsharioParams.get("personal")==="1" ||
+  initialDsharioParams.get("route")==="personal" ||
+  (personalRouteSessionSlug && (!initialCardSlug || personalRouteSessionSlug===initialCardSlug))
+);
 if(personalPathMatch && !new URLSearchParams(location.search).get("card")){
-  const u=new URL(location.href);u.searchParams.set("card",personalAddressSlug);u.searchParams.set("personal","1");history.replaceState(null,"",u.pathname+u.search+u.hash);
+  const u=new URL(location.href);u.searchParams.set("card",personalAddressSlug);u.searchParams.set("personal","1");u.searchParams.set("route","personal");history.replaceState(null,"",u.pathname+u.search+u.hash);
 }
 const createMode = new URLSearchParams(location.search).get("create") === "1";
 
@@ -3342,24 +3359,26 @@ async function loadOwnerCard(){
   currentCard=data||null; $("editTab").textContent=data?"✎ Edit My Card":"✎ Create My DShario"; updateSignedInHandle(); if(data){setForm(data);updatePersonalAddressPreview();if($("confirmUsername"))$("confirmUsername").checked=true;checkUsernameAvailability(data.slug,false);render(data);$("deleteBtn").style.display="inline-block"} else {setForm({card_color:"#eff6ff",privacy_view:localStorage.getItem("dshario-privacy-view")||"professional"});render(null);$("deleteBtn").style.display="none"}
 }
 function isPersonalAddressRequest(slug){
+  if(PERSONAL_ADDRESS_ROUTE) return true;
   const target=String(slug||"").toLowerCase();
   let current;
   try{ current=new URL(location.href); }catch(e){ current=null; }
-  let original;
-  try{ original=new URL(DSHARIO_AUTH_CALLBACK_URL); }catch(e){ original=current; }
-  const urls=[current,original].filter(Boolean);
-  for(const u of urls){
-    if(u.searchParams.get("personal")==="1") return true;
-    const m=decodeURIComponent(u.pathname||"").match(/\/@([a-z0-9-]+)\/?$/i);
+  if(current){
+    if(current.searchParams.get("personal")==="1" || current.searchParams.get("route")==="personal") return true;
+    const m=decodeURIComponent(current.pathname||"").match(/\/@([a-z0-9-]+)\/?$/i);
     if(m && (!target || m[1].toLowerCase()===target)) return true;
   }
-  // GitHub Pages / custom-domain 404 helpers may reduce dshario.com/@name to a bare
-  // ?card=name URL. Current purpose-based shared links carry view/sharetype/purpose,
-  // so a bare card lookup is treated as the Personal DShario Address.
-  const u=current||original;
-  if(u && u.searchParams.get("card") && !u.searchParams.get("share") && !u.searchParams.get("view") && !u.searchParams.get("sharetype") && !u.searchParams.get("purpose")) return true;
   return false;
 }
+
+function enforcePersonalCardOnly(){
+  document.body.classList.add("personalProfileMode","publicMode");
+  const ids=["publicHeader","tabs","accountPill","viewBadge","receivedPurposeBadge","shareLead","shareViewBox","actionGrid","receiverPublicActions","exchangeBox","publicDocuments","sharedMemberNav","connectionOnlyNav","qrPanel","ownerInlineQr","vcfBtn","shareBtn","copyBtn","savedBanner","updateNotifyBar","receiverMessage","simpleShare","simpleShareLauncher","shareHistoryToggleRow","shareHistoryPanel","ownerDownloadBox","publicGuestExchangeBtn","publicMemberExchangeBtn","publicVcfBtn","publicDownloadBtn","guestExchangeBtn","memberExchangeBtn","saveConnectionBtn","pngBtn","qrBtn"];
+  ids.forEach(id=>{const el=$(id);if(el){el.style.setProperty("display","none","important");}});
+  document.querySelectorAll(".header,.footer,.sharedMemberNav,.connectionOnlyNav,.exchangeBox,.actionGrid,#receiverPublicActions").forEach(el=>el.style.setProperty("display","none","important"));
+  const card=$("card"); if(card) card.style.setProperty("display","block","important");
+}
+
 async function loadPublicCard(slug){
   const isPersonal=isPersonalAddressRequest(slug);
   publicMode=true; pendingSharedAction=isPersonal?null:savedSharedIntent(); document.body.classList.remove("expiredPublic","personalProfileMode"); document.body.classList.add("publicMode"); if(isPersonal)document.body.classList.add("personalProfileMode"); $("tabs").style.display="none"; $("publicHeader").style.display=isPersonal?"none":"block"; $("accountPill").style.display="none";
@@ -3386,12 +3405,12 @@ async function loadPublicCard(slug){
   if(isPersonal){
     // Personal DShario Address is intentionally CARD ONLY. The username is routing identity,
     // not shared card content, and no recipient/share controls are shown on this route.
-    document.body.classList.add("personalProfileMode");
     if($("publicInvalidState")) $("publicInvalidState").style.display="none";
-    ["publicHeader","tabs","accountPill","viewBadge","receivedPurposeBadge","shareLead","shareViewBox","actionGrid","receiverPublicActions","exchangeBox","publicDocuments","sharedMemberNav","connectionOnlyNav","qrPanel","ownerInlineQr","vcfBtn","shareBtn","copyBtn","savedBanner","updateNotifyBar","receiverMessage","simpleShare","simpleShareLauncher","shareHistoryToggleRow","shareHistoryPanel","ownerDownloadBox"].forEach(id=>{if($(id)) $(id).style.display="none";});
-    if(document.querySelector(".header")) document.querySelector(".header").style.display="none";
-    if(document.querySelector(".footer")) document.querySelector(".footer").style.display="none";
-    if($("card")) $("card").style.display="block";
+    enforcePersonalCardOnly();
+    // Run once more after the current render cycle so later UI-normalisation code cannot
+    // restore recipient controls for signed-in or signed-out visitors.
+    requestAnimationFrame(enforcePersonalCardOnly);
+    setTimeout(enforcePersonalCardOnly,50);
     return;
   }
   showReceivedPurpose();
