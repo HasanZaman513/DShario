@@ -7,6 +7,7 @@
 <title>DShario WORKING RC25</title>
 <meta name="theme-color" content="#ffffff">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2">// RC32.9: adds an Elegant printed-card-inspired template while preserving RC32.8 photo adjustment and share-type synchronization. Exact direct @DShario synchronization uses the companion one-time Supabase migration.
+// RC32.24: DShario username/address is routing identity only; hidden from shared/public/downloaded/saved card presentation.
 </script>
 <style>
 :root{--navy:#123a78;--blue:#3478ee;--ink:#0f172a;--muted:#64748b;--line:#dbe5f2;--soft:#f8fbff;--green:#16a34a;--shadow:0 12px 32px rgba(15,23,42,.10)}
@@ -326,6 +327,11 @@ body{background:linear-gradient(180deg,#edf6ff 0,#fff 620px);color:var(--ds-ink)
 @media(max-width:560px){.landingTopbar{height:68px;padding:0 18px}.landingBrand{font-size:26px}.landingHeroNew{padding:32px 18px 34px}.landingEyebrow{font-size:11px;letter-spacing:.17em}.landingHeroNew h1{font-size:46px}.landingHeroNew p{font-size:17px}.landingPurposes{grid-template-columns:repeat(2,1fr)}.landingPurpose:last-child{grid-column:1/-1}.landingHeroActions{display:grid;grid-template-columns:1fr}.landingPhoneStage{min-height:390px}.landingBackCard{width:210px;height:285px;transform:rotate(-7deg) translate(-50px,5px)}.landingPhone{width:235px;border-width:8px;border-radius:32px}.landingHow{padding:36px 18px 20px}.landingHow h2{font-size:31px}.landingSteps{grid-template-columns:1fr 1fr;gap:8px}.landingSteps span{width:62px;height:62px;font-size:25px}.landingBottom{border-radius:42% 42% 0 0/8% 8% 0 0}.tabs{grid-template-columns:1fr 1fr 1fr}.tab{font-size:12px;padding:7px 4px}}
 
 
+/* RC32.23 — Personal Address / public-card refinement */
+body.personalProfileMode .header,body.personalProfileMode #tabs,body.personalProfileMode #publicHeader,body.personalProfileMode #receiverMessage,body.personalProfileMode #receiverPublicActions,body.personalProfileMode #actionGrid,body.personalProfileMode #exchangeBox,body.personalProfileMode #publicDocuments,body.personalProfileMode #sharedMemberNav,body.personalProfileMode #connectionOnlyNav,body.personalProfileMode #simpleShare,body.personalProfileMode #simpleShareLauncher,body.personalProfileMode #shareHistoryToggleRow,body.personalProfileMode #shareHistoryPanel,body.personalProfileMode #viewBadge,body.personalProfileMode #pPublicCardSetting,body.personalProfileMode #ownerInlineQr,body.personalProfileMode #qrPanel,body.personalProfileMode #vcfBtn,body.personalProfileMode #shareBtn,body.personalProfileMode #copyBtn{display:none!important}
+body.personalProfileMode .app{padding-top:18px}
+.publicCardSetting{margin-top:10px;padding:10px 12px;border:1px solid #bfdbfe;background:#f8fbff;border-radius:12px}
+.publicCardSetting select{margin-top:6px}
 /* RC32.22 — Personal DShario Address trial */
 .personalAddressBox{margin-top:8px;padding:10px 12px;border:1px solid #bfdbfe;background:#eff6ff;border-radius:12px}
 .personalAddressValue{font-weight:850;color:#0b3b7a;word-break:break-all;margin-top:3px}
@@ -1838,7 +1844,7 @@ input,select,textarea{border-color:#cbdcf0!important;background:#fbfdff!importan
 <div class="cardWrap">
   <div id="card" class="card">
     <img id="pPhoto" class="profile" alt="Profile image">
-    <div id="pName" class="name">Your name</div><div id="pHandle" class="hint" style="margin-top:2px"></div><div id="pPersonalAddress" class="hint" style="margin-top:3px;font-weight:750;color:#1d4ed8"></div>
+    <div id="pName" class="name">Your name</div><div id="pHandle" class="hint" style="margin-top:2px"></div><div id="pPersonalAddress" class="hint" style="margin-top:3px;font-weight:750;color:#1d4ed8"></div><div id="pPublicCardSetting" class="hint" style="margin-top:4px;font-weight:750"></div>
     <div id="pRole" class="role">Professional title</div>
     <div id="pCompany" class="company">Company / organisation</div>
     <p id="pTagline" class="tagline">Your short introduction will appear here.</p>
@@ -2029,7 +2035,7 @@ input,select,textarea{border-color:#cbdcf0!important;background:#fbfdff!importan
       <div id="wizMemberFind" style="display:none;margin-top:10px">
         <div class="hint">Find one or more registered users. Each Temporary recipient receives a separate link so access can be revoked independently.</div>
         <div class="connectionSearch">
-          <input id="wizHandle" placeholder="@DShario">
+          <input id="wizHandle" placeholder="@username or dshario.com/@username">
           <button id="wizFind" class="mini">🔍 Find</button>
         </div>
         <div id="wizResult" class="sendDsharioResult"></div>
@@ -2140,7 +2146,7 @@ input,select,textarea{border-color:#cbdcf0!important;background:#fbfdff!importan
     <div class="editSectionBody">
       <div class="editIntro">Your full name is required. Add only the professional information you want to share.</div>
       <div class="grid">
-        <div class="field"><label>Personal DShario username *</label><input id="slug" placeholder="e.g. hasan-zaman" autocomplete="off"><span class="hint">Required. Letters, numbers and hyphens only. Your username creates your Personal DShario Address.</span><div class="personalAddressBox"><div class="hint">Your Personal DShario Address</div><div id="personalAddressPreview" class="personalAddressValue">dshario.com/@username</div><span id="usernameStatus" class="usernameStatus info">Choose a username to check availability.</span><label class="usernameConfirm"><input id="confirmUsername" type="checkbox"> <span>I confirm this username and understand it will be used in my Personal DShario Address.</span></label></div></div>
+        <div class="field"><label>Personal DShario username *</label><input id="slug" placeholder="e.g. hasan-zaman" autocomplete="off"><span class="hint">Required. Letters, numbers and hyphens only. Your username creates your Personal DShario Address.</span><div class="personalAddressBox"><div class="hint">Your Personal DShario Address</div><div id="personalAddressPreview" class="personalAddressValue">dshario.com/@username</div><span id="usernameStatus" class="usernameStatus info">Choose a username to check availability.</span><label class="usernameConfirm"><input id="confirmUsername" type="checkbox"> <span>I confirm this username and understand it will be used in my Personal DShario Address.</span></label><div class="publicCardSetting"><label for="public_purpose">Public Card</label><select id="public_purpose"><option value="business">💼 Business</option><option value="career">👔 Career</option><option value="networking">🤝 Networking</option><option value="social">👥 Social</option><option value="full">📇 Full</option></select><span class="hint">This is the only card shown when someone opens your Personal DShario Address.</span></div></div></div>
         <div class="field"><label>Full name *</label><input id="full_name" placeholder="Your name"></div>
         <input id="full_name_bn" type="hidden" value="">
         <div class="field"><label>Profession / job title</label><input id="job_title" placeholder="e.g. Industrial Pharmacist"></div>
@@ -2304,7 +2310,7 @@ input,select,textarea{border-color:#cbdcf0!important;background:#fbfdff!importan
         </div>
       </div>
       <div class="connectionSearch">
-        <input id="findDsharioUserInput" placeholder="@DShario name" autocomplete="off">
+        <input id="findDsharioUserInput" placeholder="@username or dshario.com/@username" autocomplete="off">
         <button id="findDsharioUserBtn" class="mini" type="button">Find user</button>
       </div>
       <div id="findDsharioUserResult" class="sendDsharioResult"></div>
@@ -2540,8 +2546,9 @@ try{ Object.defineProperty(window,"currentLang",{value:"en",writable:false,confi
 catch(e){ window.currentLang="en"; }
 function t(en){ return en; }
 const personalPathMatch=decodeURIComponent(location.pathname).match(/\/@([a-z0-9-]+)\/?$/i);
+const personalAddressSlug=personalPathMatch?personalPathMatch[1].toLowerCase():"";
 if(personalPathMatch && !new URLSearchParams(location.search).get("card")){
-  const u=new URL(location.href);u.searchParams.set("card",personalPathMatch[1].toLowerCase());u.searchParams.set("view","professional");history.replaceState(null,"",u.pathname+u.search+u.hash);
+  const u=new URL(location.href);u.searchParams.set("card",personalAddressSlug);u.searchParams.set("personal","1");history.replaceState(null,"",u.pathname+u.search+u.hash);
 }
 const createMode = new URLSearchParams(location.search).get("create") === "1";
 
@@ -2557,6 +2564,12 @@ function slugify(v){return (v||"").toLowerCase().trim().replace(/[^a-z0-9-]+/g,"
 const RESERVED_DSHARIO_NAMES=new Set(["admin","account","login","signin","signup","help","about","privacy","terms","contact","support","share","card","create","edit","api","www","mail","dshario"]);
 let usernameCheckTimer=null, usernameCheckState={slug:"",available:false};
 function personalAddressFor(slug){return location.origin+"/@"+encodeURIComponent(slug||"username");}
+function normalizeDSharioIdentityInput(raw){
+  let v=(raw||"").trim();
+  try{if(/^https?:\/\//i.test(v)){const u=new URL(v);const m=decodeURIComponent(u.pathname).match(/\/@([a-z0-9-]+)\/?$/i);if(m)v=m[1];}}catch(e){}
+  v=v.replace(/^https?:\/\/(?:www\.)?dshario\.com\//i,"").replace(/^\/?@/,"");
+  return slugify(v);
+}
 function updatePersonalAddressPreview(){
   const slug=slugify($("slug")?.value||"");
   if($("personalAddressPreview")) $("personalAddressPreview").textContent=(location.host||"dshario.com")+"/@"+(slug||"username");
@@ -2930,7 +2943,7 @@ async function openSavedConnectionList(){
   }
   publicMode=false;
   if(publicShareCheckTimer){clearInterval(publicShareCheckTimer);publicShareCheckTimer=null;}
-  document.body.classList.remove("publicMode","connectionOnlyMode","expiredPublic","tempConnection","signedOutMinimal");
+  document.body.classList.remove("publicMode","connectionOnlyMode","expiredPublic","tempConnection","personalProfileMode","signedOutMinimal");
   if($("publicHeader"))$("publicHeader").style.display="none";
   if($("tabs"))$("tabs").style.display="flex";
   if($("accountPill"))$("accountPill").style.display="flex";
@@ -3098,7 +3111,7 @@ async function loadSharedCard(token){
   if(error||!link){showExpiredShareLink();return}
   publicShareView=link.privacy_view||"professional";
   currentPublicTargetUserId=link.user_id||null;
-  {const qp=new URLSearchParams(location.search);currentPublicPurpose=normalisePurpose(qp.get("sharetype")||qp.get("purpose"));}
+  {const qp=new URLSearchParams(location.search);currentPublicPurpose=isPersonal?(normalisePurpose(card.public_purpose)||"career"):normalisePurpose(qp.get("sharetype")||qp.get("purpose"));}
   if(currentPublicPurpose) rememberReceivedPurpose(currentPublicTargetUserId,currentPublicPurpose);
   markSharedReceivedNow(currentPublicTargetUserId);
   currentPublicSourceType="temporary";
@@ -3165,13 +3178,14 @@ function setForm(card={}){
   if($("whatsapp_username")) $("whatsapp_username").value=wa.username;
   $("show_phone").checked=card.show_phone!==false; $("show_email").checked=card.show_email!==false;
   const pv=card.privacy_view||localStorage.getItem("dshario-privacy-view")||"professional";
+  if($("public_purpose")) $("public_purpose").value=normalisePurpose(card.public_purpose)||"career";
   $("privacy_view").value=pv; if($("shareView")) $("shareView").value=pv; if($("ownerDownloadView")) $("ownerDownloadView").value=(pv==="professional"?"career":pv);
   photoData=card.photo_url||""; photoSourceData=""; photoPosition=0; photoZoom=1; if($("photoAdjuster"))$("photoAdjuster").classList.remove("show"); if($("photoAdjustToggle"))$("photoAdjustToggle").style.display="none"; renderPhotoPreview();
 }
 function getForm(){
   const o={}; formIds.forEach(id=>o[id]=$(id).value.trim());
   o.whatsapp=packWhatsappValue($("whatsapp")?.value,$("whatsapp_username")?.value);
-  o.slug=slugify(o.slug); o.show_phone=$("show_phone").checked; o.show_email=$("show_email").checked; o.photo_url=photoData||null; o.is_public=true; o.privacy_view=$("privacy_view").value||"professional";
+  o.slug=slugify(o.slug); o.show_phone=$("show_phone").checked; o.show_email=$("show_email").checked; o.photo_url=photoData||null; o.is_public=true; o.privacy_view=$("privacy_view").value||"professional"; o.public_purpose=normalisePurpose($("public_purpose")?.value)||"career";
   return o;
 }
 function localizedCardText(c, field){
@@ -3238,7 +3252,7 @@ function render(card){
   const roleText=localizedCardText(c,"job_title");
   const companyText=localizedCardText(c,"company");
   const introText=localizedCardText(c,"description");
-  $("pName").textContent=nameText||t("Your name"); if($("pHandle")) $("pHandle").textContent=c.slug?"@"+c.slug:""; if($("pPersonalAddress")) $("pPersonalAddress").textContent=c.slug?(location.host||"dshario.com")+"/@"+c.slug:"";
+  $("pName").textContent=nameText||t("Your name"); if($("pHandle")) $("pHandle").style.display="none"; if($("pPersonalAddress")){ $("pPersonalAddress").textContent=(!publicMode&&c.slug)?(location.host||"dshario.com")+"/@"+c.slug:""; $("pPersonalAddress").style.display=(!publicMode&&c.slug)?"block":"none"; } if($("pPublicCardSetting")){const pp=normalisePurpose(c.public_purpose)||"career";$("pPublicCardSetting").textContent=publicMode?"":"Public Card: "+purposeLabel(pp);}
   $("pRole").textContent=roleText; $("pRole").style.display=roleText?"block":"none";
   $("pCompany").textContent=companyText; $("pCompany").style.display=companyText?"block":"none";
   $("pTagline").textContent=introText; $("pTagline").style.display=introText?"block":"none";
@@ -3286,7 +3300,7 @@ function render(card){
 async function loadOwnerCard(){
   if(!user){currentCard=null;render(null);return}
   publicMode=false; connectionOnlyMode=false;
-  document.body.classList.remove("connectionOnlyMode","publicMode","tempConnection");
+  document.body.classList.remove("connectionOnlyMode","publicMode","tempConnection","personalProfileMode");
   if($("publicHeader")) $("publicHeader").style.display="none";
   if($("receiverPublicActions")) $("receiverPublicActions").classList.remove("show");
   if($("simpleShare")) $("simpleShare").style.display="flex";
@@ -3299,16 +3313,19 @@ async function loadOwnerCard(){
   currentCard=data||null; $("editTab").textContent=data?"✎ Edit My Card":"✎ Create My DShario"; updateSignedInHandle(); if(data){setForm(data);updatePersonalAddressPreview();if($("confirmUsername"))$("confirmUsername").checked=true;checkUsernameAvailability(data.slug,false);render(data);$("deleteBtn").style.display="inline-block"} else {setForm({card_color:"#eff6ff",privacy_view:localStorage.getItem("dshario-privacy-view")||"professional"});render(null);$("deleteBtn").style.display="none"}
 }
 async function loadPublicCard(slug){
-  publicMode=true; pendingSharedAction=savedSharedIntent(); document.body.classList.remove("expiredPublic"); document.body.classList.add("publicMode"); $("tabs").style.display="none"; $("publicHeader").style.display="block"; $("accountPill").style.display="none";
-  const {data,error}=await sb.rpc("get_public_card_bilingual",{card_slug:slug});
+  const isPersonal=new URLSearchParams(location.search).get("personal")==="1" || (!!personalAddressSlug && personalAddressSlug===String(slug||"").toLowerCase());
+  publicMode=true; pendingSharedAction=isPersonal?null:savedSharedIntent(); document.body.classList.remove("expiredPublic","personalProfileMode"); document.body.classList.add("publicMode"); if(isPersonal)document.body.classList.add("personalProfileMode"); $("tabs").style.display="none"; $("publicHeader").style.display=isPersonal?"none":"block"; $("accountPill").style.display="none";
+  const response=isPersonal?await sb.rpc("get_personal_dshario_card",{card_slug:slug}):await sb.rpc("get_public_card_bilingual",{card_slug:slug});
+  const data=response.data,error=response.error;
   const card=Array.isArray(data)?data[0]:data;
   if(error||!card){render(null);msg("This DShario was not found or is private.","err");return}
   currentPublicTargetUserId=card.user_id||null;
   markSharedReceivedNow(currentPublicTargetUserId);
-  currentPublicSourceType="permanent";
+  currentPublicSourceType=isPersonal?"personal":"permanent";
   currentPublicShareToken="";
-  {const qp=new URLSearchParams(location.search);currentPublicPurpose=normalisePurpose(qp.get("sharetype")||qp.get("purpose"));}
-  if(currentPublicPurpose) rememberReceivedPurpose(currentPublicTargetUserId,currentPublicPurpose);
+  {const qp=new URLSearchParams(location.search);currentPublicPurpose=isPersonal?(normalisePurpose(card.public_purpose)||"career"):normalisePurpose(qp.get("sharetype")||qp.get("purpose"));}
+  if(isPersonal){const map={business:"business",career:"professional",networking:"professional",social:"social",full:"full"};publicShareView=map[currentPublicPurpose]||"professional";}
+  if(currentPublicPurpose&&!isPersonal) rememberReceivedPurpose(currentPublicTargetUserId,currentPublicPurpose);
   hideReceiverMessage();
   render(card); setView("card");
   showReceivedPurpose();
@@ -3624,7 +3641,7 @@ function enterPasswordRecoveryUI(message="Enter and confirm your new password be
 }
 function exitPasswordRecoveryUI(message="Sign in with your new password."){
   publicMode=false; connectionOnlyMode=false;
-  document.body.classList.remove("publicMode","connectionOnlyMode","expiredPublic","tempConnection");
+  document.body.classList.remove("publicMode","connectionOnlyMode","expiredPublic","tempConnection","personalProfileMode");
   $("tabs").style.display="grid"; $("publicHeader").style.display="none"; $("accountPill").style.display="inline-block"; $("signedOutBox").style.display="block"; $("signedInBox").style.display="none";
   ["signInMode","signUpMode","forgotPasswordBtn","authSubmit"].forEach(id=>$(id)?.style.removeProperty("display"));
   $("authEmail").closest(".field").style.removeProperty("display"); $("authPassword").closest(".field").style.removeProperty("display"); $("resetPasswordBox").style.display="none";
@@ -4207,7 +4224,7 @@ function renderWizRecipients(){
   send.classList.toggle("show",wizRecipients.length>0); send.style.display=wizRecipients.length?"flex":"none";
 }
 $("wizFind").onclick=async()=>{
-  const raw=$("wizHandle").value.trim(),box=$("wizResult");if(!raw)return;
+  const raw=normalizeDSharioIdentityInput($("wizHandle").value),box=$("wizResult");if(!raw)return;
   const {data,error}=await sb.rpc("find_dshario_by_handle",{search_handle:raw});const f=Array.isArray(data)?data[0]:data;
   if(error||!f){box.className="sendDsharioResult show";box.innerHTML='<div class="hint">No DShario found.</div>';return}
   if(f.user_id===user.id){box.className="sendDsharioResult show";box.innerHTML='<div class="hint">This is your own DShario.</div>';return}
@@ -4639,7 +4656,7 @@ function connectionItem(c,isNew){
   const expiredText=expired?`<div class="connectionStatus expired">${t("Temporary DShario link expired or revoked")}</div>`:"";
 
   if(isNew){
-    item.innerHTML=`${badge}<div class="connectionTop"><div class="connectionInfo"><div class="connectionName">${escHtml(name)}</div><div class="connectionHandle">${escHtml(handle)}</div>${nick}</div></div>${updated}${expiredText}<div class="connectionActions"></div>`;
+    item.innerHTML=`${badge}<div class="connectionTop"><div class="connectionInfo"><div class="connectionName">${escHtml(name)}</div>${nick}</div></div>${updated}${expiredText}<div class="connectionActions"></div>`;
     const acts=item.querySelector(".connectionActions");
     if(expired){
       const del=document.createElement("button");del.className="mini";del.textContent=t("Delete");
@@ -4658,7 +4675,7 @@ function connectionItem(c,isNew){
   }
 
   const favouriteMark=metaInfo.favorite?'<span class="connectionFavouriteMark" title="Favourite">★</span>':'';
-  const summaryBits=[handle].filter(Boolean).map(escHtml).join(' • ');
+  const summaryBits=[];
   const savedPurpose=readConnectionPurpose(c.connected_user_id);
   const purposeLine=savedPurpose?`<div class="connectionContext compact primaryShareType">${escHtml(purposeLabel(savedPurpose))}</div>`:"";
 
@@ -4886,7 +4903,7 @@ async function findDsharioUser(){
   box.className="sendDsharioResult show";
   box.innerHTML='<div class="hint">'+t("Searching...")+'</div>';
 
-  const {data,error}=await sb.rpc("find_dshario_by_handle",{search_handle:raw});
+  const {data,error}=await sb.rpc("find_dshario_by_handle",{search_handle:normalizeDSharioIdentityInput(raw)});
   const f=Array.isArray(data)?data[0]:data;
   if(error){box.innerHTML='<div class="hint">'+escHtml(error.message)+'</div>';return}
   if(!f){box.innerHTML='<div class="hint">'+t("No DShario found with that exact name.")+'</div>';return}
