@@ -293,6 +293,38 @@ body,button,input,textarea,select,.tab,.mini,.btn,.actionBtn,.accountPill,.lead,
 .reminderActions{display:flex;gap:7px;flex-wrap:wrap;margin-top:8px}
 @media(max-width:520px){.header{gap:6px}.header .brand{font-size:24px}.headerQuickBtn{padding:8px;min-width:40px}}
 
+
+/* RC32.17 — visual-only branded UI refinement + new landing page. Functional flows unchanged. */
+:root{--ds-navy:#082f63;--ds-navy2:#0b427f;--ds-blue:#1267d9;--ds-blue2:#2f80ed;--ds-soft:#edf6ff;--ds-line:#cfe0f3;--ds-ink:#0b2b55;--ds-muted:#637b97}
+body{background:linear-gradient(180deg,#edf6ff 0,#fff 620px);color:var(--ds-ink)}
+.header{background:linear-gradient(100deg,var(--ds-navy),var(--ds-navy2));color:#fff;border-bottom:0;border-radius:0 0 18px 18px;padding:14px 16px;box-shadow:0 8px 24px rgba(6,43,85,.12)}
+.header .brand{color:#fff}.header .brandIcon{background:#fff;color:var(--ds-navy);border-color:#fff}.header .accountPill{background:rgba(255,255,255,.08);color:#fff;border-color:rgba(255,255,255,.24)}
+.tabs{background:#fff;border:1px solid #d7e6f6;border-radius:18px;padding:6px;gap:4px;overflow:visible;box-shadow:0 8px 22px rgba(6,43,85,.06)}
+.tab{border-radius:13px;min-height:58px;color:#183e70;background:#fff;font-weight:850}.tab.active{background:#e4f0ff!important;color:#0966d8!important;box-shadow:none!important}.tab.active:focus{outline:2px solid #8abcf5;outline-offset:1px}
+.card{background:linear-gradient(145deg,#f8fcff,#e8f4ff)!important;border-color:#cfe2f7;box-shadow:0 14px 34px rgba(6,43,85,.09)}
+.card:before{content:"";position:absolute;inset:auto -90px -120px auto;width:300px;height:300px;border-radius:50%;background:radial-gradient(circle,rgba(69,143,230,.10),rgba(69,143,230,0) 70%);pointer-events:none}
+.panel{border-color:#d7e6f5;box-shadow:0 12px 30px rgba(6,43,85,.08)}
+.icon{background:#eef6ff;color:#1267d9;border-color:#cfe2f7;font-weight:900}
+.locationIcon{background:#e9f4ff!important;color:#1476e8!important;border-color:#bfdcff!important}
+.callIcon{background:#22c55e!important;color:#fff!important;border-color:#22c55e!important}
+.emailIcon{background:#ff4d5a!important;color:#fff!important;border-color:#ff4d5a!important}
+.websiteIcon{background:#1976d2!important;color:#fff!important;border-color:#1976d2!important}
+.whatsappIcon{background:#25D366!important}.linkedinIcon{background:#0A66C2!important}.facebookIcon{background:#1877F2!important}.instagramIcon{background:linear-gradient(135deg,#833AB4 0%,#C13584 38%,#E1306C 58%,#F56040 78%,#FCAF45 100%)!important}
+.brandIconContact{border:none!important;color:#fff!important}
+#openShareWizardBtn,.btn:not(.secondary):not(.ghost):not(.danger){background:linear-gradient(100deg,#1267d9,#0f6df2)!important;color:#fff!important;box-shadow:0 7px 18px rgba(18,103,217,.18)}
+#downloadOwnerImageBtn,.btn.secondary{background:#edf6ff!important;color:#1262c4!important;border-color:#c9def6!important}
+.purposePrompt{background:linear-gradient(145deg,#f7fbff,#eaf5ff)!important}.purposeChoice{background:#fff!important}.purposeChoice.active{background:#e5f1ff!important;color:#0d65ce!important}
+#purposeBusiness{background:linear-gradient(145deg,#fff,#fff6ef)!important}#purposeCareer{background:linear-gradient(145deg,#fff,#eef7ff)!important}#purposeNetworking{background:linear-gradient(145deg,#fff,#fff8e8)!important}#purposeSocial{background:linear-gradient(145deg,#fff,#f7f1ff)!important}#purposeFull{background:linear-gradient(145deg,#fff,#f1f5fa)!important}
+
+/* Landing page */
+.signedOutMinimal .app{max-width:none;padding:0!important}.landingPage{max-width:1180px;margin:0 auto;background:#fff;overflow:hidden;box-shadow:0 0 0 1px #e8f0fa}
+.landingTopbar{height:76px;background:linear-gradient(100deg,#062b59,#0a427d);display:flex;align-items:center;justify-content:space-between;padding:0 34px;color:#fff}.landingBrand,.landingBottomBrand{display:flex;align-items:center;gap:12px;font-size:30px;font-weight:950;letter-spacing:-.04em}.landingDsMark{width:44px;height:44px;border:2px solid currentColor;border-radius:8px;display:grid;place-items:center;font-size:14px;font-weight:950}.landingSigninSmall{border:1px solid rgba(255,255,255,.65);background:transparent;color:#fff;border-radius:999px;padding:9px 20px;font-weight:850}
+.landingHeroNew{display:grid;grid-template-columns:1.15fr .85fr;gap:28px;padding:58px 52px 48px;background:radial-gradient(circle at 78% 32%,#dcecff 0,#f8fbff 34%,#fff 67%)}.landingHeroCopy{align-self:center}.landingEyebrow{font-size:14px;font-weight:800;letter-spacing:.22em;color:#5d7391;margin-bottom:14px}.landingHeroNew h1{font-size:clamp(44px,6vw,72px);line-height:.98;letter-spacing:-.055em;margin:0 0 20px;color:#092d5c}.landingHeroNew h1 span{color:#1267d9}.landingHeroNew p{font-size:20px;line-height:1.5;color:#183653;max-width:650px;margin:0 0 24px}.landingPurposes{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;max-width:650px}.landingPurpose{background:#fff;border:1px solid #dae8f6;border-radius:16px;padding:12px 8px;text-align:center;box-shadow:0 7px 18px rgba(6,43,85,.06)}.landingPurpose>span{display:block;font-size:26px;margin-bottom:5px}.landingPurpose strong{display:block;font-size:14px;color:#0b315f}.landingPurpose small{display:block;font-size:11px;color:#657d97;line-height:1.25;margin-top:3px}.landingHeroActions{display:flex;gap:14px;margin-top:26px}.landingCreate,.landingSignin{min-height:54px;border-radius:15px;padding:0 26px;font-size:17px;font-weight:900}.landingCreate{border:0;background:linear-gradient(100deg,#082f63,#0d4d91);color:#fff}.landingSignin{background:#fff;border:1px solid #1768cf;color:#0b4f9c}.landingBetaNote{margin-top:12px;color:#6a7f99;font-size:13px}
+.landingPhoneStage{position:relative;min-height:500px;display:grid;place-items:center}.landingBackCard{position:absolute;width:255px;height:330px;border-radius:26px;background:linear-gradient(145deg,#163f75,#082b59);transform:rotate(-7deg) translate(-65px,10px);box-shadow:0 20px 40px rgba(3,29,62,.20);color:#fff;padding:28px}.landingDsWatermark{font-size:24px;font-weight:950;border:2px solid currentColor;border-radius:7px;padding:5px}.landingBackCard em{position:absolute;right:22px;bottom:36px;font-family:cursive;font-size:16px;line-height:1.4;text-align:right}.landingPhone{position:relative;width:270px;border:10px solid #141b24;border-radius:39px;background:#fff;padding:25px 16px 20px;box-shadow:0 22px 45px rgba(6,43,85,.24);transform:rotate(2deg)}.landingPhoneBrand{display:flex;align-items:center;justify-content:center;gap:8px;color:#092f62;font-size:21px;margin-bottom:18px}.landingDsMini{width:34px;height:34px;border-radius:4px;background:#082f63;color:#fff;display:grid;place-items:center;font-size:11px;font-weight:950}.landingPhoneLinks{background:#f7fbff;border:1px solid #e0ebf6;border-radius:16px;padding:12px;display:grid;gap:9px;color:#0c315f;font-size:13px}.landingPhoneLinks div{display:flex;align-items:center;gap:10px}.landingPhoneLinks span{width:28px;height:28px;border-radius:50%;background:#0b3a76;color:#fff;display:grid;place-items:center;font-size:12px;font-weight:900}.landingPhoneShare{margin:12px 0;background:#07366e;color:#fff;border-radius:14px;padding:12px;text-align:center;font-weight:850}.landingPhonePurposeTitle{text-align:center;font-weight:900;color:#0c315f;font-size:13px;margin:12px 0 8px}.landingPhonePurposes{display:grid;grid-template-columns:repeat(2,1fr);gap:7px}.landingPhonePurposes span{background:#f7fbff;border:1px solid #e0ebf6;border-radius:10px;text-align:center;padding:8px 4px;font-size:19px}.landingPhonePurposes span:last-child{grid-column:1/-1}.landingPhonePurposes small{display:block;font-size:9px;color:#24486f;margin-top:2px}.landingPhoneTag{text-align:center;font-size:9px;color:#24486f;margin-top:12px}
+.landingHow{text-align:center;padding:44px 42px 28px}.landingHow h2{margin:0;color:#082f63;font-size:36px;letter-spacing:-.035em}.landingHow>p{margin:7px 0 30px;color:#5b718c;font-size:17px}.landingSteps{display:grid;grid-template-columns:repeat(4,1fr);gap:18px}.landingSteps>div{padding:10px}.landingSteps span{width:76px;height:76px;border-radius:50%;background:#eaf4ff;color:#1267d9;display:grid;place-items:center;margin:0 auto 12px;font-size:30px}.landingSteps strong{display:block;color:#0a315f;font-size:16px}.landingSteps small{display:block;color:#5d728d;line-height:1.4;margin-top:6px;font-size:13px}.landingBenefits{margin:10px 32px 0;border-radius:22px;background:linear-gradient(100deg,#f7fbff,#eef6ff);border:1px solid #deebf7;display:grid;grid-template-columns:repeat(3,1fr);padding:24px 18px}.landingBenefits>div{display:grid;grid-template-columns:48px 1fr;column-gap:10px;align-items:center;padding:4px 18px;border-right:1px solid #d6e5f3}.landingBenefits>div:last-child{border-right:0}.landingBenefits span{grid-row:1/3;width:44px;height:44px;border-radius:50%;background:#0a3c77;color:#fff;display:grid;place-items:center;font-size:20px}.landingBenefits strong{color:#0b315e}.landingBenefits small{color:#5e748e;line-height:1.35;margin-top:3px}.landingBottom{margin-top:36px;background:linear-gradient(100deg,#062b59,#0b427d);color:#fff;text-align:center;padding:42px 24px 34px;border-radius:50% 50% 0 0/14% 14% 0 0}.landingBottomBrand{justify-content:center;font-size:38px}.landingBottomTag{font-size:20px;margin-top:10px}.landingBottomBeta{font-size:12px;color:#d7e5f4;margin-top:18px}
+@media(max-width:820px){.landingHeroNew{grid-template-columns:1fr;padding:38px 24px}.landingPhoneStage{min-height:430px}.landingPurposes{grid-template-columns:repeat(5,1fr)}.landingSteps{grid-template-columns:1fr 1fr}.landingBenefits{grid-template-columns:1fr;margin:8px 16px}.landingBenefits>div{border-right:0;border-bottom:1px solid #d6e5f3;padding:14px}.landingBenefits>div:last-child{border-bottom:0}}
+@media(max-width:560px){.landingTopbar{height:68px;padding:0 18px}.landingBrand{font-size:26px}.landingHeroNew{padding:32px 18px 34px}.landingEyebrow{font-size:11px;letter-spacing:.17em}.landingHeroNew h1{font-size:46px}.landingHeroNew p{font-size:17px}.landingPurposes{grid-template-columns:repeat(2,1fr)}.landingPurpose:last-child{grid-column:1/-1}.landingHeroActions{display:grid;grid-template-columns:1fr}.landingPhoneStage{min-height:390px}.landingBackCard{width:210px;height:285px;transform:rotate(-7deg) translate(-50px,5px)}.landingPhone{width:235px;border-width:8px;border-radius:32px}.landingHow{padding:36px 18px 20px}.landingHow h2{font-size:31px}.landingSteps{grid-template-columns:1fr 1fr;gap:8px}.landingSteps span{width:62px;height:62px;font-size:25px}.landingBottom{border-radius:42% 42% 0 0/8% 8% 0 0}.tabs{grid-template-columns:1fr 1fr 1fr}.tab{font-size:12px;padding:7px 4px}}
+
 </style>
 <script>
 /* Built-in QR generator: no external CDN request. */
@@ -1758,9 +1790,9 @@ input,select,textarea{border-color:#cbdcf0!important;background:#fbfdff!importan
 </header>
 
 <div id="tabs" class="tabs">
-  <button class="tab active" id="myTab">▣ My Card</button>
+  <button class="tab active" id="myTab">🪪 My Card</button>
   <button class="tab" id="editTab">✎ Create My DShario</button>
-  <button class="tab" id="accountTab">◉ Account</button>
+  <button class="tab" id="accountTab">⚙ Account</button>
 </div>
 
 <div id="notice" class="notice"></div>
@@ -1797,11 +1829,11 @@ input,select,textarea{border-color:#cbdcf0!important;background:#fbfdff!importan
     <div id="pCompany" class="company">Company / organisation</div>
     <p id="pTagline" class="tagline">Your short introduction will appear here.</p>
     <div class="contacts">
-      <div id="locRow" class="contact"><span class="icon">⌖</span><span id="pLocation" class="ct">Location</span></div>
-      <a id="phoneRow" class="contact" href="#" style="display:none"><span class="icon">☎</span><span id="pPhone" class="ct"></span></a>
-      <a id="emailRow" class="contact" href="#" style="display:none"><span class="icon">✉</span><span id="pEmail" class="ct"></span></a>
+      <div id="locRow" class="contact"><span class="icon locationIcon">⌖</span><span id="pLocation" class="ct">Location</span></div>
+      <a id="phoneRow" class="contact" href="#" style="display:none"><span class="icon callIcon">☎</span><span id="pPhone" class="ct"></span></a>
+      <a id="emailRow" class="contact" href="#" style="display:none"><span class="icon emailIcon">✉</span><span id="pEmail" class="ct"></span></a>
       <a id="whatsappRow" class="contact" href="#" target="_blank" rel="noopener" style="display:none"><span class="icon brandIconContact whatsappIcon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M20.5 3.5A11.8 11.8 0 0 0 12.1 0C5.6 0 .3 5.3.3 11.8c0 2.1.5 4.1 1.6 5.9L.2 24l6.5-1.7a11.7 11.7 0 0 0 5.4 1.4h.1c6.5 0 11.8-5.3 11.8-11.8 0-3.2-1.2-6.1-3.5-8.4ZM12.2 21.7h-.1c-1.7 0-3.5-.5-5-1.4l-.4-.2-3.8 1 1-3.7-.2-.4a9.8 9.8 0 1 1 8.5 4.7Zm5.4-7.3c-.3-.1-1.7-.8-2-.9-.3-.1-.5-.1-.7.2-.2.3-.8.9-1 1.1-.2.2-.4.2-.7.1-.3-.1-1.3-.5-2.4-1.5-.9-.8-1.5-1.8-1.7-2.1-.2-.3 0-.5.1-.6l.5-.6c.2-.2.2-.3.3-.5.1-.2 0-.4 0-.5-.1-.1-.7-1.7-1-2.3-.3-.6-.5-.5-.7-.5h-.6c-.2 0-.5.1-.8.4-.3.3-1 1-1 2.5s1.1 2.9 1.2 3.1c.1.2 2.2 3.3 5.3 4.6.7.3 1.3.5 1.8.6.8.2 1.5.2 2 .1.6-.1 1.7-.7 1.9-1.4.2-.7.2-1.3.2-1.4-.1-.2-.3-.3-.6-.4Z"/></svg></span><span id="pWhatsapp" class="ct"></span></a>
-      <a id="webRow" class="contact" href="#" target="_blank" rel="noopener" style="display:none"><span class="icon">↗</span><span class="ct">Website</span></a>
+      <a id="webRow" class="contact" href="#" target="_blank" rel="noopener" style="display:none"><span class="icon websiteIcon">↗</span><span class="ct">Website</span></a>
       <a id="liRow" class="contact" href="#" target="_blank" rel="noopener" style="display:none"><span class="icon brandIconContact linkedinIcon" aria-hidden="true"><span class="linkedinLetters">in</span></span><span class="ct">LinkedIn</span></a>
       <a id="fbRow" class="contact" href="#" target="_blank" rel="noopener" style="display:none"><span class="icon brandIconContact facebookIcon" aria-hidden="true"><span class="facebookLetter">f</span></span><span class="ct">Facebook</span></a>
       <a id="igRow" class="contact" href="#" target="_blank" rel="noopener" style="display:none"><span class="icon brandIconContact instagramIcon" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="16" rx="5" ry="5" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="12" cy="12" r="4" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="17.4" cy="6.7" r="1.2" fill="currentColor"/></svg></span><span class="ct">Instagram</span></a>
@@ -2139,16 +2171,69 @@ input,select,textarea{border-color:#cbdcf0!important;background:#fbfdff!importan
 </section>
 
 <section id="homeView" class="view">
-<div class="homeHero landingHero">
-  <div class="landingLogo"><span class="brandIcon">DS</span><span>DShario</span></div>
-  <h1 class="landingSlogan">Share. Connect. Remember.</h1>
-  <p class="landingText">Create your digital identity, choose what you share, and stay connected.</p>
-  <div class="homeActions landingActions">
-    <button class="primary" id="homeSigninBtn">Sign in</button>
-    <button class="secondary" id="homeCreateBtn">Create account</button>
+<div class="landingPage">
+  <div class="landingTopbar">
+    <div class="landingBrand"><span class="landingDsMark">DS</span><span>DShario</span></div>
+    <button class="landingSigninSmall" id="homeSigninBtn" type="button">Sign In</button>
   </div>
-  <div class="landingFooter">
-    <span>DShario Beta</span>
+
+  <div class="landingHeroNew">
+    <div class="landingHeroCopy">
+      <div class="landingEyebrow">YOUR DIGITAL IDENTITY. YOUR WAY.</div>
+      <h1>Share with purpose.<br><span>Connect better.</span></h1>
+      <p>Create one digital identity and choose what to share for Business, Career, Networking, Social or Full connections.</p>
+      <div class="landingPurposes" aria-label="DShario share types">
+        <div class="landingPurpose"><span>💼</span><strong>Business</strong><small>For clients and work</small></div>
+        <div class="landingPurpose"><span>👔</span><strong>Career</strong><small>For opportunities</small></div>
+        <div class="landingPurpose"><span>🤝</span><strong>Networking</strong><small>For new connections</small></div>
+        <div class="landingPurpose"><span>👥</span><strong>Social</strong><small>For friends and community</small></div>
+        <div class="landingPurpose"><span>📇</span><strong>Full</strong><small>Share everything</small></div>
+      </div>
+      <div class="landingHeroActions">
+        <button class="landingCreate" id="homeCreateBtn" type="button">Create Free Card →</button>
+        <button class="landingSignin" id="homeSigninHeroBtn" type="button">Sign In</button>
+      </div>
+      <div class="landingBetaNote">Free during beta.</div>
+    </div>
+
+    <div class="landingPhoneStage" aria-hidden="true">
+      <div class="landingBackCard"><span class="landingDsWatermark">DS</span><em>More than a card.<br>A smarter way to connect.</em></div>
+      <div class="landingPhone">
+        <div class="landingPhoneBrand"><span class="landingDsMini">DS</span><strong>DShario</strong></div>
+        <div class="landingPhoneLinks">
+          <div><span>☎</span> Call</div><div><span>✉</span> Email</div><div><span>in</span> LinkedIn</div><div><span>↗</span> Website</div>
+        </div>
+        <div class="landingPhoneShare">⌯ Share My Card</div>
+        <div class="landingPhonePurposeTitle">Share with Purpose</div>
+        <div class="landingPhonePurposes">
+          <span>💼<small>Business</small></span><span>👔<small>Career</small></span><span>🤝<small>Networking</small></span><span>👥<small>Social</small></span><span>📇<small>Full</small></span>
+        </div>
+        <div class="landingPhoneTag">Share smarter. Connect better.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="landingHow">
+    <h2>How DShario Works</h2>
+    <p>A simple way to create, share and connect.</p>
+    <div class="landingSteps">
+      <div><span>👤</span><strong>1. Create</strong><small>Add your professional and contact details.</small></div>
+      <div><span>☷</span><strong>2. Choose Purpose</strong><small>Select what fits the moment.</small></div>
+      <div><span>⌯</span><strong>3. Share</strong><small>Use a link or QR code.</small></div>
+      <div><span>👥</span><strong>4. Connect</strong><small>View, save and connect instantly.</small></div>
+    </div>
+  </div>
+
+  <div class="landingBenefits">
+    <div><span>✓</span><strong>You’re in Control</strong><small>Choose what to share for every occasion.</small></div>
+    <div><span>🔒</span><strong>Privacy Focused</strong><small>Share only the information you choose.</small></div>
+    <div><span>⚡</span><strong>Simple & Fast</strong><small>Create and share your card in minutes.</small></div>
+  </div>
+
+  <div class="landingBottom">
+    <div class="landingBottomBrand"><span class="landingDsMark">DS</span><span>DShario</span></div>
+    <div class="landingBottomTag">Share smarter. Connect better.</div>
+    <div class="landingBottomBeta">Currently in BETA. We’re continuing to improve DShario.</div>
   </div>
 </div>
 </section>
@@ -3425,6 +3510,7 @@ function isValidEmailAddress(value){
 function setAuthMode(mode){authMode=mode;$("signInMode").classList.toggle("active",mode==="signin");$("signUpMode").classList.toggle("active",mode==="signup");$("authSubmit").textContent=t(mode==="signin"?"Sign in":"Create account");$("authPassword").autocomplete=mode==="signin"?"current-password":"new-password"}
 $("homeCreateBtn").onclick=async()=>{if(user){await loadOwnerCard();await loadOwnerDocuments();setForm(currentCard||{});setView("edit")}else{setAuthMode("signup");setView("account")}};
 $("homeSigninBtn").onclick=()=>{setAuthMode("signin");setView("account")};
+if($("homeSigninHeroBtn")) $("homeSigninHeroBtn").onclick=()=>$("homeSigninBtn").click();
 if($("authBackHome")) $("authBackHome").onclick=()=>setView("home");
 $("signInMode").onclick=()=>setAuthMode("signin"); $("signUpMode").onclick=()=>setAuthMode("signup");
 $("authSubmit").onclick=async()=>{
