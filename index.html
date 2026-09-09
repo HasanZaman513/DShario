@@ -1711,6 +1711,44 @@ QRCodeCore.createBytes = function(buffer, rsBlocks) {
 </style>
 
 <!-- DShario V16 FINAL BETA CANDIDATE: consolidated agreed corrections; based on V16 -->
+
+<style id="rc3216-color-ui-trial">
+/* RC32.16 VISUAL TRIAL ONLY — no workflow/JS changes. Landing-page inspired DShario palette. */
+:root{--ds-navy:#062b55;--ds-navy2:#0b3b70;--ds-blue:#1769e0;--ds-blue2:#2f7cf0;--ds-pale:#eef6ff;--ds-pale2:#f7fbff;--ds-line:#cfe0f5;--ds-ink:#0b2445;--ds-muted:#60738d}
+body{background:linear-gradient(180deg,#edf6ff 0,#f8fbff 260px,#fff 720px);color:var(--ds-ink)}
+.app{background:transparent}
+.header{background:linear-gradient(120deg,var(--ds-navy),var(--ds-navy2));border-bottom:0;box-shadow:0 8px 24px rgba(6,43,85,.14)}
+.header .brand,.header .brand span{color:#fff}.header .brandIcon{background:#fff!important;color:var(--ds-navy)!important;border-color:#fff!important}
+.header .accountPill{background:rgba(255,255,255,.10);border-color:rgba(255,255,255,.34);color:#fff}.header .accountPill:hover{background:rgba(255,255,255,.18)}
+.tabs{background:#fff;border:1px solid var(--ds-line);border-radius:16px;padding:5px;box-shadow:0 8px 22px rgba(15,74,135,.07)}
+.tab{border-radius:11px;color:#526984}.tab.active{background:#e8f2ff;color:#0d5fd0}
+.cardWrap,.panel,.shareWizard,.ownerDownloadBox,.sendDsharioBox,.connectionItem,.connectionManagePanel,.memberDsharioPanel{border-color:var(--ds-line)!important;box-shadow:0 8px 24px rgba(15,74,135,.06)}
+.cardWrap{background:linear-gradient(145deg,#fff,#f7fbff)}
+#card.card{border-color:#bdd7f3!important;background:linear-gradient(145deg,#ffffff 0%,#eef6ff 100%)!important;box-shadow:0 10px 30px rgba(23,105,224,.08)}
+#card .name{color:var(--ds-navy)}#card .role{color:#245d9b}#card .company,#card .tagline{color:#526984}
+#card .icon{background:#e7f2ff;color:#0d62d6;border-color:#c7ddf6}
+.viewBadge{background:#e8f2ff!important;color:#0d5fd0!important;border-color:#cfe0f5!important}
+.purposeBadge{background:#f2f7ff!important;color:#0b4d99!important;border-color:#cfe0f5!important}
+.ownerDownloadBox{background:linear-gradient(145deg,#f7fbff,#edf6ff);border-radius:18px}
+.ownerDownloadBox>.btn,.simpleShare>.btn{border-radius:15px;min-height:54px;font-size:17px;font-weight:900}
+.simpleShare>.btn{background:linear-gradient(100deg,var(--ds-blue),var(--ds-blue2));border-color:transparent;box-shadow:0 10px 20px rgba(23,105,224,.18)}
+.shareWizard{background:#fff;border-radius:20px;padding:16px}
+.purposePrompt{background:linear-gradient(135deg,#f7fbff,#edf6ff);border:1px solid var(--ds-line);border-radius:18px;padding:14px}
+.shareTypeHead strong{color:var(--ds-navy);font-size:18px}.infoToggle{color:#1265d6!important;border-color:#b9d5f4!important;background:#fff!important}
+.purposeChoices{gap:10px}.purposeChoice{background:#fff;border:1px solid #c9dcf2!important;border-radius:16px!important;min-height:72px;color:var(--ds-navy)!important;box-shadow:0 5px 14px rgba(15,74,135,.05);font-weight:900}
+.purposeChoice:hover{border-color:#72aaf0!important;background:#f7fbff}.purposeChoice.selected,.purposeChoice.active{background:#e6f1ff!important;border-color:#2776df!important;box-shadow:0 0 0 2px rgba(39,118,223,.10)}
+#purposeBusiness{background:linear-gradient(145deg,#fff,#fff8f3)}#purposeCareer{background:linear-gradient(145deg,#fff,#f2f8ff)}#purposeNetworking{background:linear-gradient(145deg,#fff,#fff9e9)}#purposeSocial{background:linear-gradient(145deg,#fff,#f7f3ff)}#purposeFull{background:linear-gradient(145deg,#fff,#f2f6fb)}
+.purposeHint,.hint{color:var(--ds-muted)}
+.audienceBlock{margin-top:14px;padding-top:14px;border-top:1px solid #dce9f7}.audienceBlock>strong,.wizStep>strong{color:var(--ds-navy);font-size:17px}
+.wizChoice{border:1px solid #c9dcf2!important;background:#f9fcff!important;color:var(--ds-navy)!important;border-radius:15px!important;min-height:56px;font-weight:850}.wizChoice:hover,.wizChoice.selected{background:#e8f2ff!important;border-color:#2c78df!important}
+.btn{border-radius:13px}.btn:not(.secondary):not(.ghost):not(.danger){background:linear-gradient(100deg,var(--ds-blue),var(--ds-blue2));border-color:transparent}.btn.secondary{background:#edf6ff;color:#125fc7;border-color:#c7dcf5}.btn.ghost{background:#fff;color:#1b5ca9;border-color:#cbdcf0}
+input,select,textarea{border-color:#cbdcf0!important;background:#fbfdff!important;border-radius:12px!important}input:focus,select:focus,textarea:focus{border-color:#4b8fe6!important;box-shadow:0 0 0 3px rgba(75,143,230,.12)!important}
+.connectionSectionTitle,.connectionName,.connectionManageHead strong{color:var(--ds-navy)}
+.connectionItem{background:linear-gradient(145deg,#fff,#f8fbff);border-radius:17px}.connectionTag{background:#eaf3ff;border-color:#cfe0f5;color:#245d9b}.connectionBadge{background:#fff7e8;border-color:#f4d8a5;color:#8a5a12}
+#notesPanel,#remindersPanel,#notificationPanel{border-color:#cfe0f5!important;box-shadow:0 16px 38px rgba(6,43,85,.14)!important}.quickPanelHead,.notificationHead{color:var(--ds-navy)}
+@media(max-width:560px){body{background:linear-gradient(180deg,#edf6ff 0,#fff 520px)}.header{border-radius:0 0 18px 18px}.tabs{margin-top:10px}.purposeChoice{min-height:68px}.cardWrap{border-radius:18px}}
+</style>
+
 </head>
 <body>
 <div class="app">
