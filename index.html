@@ -5102,5 +5102,79 @@ updateShareTypeUI();
   .landingHeroNew h1{font-size:37px!important}
 }
 </style>
+
+
+<!-- RC32.21 FLOATING CARD TRIAL — isolated quick-access UI only -->
+<div id="floatingCardPanel" class="floatingCardPanel" aria-hidden="true">
+  <div class="floatingCardTitle">Quick DShario</div>
+  <button id="floatingMyCardBtn" type="button">🪪 <span>My Card</span></button>
+  <button id="floatingShareBtn" type="button">↗ <span>Share Card</span></button>
+  <button id="floatingQrBtn" type="button">▦ <span>Show My QR</span></button>
+</div>
+<button id="floatingCardBtn" class="floatingCardBtn" type="button" aria-label="Quick DShario card" title="Quick DShario" aria-expanded="false">🪪</button>
+<style id="rc3221-floating-card-style">
+.floatingCardBtn{position:fixed;right:18px;bottom:20px;width:58px;height:58px;border-radius:50%;border:2px solid rgba(255,255,255,.92);background:linear-gradient(145deg,#0b3f75,#1267d9);color:#fff;font-size:27px;display:none;align-items:center;justify-content:center;box-shadow:0 12px 28px rgba(6,43,85,.28);z-index:1200;cursor:pointer;padding:0}
+.floatingCardBtn:hover{transform:translateY(-1px)}
+.floatingCardBtn.open{background:linear-gradient(145deg,#092f58,#0b4f9c)}
+.floatingCardPanel{position:fixed;right:18px;bottom:88px;width:210px;padding:10px;background:#fff;border:1px solid #cfe0f5;border-radius:17px;box-shadow:0 18px 42px rgba(6,43,85,.22);z-index:1199;display:none}
+.floatingCardPanel.show{display:block}
+.floatingCardTitle{font-size:13px;font-weight:900;color:#0b3f75;padding:4px 6px 8px}
+.floatingCardPanel button{width:100%;display:flex;align-items:center;gap:10px;text-align:left;border:0;background:#f6faff;color:#163d68;border-radius:12px;padding:11px 12px;margin:5px 0;font:inherit;font-weight:800;cursor:pointer}
+.floatingCardPanel button:hover{background:#e8f2ff;color:#0b5fc7}
+#ownerInlineQr.quickQrPulse{box-shadow:0 0 0 5px rgba(18,103,217,.20),0 0 0 10px rgba(18,103,217,.08)!important;transition:box-shadow .2s ease}
+@media(max-width:560px){.floatingCardBtn{right:14px;bottom:16px;width:56px;height:56px}.floatingCardPanel{right:14px;bottom:82px;width:200px}}
+</style>
+<script>
+(function(){
+  const fab=document.getElementById('floatingCardBtn');
+  const panel=document.getElementById('floatingCardPanel');
+  if(!fab||!panel)return;
+  function eligible(){
+    try{return !!user && !publicMode && !passwordRecoveryVerified && !document.body.classList.contains('signedOutMinimal');}catch(e){return false;}
+  }
+  function syncFloatingCard(){
+    const show=eligible();
+    fab.style.display=show?'flex':'none';
+    if(!show){panel.classList.remove('show');fab.classList.remove('open');fab.setAttribute('aria-expanded','false');panel.setAttribute('aria-hidden','true');}
+  }
+  function closePanel(){panel.classList.remove('show');fab.classList.remove('open');fab.setAttribute('aria-expanded','false');panel.setAttribute('aria-hidden','true');}
+  fab.addEventListener('click',(e)=>{
+    e.stopPropagation();
+    if(!eligible())return;
+    const open=!panel.classList.contains('show');
+    panel.classList.toggle('show',open);fab.classList.toggle('open',open);fab.setAttribute('aria-expanded',open?'true':'false');panel.setAttribute('aria-hidden',open?'false':'true');
+  });
+  document.addEventListener('click',(e)=>{if(!panel.contains(e.target)&&e.target!==fab)closePanel();});
+
+  async function ensureOwnerCard(){
+    if(!user)return false;
+    await loadOwnerCard();
+    if(!currentCard){
+      setForm({card_color:'#eff6ff'});setView('edit');msg('Create and save your DShario first.','info');return false;
+    }
+    render(currentCard);setView('card');return true;
+  }
+  document.getElementById('floatingMyCardBtn').addEventListener('click',async()=>{closePanel();await ensureOwnerCard();});
+  document.getElementById('floatingShareBtn').addEventListener('click',async()=>{
+    closePanel();if(!(await ensureOwnerCard()))return;
+    const b=document.getElementById('openShareWizardBtn');if(b){await b.onclick();setTimeout(()=>document.getElementById('shareWizard')?.scrollIntoView({behavior:'smooth',block:'start'}),80);}
+  });
+  document.getElementById('floatingQrBtn').addEventListener('click',async()=>{
+    closePanel();if(!(await ensureOwnerCard()))return;
+    setTimeout(()=>{
+      const qr=document.getElementById('ownerInlineQr');
+      if(qr){qr.scrollIntoView({behavior:'smooth',block:'center'});qr.classList.add('quickQrPulse');setTimeout(()=>qr.classList.remove('quickQrPulse'),1800);}
+    },100);
+  });
+
+  window.syncFloatingCard=syncFloatingCard;
+  window.addEventListener('pageshow',syncFloatingCard);
+  document.addEventListener('visibilitychange',syncFloatingCard);
+  document.addEventListener('click',()=>setTimeout(syncFloatingCard,0),true);
+  try{sb.auth.onAuthStateChange(()=>setTimeout(syncFloatingCard,0));}catch(e){}
+  setTimeout(syncFloatingCard,150);
+})();
+</script>
+
 </body>
 </html>
