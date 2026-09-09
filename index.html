@@ -1715,7 +1715,7 @@ QRCodeCore.createBytes = function(buffer, rsBlocks) {
 <div class="app">
 <header class="header">
   <div class="brand"><span class="brandIcon">DS</span><span>DShario</span></div>
-  <div style="display:flex;align-items:center;gap:8px"><button id="notesBtn" class="accountPill headerQuickBtn" type="button" aria-label="Connection notes" title="Connection notes">📝</button><button id="remindersBtn" class="accountPill headerQuickBtn" type="button" aria-label="Follow-up reminders" title="Follow-up reminders">⏰</button><button id="helpBtn" class="accountPill helpPill" type="button" aria-label="Help">?</button><button id="accountPill" class="accountPill">Sign in</button></div>
+  <div style="display:flex;align-items:center;gap:8px"><button id="helpBtn" class="accountPill helpPill" type="button" aria-label="User Guide" title="User Guide">?</button><button id="notesBtn" class="accountPill headerQuickBtn" type="button" aria-label="Connection notes" title="Connection notes">📝</button><button id="remindersBtn" class="accountPill headerQuickBtn" type="button" aria-label="Follow-up reminders" title="Follow-up reminders">⏰</button><button id="accountPill" class="accountPill">Sign in</button></div>
 </header>
 
 <div id="tabs" class="tabs">
@@ -2217,16 +2217,8 @@ QRCodeCore.createBytes = function(buffer, rsBlocks) {
 <div id="helpModal" class="modal" role="dialog" aria-modal="true">
   <div class="modalBox">
     <button id="helpClose" class="modalClose" type="button">Close</button>
-    <h1 id="helpTitle">How DShario works</h1>
-    <p id="helpIntro">A quick guide to sharing the right information safely.</p>
-    <div class="helpVideo">
-      <div class="helpVideoTitle">▶ Quick DShario video guide</div>
-      <video id="dsharioGuideVideo" controls preload="metadata" playsinline>
-        <source src="dshario-user-guide-v3.mp4" type="video/mp4">
-        Your browser does not support the video player.
-      </video>
-      <div class="helpVideoHint">About 1 minute with narration. Tap Play to hear the guide. The written guide remains below for quick reference.</div>
-    </div>
+    <h1 id="helpTitle">DShario User Guide</h1>
+    <p id="helpIntro">A simple guide to creating, sharing and managing your DShario.</p>
     <div class="helpSteps">
       <div class="helpStep"><strong id="hs1">1. Create your card</strong><span id="hb1">Add the professional and contact information you want to use. Keep optional details blank when you do not need them.</span></div>
       <div class="helpStep"><strong id="hs2">2. Choose a share type</strong><span id="hb2">Choose Business, Career, Networking, Social or Full. The selected share type determines what information the card will carry.</span></div>
@@ -3646,7 +3638,7 @@ async function downloadCurrentCardAsImage(viewOverride,templateOverride){
       const img=await loadImg(d.photo_url); x.save();
       let px=82,py=76,pw=220,ph=220;
       if(template==="clean"){
-        px=82;py=82;pw=195;ph=195;
+        px=205;py=82;pw=185;ph=185;
         rr(px,py,pw,ph,18);x.clip();
       }else if(template==="modern"){
         px=72;py=70;pw=205;ph=250;
@@ -3754,7 +3746,7 @@ async function downloadCurrentCardAsImage(viewOverride,templateOverride){
     qrSize=185; qrX=1155; qrY=510;
     colX=hasPhoto?[300,745]:[90,610]; colW=360; minStart=hasPhoto?340:300;
     // vertical divider after photo area when a photo exists
-    if(hasPhoto){x.save();x.strokeStyle="#a98270";x.lineWidth=2;x.beginPath();x.moveTo(286,325);x.lineTo(286,710);x.stroke();x.restore();}
+    if(hasPhoto){x.save();x.strokeStyle="#a98270";x.lineWidth=2;x.beginPath();x.moveTo(180,325);x.lineTo(180,710);x.stroke();x.restore();}
   }else{
     const isSparseSocial=view==="social"&&items.length<=3;
     qrSize=isSparseSocial?250:190; qrX=isSparseSocial?1080:1160; qrY=isSparseSocial?370:570;
@@ -4887,18 +4879,5 @@ document.addEventListener("DOMContentLoaded",applyLanguage);
 updateShareTypeUI();
 </script>
 
-<script>
-// RC31.5: make guide narration audible after an explicit user Play gesture.
-(function(){
-  const v=document.getElementById("dsharioGuideVideo");
-  if(!v) return;
-  const enableGuideAudio=()=>{
-    try{ v.muted=false; v.defaultMuted=false; v.volume=1; }catch(e){}
-  };
-  v.addEventListener("play", enableGuideAudio);
-  v.addEventListener("click", enableGuideAudio);
-  v.addEventListener("touchend", enableGuideAudio, {passive:true});
-})();
-</script>
 </body>
 </html>
