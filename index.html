@@ -3616,10 +3616,10 @@ async function downloadCurrentCardAsImage(viewOverride,templateOverride){
 
   if(template==="clean"){
     // Elegant: warm printed-card styling, square photo, fine lines, no watermark.
-    bg="#fffaf5"; fg="#33231c"; mt="#806c61";
+    bg="#fffaf5"; fg="#8b6252"; mt="#9a7768";
     x.fillStyle=bg; x.fillRect(0,0,W,H);
     x.save(); x.globalAlpha=.065; x.fillStyle=accent; x.fillRect(0,0,W,H); x.restore();
-    x.strokeStyle="#a27b67"; x.lineWidth=2;
+    x.strokeStyle="#a98270"; x.lineWidth=2;
     rr(26,26,W-52,H-52,26); x.stroke();
     x.beginPath(); x.moveTo(620,62); x.lineTo(1340,62); x.lineTo(1340,300); x.stroke();
     x.beginPath(); x.moveTo(455,745); x.lineTo(1330,745); x.stroke();
@@ -3646,7 +3646,7 @@ async function downloadCurrentCardAsImage(viewOverride,templateOverride){
       const img=await loadImg(d.photo_url); x.save();
       let px=82,py=76,pw=220,ph=220;
       if(template==="clean"){
-        px=70;py=82;pw=205;ph=205;
+        px=82;py=82;pw=195;ph=195;
         rr(px,py,pw,ph,18);x.clip();
       }else if(template==="modern"){
         px=72;py=70;pw=205;ph=250;
@@ -3660,7 +3660,7 @@ async function downloadCurrentCardAsImage(viewOverride,templateOverride){
       if(template==="modern"){
         x.save();x.strokeStyle="rgba(74,144,226,.32)";x.lineWidth=2;x.beginPath();x.ellipse(px+pw/2,py+ph/2,pw/2,ph/2,0,0,Math.PI*2);x.stroke();x.restore();
       }else if(template==="clean"){
-        x.save();x.strokeStyle="rgba(155,119,101,.36)";x.lineWidth=2;rr(px,py,pw,ph,18);x.stroke();x.restore();
+        x.save();x.strokeStyle="rgba(154,119,104,.34)";x.lineWidth=2;rr(px,py,pw,ph,18);x.stroke();x.restore();
       }
     }catch{hasPhoto=false}
   }
@@ -3670,7 +3670,7 @@ async function downloadCurrentCardAsImage(viewOverride,templateOverride){
   function iconCircle(cx,cy,kind){
     const elegant=template==="clean", modern=template==="modern", r=27;
     x.save();x.lineWidth=2;
-    if(elegant){x.strokeStyle='rgba(145,103,78,.28)';x.fillStyle='#9b6d50';}
+    if(elegant){x.strokeStyle='rgba(154,119,104,.30)';x.fillStyle='#9a6f59';}
     else{x.strokeStyle='rgba(30,64,175,.15)';x.fillStyle='rgba(255,255,255,.84)';}
     x.beginPath();x.arc(cx,cy,r,0,Math.PI*2);x.fill();x.stroke();
     x.textAlign='center';x.textBaseline='middle';x.font='700 27px Arial, sans-serif';
@@ -3710,9 +3710,30 @@ async function downloadCurrentCardAsImage(viewOverride,templateOverride){
   x.textBaseline="top";x.fillStyle=fg;x.font=`900 ${nameFs}px Arial, sans-serif`;x.textAlign=nameAlign;
   x.fillText(fit(name,maxW,nameFs,900),tx,nameY);
   let y=nameY+nameFs+14;
+  // RC32.12: Elegant header wraps long text; approved sepia typography and refined portrait position.
+  function drawWrappedHeader(v,fs,col,weight,maxLines=2){
+    v=String(v||'').trim(); if(!v)return 0;
+    x.fillStyle=col;x.font=`${weight} ${fs}px Arial, sans-serif`;x.textAlign=nameAlign;
+    if(template!=="clean"){x.fillText(fit(v,maxW,fs,weight),tx,y);return fs+12;}
+    const words=v.split(/\s+/), lines=[]; let line='';
+    for(const word of words){
+      const test=line?line+' '+word:word;
+      if(x.measureText(test).width<=maxW || !line) line=test;
+      else {lines.push(line); line=word; if(lines.length>=maxLines-1) break;}
+    }
+    if(lines.length<maxLines && line){
+      const used=lines.join(' ').split(/\s+/).filter(Boolean).length;
+      const rest=words.slice(used).join(' ');
+      line=rest||line;
+      if(x.measureText(line).width>maxW) line=fit(line,maxW,fs,weight);
+      lines.push(line);
+    }
+    lines.slice(0,maxLines).forEach((ln,i)=>x.fillText(ln,tx,y+i*(fs+5)));
+    return lines.length*(fs+5)+7;
+  }
   if(view!=="social"){
-    const lines=[[localizedCardText(d,"job_title"),28,mt,700],[localizedCardText(d,"company"),27,fg,800],[localizedCardText(d,"description"),21,mt,500]];
-    for(const [v,fs,col,w] of lines){if(v){x.fillStyle=col;x.font=`${w} ${fs}px Arial, sans-serif`;x.textAlign=nameAlign;x.fillText(fit(v,maxW,fs,w),tx,y);y+=fs+12}}
+    const lines=[[localizedCardText(d,"job_title"),28,mt,700,1],[localizedCardText(d,"company"),27,fg,800,2],[localizedCardText(d,"description"),21,mt,500,2]];
+    for(const [v,fs,col,w,ml] of lines){if(v){y+=drawWrappedHeader(v,fs,col,w,ml)}}
   }
 
   const direct=view==="business"||view==="full", items=[];
@@ -3733,7 +3754,7 @@ async function downloadCurrentCardAsImage(viewOverride,templateOverride){
     qrSize=185; qrX=1155; qrY=510;
     colX=hasPhoto?[300,745]:[90,610]; colW=360; minStart=hasPhoto?340:300;
     // vertical divider after photo area when a photo exists
-    if(hasPhoto){x.save();x.strokeStyle="#a27b67";x.lineWidth=2;x.beginPath();x.moveTo(286,325);x.lineTo(286,710);x.stroke();x.restore();}
+    if(hasPhoto){x.save();x.strokeStyle="#a98270";x.lineWidth=2;x.beginPath();x.moveTo(286,325);x.lineTo(286,710);x.stroke();x.restore();}
   }else{
     const isSparseSocial=view==="social"&&items.length<=3;
     qrSize=isSparseSocial?250:190; qrX=isSparseSocial?1080:1160; qrY=isSparseSocial?370:570;
@@ -3750,13 +3771,13 @@ async function downloadCurrentCardAsImage(viewOverride,templateOverride){
   });
 
   const qrTarget=publicMode?((currentPublicSourceType==="temporary"&&currentPublicShareToken)?location.origin+location.pathname+"?share="+encodeURIComponent(currentPublicShareToken):shareUrl(d)):(d?.slug?location.origin+location.pathname+"?card="+encodeURIComponent(d.slug)+"&view=full":shareUrl(d));
-  try{const holder=document.createElement('div');holder.style.cssText='position:fixed;left:-9999px;top:-9999px;background:#fff';document.body.appendChild(holder);new QRCode(holder,{text:qrTarget,width:qrSize,height:qrSize,colorDark:'#000000',colorLight:'#ffffff',correctLevel:QRCode.CorrectLevel.M});await new Promise(r=>setTimeout(r,80));const q=holder.querySelector('canvas');if(q){const pad=14;x.fillStyle='#fff';x.fillRect(qrX-pad,qrY-pad,qrSize+pad*2,qrSize+56);x.drawImage(q,qrX,qrY,qrSize,qrSize);x.fillStyle=template==="clean"?"#6f5147":"#334155";x.textAlign='center';x.textBaseline='top';x.font='700 16px Arial, sans-serif';x.fillText(window.currentLang==="bn"?"লাইভ DShario খুলুন":"Open live DShario",qrX+qrSize/2,qrY+qrSize+22)}holder.remove()}catch(e){console.warn('QR render failed',e)}
+  try{const holder=document.createElement('div');holder.style.cssText='position:fixed;left:-9999px;top:-9999px;background:#fff';document.body.appendChild(holder);new QRCode(holder,{text:qrTarget,width:qrSize,height:qrSize,colorDark:'#000000',colorLight:'#ffffff',correctLevel:QRCode.CorrectLevel.M});await new Promise(r=>setTimeout(r,80));const q=holder.querySelector('canvas');if(q){const pad=14;x.fillStyle='#fff';x.fillRect(qrX-pad,qrY-pad,qrSize+pad*2,qrSize+56);x.drawImage(q,qrX,qrY,qrSize,qrSize);x.fillStyle=template==="clean"?"#8b6252":"#334155";x.textAlign='center';x.textBaseline='top';x.font='700 16px Arial, sans-serif';x.fillText(window.currentLang==="bn"?"লাইভ DShario খুলুন":"Open live DShario",qrX+qrSize/2,qrY+qrSize+22)}holder.remove()}catch(e){console.warn('QR render failed',e)}
 
   // Footer kept deliberately simple on both approved templates.
   x.textAlign="left";x.textBaseline='top';
   if(template==="clean"){
     x.fillStyle=fg;x.font="900 30px Arial, sans-serif";x.fillText("DS",52,792);
-    x.strokeStyle="#9a7768";x.lineWidth=2;x.beginPath();x.moveTo(108,790);x.lineTo(108,827);x.stroke();
+    x.strokeStyle="#a98270";x.lineWidth=2;x.beginPath();x.moveTo(108,790);x.lineTo(108,827);x.stroke();
     x.fillStyle=mt;x.font="20px Arial, sans-serif";x.fillText(window.currentLang==="bn"?"যোগাযোগ রাখুন।":"Keep in touch.",126,798);
   }else if(template==="modern"){
     x.fillStyle=fg;x.font="900 30px Arial, sans-serif";x.fillText("DS",52,792);
