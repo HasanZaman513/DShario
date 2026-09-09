@@ -2750,6 +2750,14 @@ async function refreshPublicReceiverSession(){
   if($("backToSharedCardBtn")) $("backToSharedCardBtn").style.display="none";
   const {data}=await sb.auth.getSession();
   session=data.session; user=session?.user||null;
+  /* Keep the signed-in top bar consistent while viewing received/saved cards. */
+  if($("accountPill")){
+    $("accountPill").innerHTML=user?'🔔<span class="bellBadge"></span>':t("Sign in");
+    $("accountPill").classList.toggle("bellBtn",!!user);
+    $("accountPill").style.display=user?"inline-flex":"none";
+  }
+  updateHeaderConnectionTools();
+  if(user) loadNotifications();
   updateSaveConnectionButton();
   updateSharedMemberNav();
 }
@@ -4770,7 +4778,7 @@ if($("remindersBtn")) $("remindersBtn").onclick=async()=>{closeQuickPanels("remi
 if($("closeNotesBtn")) $("closeNotesBtn").onclick=()=>$("notesPanel").classList.remove("show");
 if($("closeRemindersBtn")) $("closeRemindersBtn").onclick=()=>$("remindersPanel").classList.remove("show");
 
-function updateHeaderConnectionTools(){const show=!!user&&!publicMode;$("notesBtn")?.classList.toggle("show",show);$("remindersBtn")?.classList.toggle("show",show);if(!show){$("notesPanel")?.classList.remove("show");$("remindersPanel")?.classList.remove("show");$("followupPopup")?.classList.remove("show");}else setTimeout(checkNearFollowupReminder,900);}
+function updateHeaderConnectionTools(){const show=!!user;$("notesBtn")?.classList.toggle("show",show);$("remindersBtn")?.classList.toggle("show",show);if(!show){$("notesPanel")?.classList.remove("show");$("remindersPanel")?.classList.remove("show");$("followupPopup")?.classList.remove("show");}else setTimeout(checkNearFollowupReminder,900);}
 
 function updateAccountSendType(){
   const temp=$("accountSendType")?.value==="temporary";
