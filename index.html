@@ -1,5 +1,5 @@
 <!doctype html>
-<!-- DShario RC32.26 WORKING — fixes Personal DShario Address to use cards.public_card_type and enforce true card-only public rendering. -->
+<!-- DShario RC32.27 WORKING — robust Personal DShario Address detection + true public-card-only rendering. -->
 <html lang="en">
 <head>
 <meta charset="utf-8">
@@ -3341,8 +3341,27 @@ async function loadOwnerCard(){
   if(error){msg("Could not load My Card: "+error.message,"err");return}
   currentCard=data||null; $("editTab").textContent=data?"✎ Edit My Card":"✎ Create My DShario"; updateSignedInHandle(); if(data){setForm(data);updatePersonalAddressPreview();if($("confirmUsername"))$("confirmUsername").checked=true;checkUsernameAvailability(data.slug,false);render(data);$("deleteBtn").style.display="inline-block"} else {setForm({card_color:"#eff6ff",privacy_view:localStorage.getItem("dshario-privacy-view")||"professional"});render(null);$("deleteBtn").style.display="none"}
 }
+function isPersonalAddressRequest(slug){
+  const target=String(slug||"").toLowerCase();
+  let current;
+  try{ current=new URL(location.href); }catch(e){ current=null; }
+  let original;
+  try{ original=new URL(DSHARIO_AUTH_CALLBACK_URL); }catch(e){ original=current; }
+  const urls=[current,original].filter(Boolean);
+  for(const u of urls){
+    if(u.searchParams.get("personal")==="1") return true;
+    const m=decodeURIComponent(u.pathname||"").match(/\/@([a-z0-9-]+)\/?$/i);
+    if(m && (!target || m[1].toLowerCase()===target)) return true;
+  }
+  // GitHub Pages / custom-domain 404 helpers may reduce dshario.com/@name to a bare
+  // ?card=name URL. Current purpose-based shared links carry view/sharetype/purpose,
+  // so a bare card lookup is treated as the Personal DShario Address.
+  const u=current||original;
+  if(u && u.searchParams.get("card") && !u.searchParams.get("share") && !u.searchParams.get("view") && !u.searchParams.get("sharetype") && !u.searchParams.get("purpose")) return true;
+  return false;
+}
 async function loadPublicCard(slug){
-  const isPersonal=new URLSearchParams(location.search).get("personal")==="1" || (!!personalAddressSlug && personalAddressSlug===String(slug||"").toLowerCase());
+  const isPersonal=isPersonalAddressRequest(slug);
   publicMode=true; pendingSharedAction=isPersonal?null:savedSharedIntent(); document.body.classList.remove("expiredPublic","personalProfileMode"); document.body.classList.add("publicMode"); if(isPersonal)document.body.classList.add("personalProfileMode"); $("tabs").style.display="none"; $("publicHeader").style.display=isPersonal?"none":"block"; $("accountPill").style.display="none";
   const response=isPersonal?await sb.rpc("get_personal_dshario_card",{card_slug:slug}):await sb.rpc("get_public_card_bilingual",{card_slug:slug});
   const data=response.data,error=response.error;
@@ -3369,7 +3388,9 @@ async function loadPublicCard(slug){
     // not shared card content, and no recipient/share controls are shown on this route.
     document.body.classList.add("personalProfileMode");
     if($("publicInvalidState")) $("publicInvalidState").style.display="none";
-    ["publicHeader","tabs","accountPill","viewBadge","receivedPurposeBadge","shareLead","actionGrid","receiverPublicActions","exchangeBox","publicDocuments","sharedMemberNav","connectionOnlyNav","qrPanel","ownerInlineQr","vcfBtn","shareBtn","copyBtn","savedBanner","updateNotifyBar","receiverMessage","simpleShare","simpleShareLauncher","shareHistoryToggleRow","shareHistoryPanel"].forEach(id=>{if($(id)) $(id).style.display="none";});
+    ["publicHeader","tabs","accountPill","viewBadge","receivedPurposeBadge","shareLead","shareViewBox","actionGrid","receiverPublicActions","exchangeBox","publicDocuments","sharedMemberNav","connectionOnlyNav","qrPanel","ownerInlineQr","vcfBtn","shareBtn","copyBtn","savedBanner","updateNotifyBar","receiverMessage","simpleShare","simpleShareLauncher","shareHistoryToggleRow","shareHistoryPanel","ownerDownloadBox"].forEach(id=>{if($(id)) $(id).style.display="none";});
+    if(document.querySelector(".header")) document.querySelector(".header").style.display="none";
+    if(document.querySelector(".footer")) document.querySelector(".footer").style.display="none";
     if($("card")) $("card").style.display="block";
     return;
   }
@@ -5223,6 +5244,21 @@ updateShareTypeUI();
 .floatingCardPanel button:hover{background:#e8f2ff;color:#0b5fc7}
 #ownerInlineQr.quickQrPulse{box-shadow:0 0 0 5px rgba(18,103,217,.20),0 0 0 10px rgba(18,103,217,.08)!important;transition:box-shadow .2s ease}
 @media(max-width:560px){.floatingCardBtn{right:14px;bottom:16px;width:56px;height:56px}.floatingCardPanel{right:14px;bottom:82px;width:200px}}
+
+/* RC32.27: Personal DShario Address is a clean card-only surface. */
+body.personalProfileMode .footer,
+body.personalProfileMode #sharedMemberNav,
+body.personalProfileMode #ownerDownloadBox,
+body.personalProfileMode #publicInvalidState + .cardWrap ~ *,
+body.personalProfileMode #receiverPublicActions,
+body.personalProfileMode #actionGrid,
+body.personalProfileMode #exchangeBox,
+body.personalProfileMode #shareLead,
+body.personalProfileMode #shareViewBox,
+body.personalProfileMode #viewBadge,
+body.personalProfileMode #receivedPurposeBadge{display:none!important;}
+body.personalProfileMode #cardView{padding-top:10px!important;}
+body.personalProfileMode .cardWrap{margin-top:0!important;}
 </style>
 <script>
 (function(){
