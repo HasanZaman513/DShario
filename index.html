@@ -1,5 +1,5 @@
 <!doctype html>
-<!-- DShario RC32.25 WORKING — optional Public Card, cards.public_card_type alignment, personal address renders card only. -->
+<!-- DShario RC32.26 WORKING — fixes Personal DShario Address to use cards.public_card_type and enforce true card-only public rendering. -->
 <html lang="en">
 <head>
 <meta charset="utf-8">
@@ -328,6 +328,34 @@ body{background:linear-gradient(180deg,#edf6ff 0,#fff 620px);color:var(--ds-ink)
 
 
 /* RC32.25 — Optional Public Card + personal-address card-only fix */
+/* RC32.26 — Personal address must be true card-only. Hard CSS guard prevents any normal recipient/share UI from reappearing. */
+body.personalProfileMode #publicHeader,
+body.personalProfileMode #tabs,
+body.personalProfileMode #accountPill,
+body.personalProfileMode #shareLead,
+body.personalProfileMode #viewBadge,
+body.personalProfileMode #receivedPurposeBadge,
+body.personalProfileMode #actionGrid,
+body.personalProfileMode #receiverPublicActions,
+body.personalProfileMode #exchangeBox,
+body.personalProfileMode #publicDocuments,
+body.personalProfileMode #sharedMemberNav,
+body.personalProfileMode #connectionOnlyNav,
+body.personalProfileMode #qrPanel,
+body.personalProfileMode #ownerInlineQr,
+body.personalProfileMode #vcfBtn,
+body.personalProfileMode #shareBtn,
+body.personalProfileMode #copyBtn,
+body.personalProfileMode #savedBanner,
+body.personalProfileMode #updateNotifyBar,
+body.personalProfileMode #receiverMessage,
+body.personalProfileMode #memberExchangeBtn,
+body.personalProfileMode #guestExchangeBtn,
+body.personalProfileMode #simpleShare,
+body.personalProfileMode #simpleShareLauncher,
+body.personalProfileMode #shareHistoryToggleRow,
+body.personalProfileMode #shareHistoryPanel {display:none!important;}
+body.personalProfileMode #card {display:block!important;}
 body.personalProfileMode .header,body.personalProfileMode #tabs,body.personalProfileMode #publicHeader,body.personalProfileMode #receiverMessage,body.personalProfileMode #receiverPublicActions,body.personalProfileMode #actionGrid,body.personalProfileMode #exchangeBox,body.personalProfileMode #publicDocuments,body.personalProfileMode #sharedMemberNav,body.personalProfileMode #connectionOnlyNav,body.personalProfileMode #simpleShare,body.personalProfileMode #simpleShareLauncher,body.personalProfileMode #shareHistoryToggleRow,body.personalProfileMode #shareHistoryPanel,body.personalProfileMode #viewBadge,body.personalProfileMode #receivedPurposeBadge,body.personalProfileMode #savedBanner,body.personalProfileMode #updateNotifyBar,body.personalProfileMode #pPublicCardSetting,body.personalProfileMode #ownerInlineQr,body.personalProfileMode #qrPanel,body.personalProfileMode #vcfBtn,body.personalProfileMode #shareBtn,body.personalProfileMode #copyBtn{display:none!important}
 body.personalProfileMode .app{padding-top:18px}
 body.personalProfileMode .floatingCardBtn,body.personalProfileMode .floatingCardPanel{display:none!important}
@@ -3337,8 +3365,12 @@ async function loadPublicCard(slug){
   hideReceiverMessage();
   render(card); setView("card");
   if(isPersonal){
+    // Personal DShario Address is intentionally CARD ONLY. The username is routing identity,
+    // not shared card content, and no recipient/share controls are shown on this route.
+    document.body.classList.add("personalProfileMode");
     if($("publicInvalidState")) $("publicInvalidState").style.display="none";
-    ["viewBadge","receivedPurposeBadge","shareLead","actionGrid","receiverPublicActions","exchangeBox","publicDocuments","sharedMemberNav","connectionOnlyNav","qrPanel","ownerInlineQr","vcfBtn","shareBtn","copyBtn","savedBanner","updateNotifyBar"].forEach(id=>{if($(id)) $(id).style.display="none";});
+    ["publicHeader","tabs","accountPill","viewBadge","receivedPurposeBadge","shareLead","actionGrid","receiverPublicActions","exchangeBox","publicDocuments","sharedMemberNav","connectionOnlyNav","qrPanel","ownerInlineQr","vcfBtn","shareBtn","copyBtn","savedBanner","updateNotifyBar","receiverMessage","simpleShare","simpleShareLauncher","shareHistoryToggleRow","shareHistoryPanel"].forEach(id=>{if($(id)) $(id).style.display="none";});
+    if($("card")) $("card").style.display="block";
     return;
   }
   showReceivedPurpose();
