@@ -1,5 +1,5 @@
 <!doctype html>
-<!-- DShario RC32.20 WORKING — findings-only fixes on RC32.19: purpose-based download labels, card footer clearance, slightly larger top navigation. -->
+<!-- DShario RC32.25 WORKING — optional Public Card, cards.public_card_type alignment, personal address renders card only. -->
 <html lang="en">
 <head>
 <meta charset="utf-8">
@@ -327,9 +327,10 @@ body{background:linear-gradient(180deg,#edf6ff 0,#fff 620px);color:var(--ds-ink)
 @media(max-width:560px){.landingTopbar{height:68px;padding:0 18px}.landingBrand{font-size:26px}.landingHeroNew{padding:32px 18px 34px}.landingEyebrow{font-size:11px;letter-spacing:.17em}.landingHeroNew h1{font-size:46px}.landingHeroNew p{font-size:17px}.landingPurposes{grid-template-columns:repeat(2,1fr)}.landingPurpose:last-child{grid-column:1/-1}.landingHeroActions{display:grid;grid-template-columns:1fr}.landingPhoneStage{min-height:390px}.landingBackCard{width:210px;height:285px;transform:rotate(-7deg) translate(-50px,5px)}.landingPhone{width:235px;border-width:8px;border-radius:32px}.landingHow{padding:36px 18px 20px}.landingHow h2{font-size:31px}.landingSteps{grid-template-columns:1fr 1fr;gap:8px}.landingSteps span{width:62px;height:62px;font-size:25px}.landingBottom{border-radius:42% 42% 0 0/8% 8% 0 0}.tabs{grid-template-columns:1fr 1fr 1fr}.tab{font-size:12px;padding:7px 4px}}
 
 
-/* RC32.23 — Personal Address / public-card refinement */
-body.personalProfileMode .header,body.personalProfileMode #tabs,body.personalProfileMode #publicHeader,body.personalProfileMode #receiverMessage,body.personalProfileMode #receiverPublicActions,body.personalProfileMode #actionGrid,body.personalProfileMode #exchangeBox,body.personalProfileMode #publicDocuments,body.personalProfileMode #sharedMemberNav,body.personalProfileMode #connectionOnlyNav,body.personalProfileMode #simpleShare,body.personalProfileMode #simpleShareLauncher,body.personalProfileMode #shareHistoryToggleRow,body.personalProfileMode #shareHistoryPanel,body.personalProfileMode #viewBadge,body.personalProfileMode #pPublicCardSetting,body.personalProfileMode #ownerInlineQr,body.personalProfileMode #qrPanel,body.personalProfileMode #vcfBtn,body.personalProfileMode #shareBtn,body.personalProfileMode #copyBtn{display:none!important}
+/* RC32.25 — Optional Public Card + personal-address card-only fix */
+body.personalProfileMode .header,body.personalProfileMode #tabs,body.personalProfileMode #publicHeader,body.personalProfileMode #receiverMessage,body.personalProfileMode #receiverPublicActions,body.personalProfileMode #actionGrid,body.personalProfileMode #exchangeBox,body.personalProfileMode #publicDocuments,body.personalProfileMode #sharedMemberNav,body.personalProfileMode #connectionOnlyNav,body.personalProfileMode #simpleShare,body.personalProfileMode #simpleShareLauncher,body.personalProfileMode #shareHistoryToggleRow,body.personalProfileMode #shareHistoryPanel,body.personalProfileMode #viewBadge,body.personalProfileMode #receivedPurposeBadge,body.personalProfileMode #savedBanner,body.personalProfileMode #updateNotifyBar,body.personalProfileMode #pPublicCardSetting,body.personalProfileMode #ownerInlineQr,body.personalProfileMode #qrPanel,body.personalProfileMode #vcfBtn,body.personalProfileMode #shareBtn,body.personalProfileMode #copyBtn{display:none!important}
 body.personalProfileMode .app{padding-top:18px}
+body.personalProfileMode .floatingCardBtn,body.personalProfileMode .floatingCardPanel{display:none!important}
 .publicCardSetting{margin-top:10px;padding:10px 12px;border:1px solid #bfdbfe;background:#f8fbff;border-radius:12px}
 .publicCardSetting select{margin-top:6px}
 /* RC32.22 — Personal DShario Address trial */
@@ -2146,7 +2147,7 @@ input,select,textarea{border-color:#cbdcf0!important;background:#fbfdff!importan
     <div class="editSectionBody">
       <div class="editIntro">Your full name is required. Add only the professional information you want to share.</div>
       <div class="grid">
-        <div class="field"><label>Personal DShario username *</label><input id="slug" placeholder="e.g. hasan-zaman" autocomplete="off"><span class="hint">Required. Letters, numbers and hyphens only. Your username creates your Personal DShario Address.</span><div class="personalAddressBox"><div class="hint">Your Personal DShario Address</div><div id="personalAddressPreview" class="personalAddressValue">dshario.com/@username</div><span id="usernameStatus" class="usernameStatus info">Choose a username to check availability.</span><label class="usernameConfirm"><input id="confirmUsername" type="checkbox"> <span>I confirm this username and understand it will be used in my Personal DShario Address.</span></label><div class="publicCardSetting"><label for="public_purpose">Public Card</label><select id="public_purpose"><option value="business">💼 Business</option><option value="career">👔 Career</option><option value="networking">🤝 Networking</option><option value="social">👥 Social</option><option value="full">📇 Full</option></select><span class="hint">This is the only card shown when someone opens your Personal DShario Address.</span></div></div></div>
+        <div class="field"><label>Personal DShario username *</label><input id="slug" placeholder="e.g. hasan-zaman" autocomplete="off"><span class="hint">Required. Letters, numbers and hyphens only. Your username creates your Personal DShario Address.</span><div class="personalAddressBox"><div class="hint">Your Personal DShario Address</div><div id="personalAddressPreview" class="personalAddressValue">dshario.com/@username</div><span id="usernameStatus" class="usernameStatus info">Choose a username to check availability.</span><label class="usernameConfirm"><input id="confirmUsername" type="checkbox"> <span>I confirm this username and understand it will be used in my Personal DShario Address.</span></label><div class="publicCardSetting"><label for="public_purpose">Public Card (optional)</label><select id="public_purpose"><option value="">🔒 Hidden — no public card</option><option value="business">💼 Business</option><option value="career">👔 Career</option><option value="networking">🤝 Networking</option><option value="social">👥 Social</option><option value="full">📇 Full</option></select><span class="hint">Optional. Your username can still be used to find you in DShario. Choose a card only if you want visitors to dshario.com/@username to see a public card.</span></div></div></div>
         <div class="field"><label>Full name *</label><input id="full_name" placeholder="Your name"></div>
         <input id="full_name_bn" type="hidden" value="">
         <div class="field"><label>Profession / job title</label><input id="job_title" placeholder="e.g. Industrial Pharmacist"></div>
@@ -3111,7 +3112,7 @@ async function loadSharedCard(token){
   if(error||!link){showExpiredShareLink();return}
   publicShareView=link.privacy_view||"professional";
   currentPublicTargetUserId=link.user_id||null;
-  {const qp=new URLSearchParams(location.search);currentPublicPurpose=isPersonal?(normalisePurpose(card.public_purpose)||"career"):normalisePurpose(qp.get("sharetype")||qp.get("purpose"));}
+  {const qp=new URLSearchParams(location.search);currentPublicPurpose=normalisePurpose(qp.get("sharetype")||qp.get("purpose"));}
   if(currentPublicPurpose) rememberReceivedPurpose(currentPublicTargetUserId,currentPublicPurpose);
   markSharedReceivedNow(currentPublicTargetUserId);
   currentPublicSourceType="temporary";
@@ -3178,14 +3179,14 @@ function setForm(card={}){
   if($("whatsapp_username")) $("whatsapp_username").value=wa.username;
   $("show_phone").checked=card.show_phone!==false; $("show_email").checked=card.show_email!==false;
   const pv=card.privacy_view||localStorage.getItem("dshario-privacy-view")||"professional";
-  if($("public_purpose")) $("public_purpose").value=normalisePurpose(card.public_purpose)||"career";
+  if($("public_purpose")) $("public_purpose").value=normalisePurpose(card.public_card_type)||"";
   $("privacy_view").value=pv; if($("shareView")) $("shareView").value=pv; if($("ownerDownloadView")) $("ownerDownloadView").value=(pv==="professional"?"career":pv);
   photoData=card.photo_url||""; photoSourceData=""; photoPosition=0; photoZoom=1; if($("photoAdjuster"))$("photoAdjuster").classList.remove("show"); if($("photoAdjustToggle"))$("photoAdjustToggle").style.display="none"; renderPhotoPreview();
 }
 function getForm(){
   const o={}; formIds.forEach(id=>o[id]=$(id).value.trim());
   o.whatsapp=packWhatsappValue($("whatsapp")?.value,$("whatsapp_username")?.value);
-  o.slug=slugify(o.slug); o.show_phone=$("show_phone").checked; o.show_email=$("show_email").checked; o.photo_url=photoData||null; o.is_public=true; o.privacy_view=$("privacy_view").value||"professional"; o.public_purpose=normalisePurpose($("public_purpose")?.value)||"career";
+  o.slug=slugify(o.slug); o.show_phone=$("show_phone").checked; o.show_email=$("show_email").checked; o.photo_url=photoData||null; o.is_public=true; o.privacy_view=$("privacy_view").value||"professional"; o.public_card_type=normalisePurpose($("public_purpose")?.value)||null;
   return o;
 }
 function localizedCardText(c, field){
@@ -3252,7 +3253,7 @@ function render(card){
   const roleText=localizedCardText(c,"job_title");
   const companyText=localizedCardText(c,"company");
   const introText=localizedCardText(c,"description");
-  $("pName").textContent=nameText||t("Your name"); if($("pHandle")) $("pHandle").style.display="none"; if($("pPersonalAddress")){ $("pPersonalAddress").textContent=(!publicMode&&c.slug)?(location.host||"dshario.com")+"/@"+c.slug:""; $("pPersonalAddress").style.display=(!publicMode&&c.slug)?"block":"none"; } if($("pPublicCardSetting")){const pp=normalisePurpose(c.public_purpose)||"career";$("pPublicCardSetting").textContent=publicMode?"":"Public Card: "+purposeLabel(pp);}
+  $("pName").textContent=nameText||t("Your name"); if($("pHandle")) $("pHandle").style.display="none"; if($("pPersonalAddress")){ $("pPersonalAddress").textContent=(!publicMode&&c.slug)?(location.host||"dshario.com")+"/@"+c.slug:""; $("pPersonalAddress").style.display=(!publicMode&&c.slug)?"block":"none"; } if($("pPublicCardSetting")){const pp=normalisePurpose(c.public_card_type);$("pPublicCardSetting").textContent=publicMode?"":(pp?"Public Card: "+purposeLabel(pp):"Public Card: Not shared");}
   $("pRole").textContent=roleText; $("pRole").style.display=roleText?"block":"none";
   $("pCompany").textContent=companyText; $("pCompany").style.display=companyText?"block":"none";
   $("pTagline").textContent=introText; $("pTagline").style.display=introText?"block":"none";
@@ -3323,11 +3324,23 @@ async function loadPublicCard(slug){
   markSharedReceivedNow(currentPublicTargetUserId);
   currentPublicSourceType=isPersonal?"personal":"permanent";
   currentPublicShareToken="";
-  {const qp=new URLSearchParams(location.search);currentPublicPurpose=isPersonal?(normalisePurpose(card.public_purpose)||"career"):normalisePurpose(qp.get("sharetype")||qp.get("purpose"));}
+  {const qp=new URLSearchParams(location.search);currentPublicPurpose=isPersonal?normalisePurpose(card.public_card_type):normalisePurpose(qp.get("sharetype")||qp.get("purpose"));}
+  if(isPersonal && !currentPublicPurpose){
+    currentCard=card;
+    if($("card")) $("card").style.display="none";
+    if($("publicInvalidState")){ $("publicInvalidState").style.display="block"; $("publicInvalidState").textContent="This DShario address is active, but the owner is not sharing a Public Card."; }
+    setView("card");
+    return;
+  }
   if(isPersonal){const map={business:"business",career:"professional",networking:"professional",social:"social",full:"full"};publicShareView=map[currentPublicPurpose]||"professional";}
   if(currentPublicPurpose&&!isPersonal) rememberReceivedPurpose(currentPublicTargetUserId,currentPublicPurpose);
   hideReceiverMessage();
   render(card); setView("card");
+  if(isPersonal){
+    if($("publicInvalidState")) $("publicInvalidState").style.display="none";
+    ["viewBadge","receivedPurposeBadge","shareLead","actionGrid","receiverPublicActions","exchangeBox","publicDocuments","sharedMemberNav","connectionOnlyNav","qrPanel","ownerInlineQr","vcfBtn","shareBtn","copyBtn","savedBanner","updateNotifyBar"].forEach(id=>{if($(id)) $(id).style.display="none";});
+    return;
+  }
   showReceivedPurpose();
   await refreshPublicReceiverSession();
   applyConnectionOnlyMode();
@@ -4309,6 +4322,7 @@ if($("shareHistoryToggleBtn"))$("shareHistoryToggleBtn").onclick=()=>setShareHis
 
 function normalizeReceiverActions(){
   const panel=$("receiverPublicActions");
+  if(currentPublicSourceType==="personal"){if(panel){panel.classList.remove("show");panel.style.display="none";}return}
   if(!publicMode||connectionOnlyMode){if(panel)panel.classList.remove("show");return}
   if($("simpleShare"))$("simpleShare").style.display="none";
   if($("simpleShare"))$("simpleShare").style.display="none";
