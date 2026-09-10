@@ -1,5 +1,5 @@
 <!doctype html>
-<!-- DShario RC32.29 WORKING — RC32.28 stable + owner-only Personal Address QR PNG download. -->
+<!-- DShario RC32.30 WORKING — RC32.29 stable + protective border/quiet-zone on downloaded Personal Address QR only. -->
 <html lang="en">
 <head>
 <meta charset="utf-8">
@@ -4451,12 +4451,34 @@ async function makeLocalQrDataUrl(text,size=180){
 async function downloadPersonalQrOnly(){
   if(!user||!currentCard?.slug)return;
   const target=personalAddressFor(currentCard.slug);
-  const dataUrl=await makeLocalQrDataUrl(target,1200);
-  if(!dataUrl){msg("Could not create QR image.","err");return;}
-  const a=document.createElement("a");
-  a.href=dataUrl;
-  a.download="DShario-QR-"+String(currentCard.slug).replace(/[^a-z0-9-]/gi,"-")+".png";
-  document.body.appendChild(a);a.click();a.remove();
+  const qrDataUrl=await makeLocalQrDataUrl(target,1200);
+  if(!qrDataUrl){msg("Could not create QR image.","err");return;}
+
+  // RC32.30: downloaded Personal Address QR only gets a protective white
+  // quiet-zone and a thin outer border. No text, logo or card details are added.
+  const qrImg=new Image();
+  qrImg.onload=()=>{
+    const margin=120;
+    const border=8;
+    const size=1200;
+    const canvas=document.createElement("canvas");
+    canvas.width=size+(margin*2);
+    canvas.height=size+(margin*2);
+    const ctx=canvas.getContext("2d");
+    ctx.fillStyle="#ffffff";
+    ctx.fillRect(0,0,canvas.width,canvas.height);
+    ctx.drawImage(qrImg,margin,margin,size,size);
+    ctx.strokeStyle="#000000";
+    ctx.lineWidth=border;
+    ctx.strokeRect(border/2,border/2,canvas.width-border,canvas.height-border);
+
+    const a=document.createElement("a");
+    a.href=canvas.toDataURL("image/png");
+    a.download="DShario-QR-"+String(currentCard.slug).replace(/[^a-z0-9-]/gi,"-")+".png";
+    document.body.appendChild(a);a.click();a.remove();
+  };
+  qrImg.onerror=()=>msg("Could not create QR image.","err");
+  qrImg.src=qrDataUrl;
 }
 if($("downloadPersonalQrBtn")) $("downloadPersonalQrBtn").onclick=downloadPersonalQrOnly;
 
