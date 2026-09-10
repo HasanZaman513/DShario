@@ -1972,7 +1972,7 @@ input,select,textarea{border-color:#cbdcf0!important;background:#fbfdff!importan
           <label>Attach PDF (optional)</label>
           <div class="docHint">Up to 2 PDFs, maximum 2 MB each. Documents are available only through this temporary link.</div>
           <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-top:9px">
-            <input id="shareDocumentUpload" type="file" accept="application/pdf,.pdf" style="flex:1;min-width:180px">
+            <input id="shareDocumentUpload" type="file" accept="application/pdf,.pdf" multiple style="flex:1;min-width:180px">
             <button id="shareUploadDocumentBtn" class="mini" type="button">Add PDF</button>
           </div>
           <div id="shareDocumentChecks" class="docList"></div>
@@ -1991,7 +1991,7 @@ input,select,textarea{border-color:#cbdcf0!important;background:#fbfdff!importan
     <h3 id="ownerCardDocumentsTitle" style="margin:0 0 6px">Documents</h3>
     <div id="ownerCardDocumentsHint" class="docHint">Add up to 2 PDF documents (maximum 2 MB each), then choose which document to include with a secure share link.</div>
     <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-top:10px">
-      <input id="cardDocumentUpload" type="file" accept="application/pdf,.pdf" style="flex:1;min-width:190px">
+      <input id="cardDocumentUpload" type="file" accept="application/pdf,.pdf" multiple style="flex:1;min-width:190px">
       <button id="cardUploadDocumentBtn" class="mini" type="button">Add PDF</button>
     </div>
     <div id="cardOwnerDocumentList" class="docList"></div>
@@ -2079,7 +2079,7 @@ input,select,textarea{border-color:#cbdcf0!important;background:#fbfdff!importan
           <strong>PDF attachments (optional)</strong>
           <div class="hint">Up to 2 PDFs, maximum 2 MB each. They remain available only while the Temporary Share is valid.</div>
           <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-top:8px">
-            <input id="wizPdfUpload" type="file" accept="application/pdf,.pdf">
+            <input id="wizPdfUpload" type="file" accept="application/pdf,.pdf" multiple>
             <button id="wizAddPdfBtn" class="mini" type="button">Add PDF</button>
           </div>
           <div id="wizDocs"></div>
@@ -2237,7 +2237,7 @@ input,select,textarea{border-color:#cbdcf0!important;background:#fbfdff!importan
 
   <details class="editSection" style="display:none">
     <summary>5. Documents</summary>
-    <div class="editSectionBody"><div class="docHint">Optional beta feature. Upload up to 2 PDF documents, maximum 2 MB each. Document sharing will be tested separately from the core card.</div><div style="margin-top:10px"><input id="documentUpload" type="file" accept="application/pdf,.pdf"><button id="uploadDocumentBtn" class="mini" type="button" style="margin-left:6px">Add PDF</button></div><div id="ownerDocumentList" class="docList"></div></div>
+    <div class="editSectionBody"><div class="docHint">Optional beta feature. Upload up to 2 PDF documents, maximum 2 MB each. Document sharing will be tested separately from the core card.</div><div style="margin-top:10px"><input id="documentUpload" type="file" accept="application/pdf,.pdf" multiple><button id="uploadDocumentBtn" class="mini" type="button" style="margin-left:6px">Add PDF</button></div><div id="ownerDocumentList" class="docList"></div></div>
   </details>
 
   <div class="privacyNotice"><strong>Privacy notice:</strong> Only add information you are comfortable sharing. When you share, choose Business, Career, Networking, Social or Full to control what the recipient receives. <button type="button" class="openPrivacy">Read Privacy Policy</button> • <button type="button" class="openTerms">Terms of Use</button></div>
@@ -3604,17 +3604,28 @@ function renderOwnerDocuments(){
 async function uploadDocument(inputId="documentUpload"){
   if(!user){msg(window.currentLang==="bn"?"ডকুমেন্ট যোগ করতে সাইন ইন করুন।":"Sign in to add a document.","info");return}
   if(ownerDocuments.length>=2){msg(window.currentLang==="bn"?"সর্বোচ্চ ২টি ডকুমেন্ট রাখা যাবে।":"You can keep a maximum of 2 documents.","err");return}
-  const input=$(inputId); const f=input?.files?.[0]; if(!f){msg(window.currentLang==="bn"?"একটি PDF ফাইল বেছে নিন।":"Choose a PDF file.","info");return}
-  if(f.type!=="application/pdf"&&!f.name.toLowerCase().endsWith(".pdf")){msg(window.currentLang==="bn"?"শুধু PDF ফাইল ব্যবহার করুন।":"PDF files only.","err");return}
-  if(f.size>2*1024*1024){msg(window.currentLang==="bn"?"PDF ফাইল সর্বোচ্চ ২ MB হতে পারবে।":"PDF must be 2 MB or smaller.","err");return}
-  if(ownerDocuments.some(d=>d.file_name===f.name && Number(d.file_size)===Number(f.size))){msg(window.currentLang==="bn"?"এই একই PDF ইতিমধ্যে যোগ করা আছে।":"This same PDF has already been added.","err");input.value="";return}
-  const bytes=new Uint8Array(await f.arrayBuffer());
-  if(!isPdfBytes(bytes)){msg(window.currentLang==="bn"?"নির্বাচিত ফাইলটি বৈধ PDF নয়।":"The selected file is not a valid PDF.","err");return}
-  const {error}=await sb.from("documents").insert({user_id:user.id,file_name:f.name,file_size:f.size,mime_type:"application/pdf",file_data:bytesToHex(bytes)});
-  if(error){msg(error.message,"err");return}
+  const input=$(inputId); const files=Array.from(input?.files||[]);
+  if(!files.length){msg(window.currentLang==="bn"?"একটি PDF ফাইল বেছে নিন।":"Choose one or more PDF files.","info");return}
+  const slots=2-ownerDocuments.length;
+  if(files.length>slots){msg(`You can add only ${slots} more PDF${slots===1?"":"s"}. The current limit remains 2 documents.`,"err");return}
+  const seen=new Set(ownerDocuments.map(d=>`${d.file_name}::${Number(d.file_size)}`));
+  for(const f of files){
+    if(f.type!=="application/pdf"&&!f.name.toLowerCase().endsWith(".pdf")){msg("PDF files only.","err");return}
+    if(f.size>2*1024*1024){msg(`PDF must be 2 MB or smaller: ${f.name}`,"err");return}
+    const key=`${f.name}::${Number(f.size)}`;
+    if(seen.has(key)){msg(`This same PDF has already been added: ${f.name}`,"err");return}
+    const bytes=new Uint8Array(await f.arrayBuffer());
+    if(!isPdfBytes(bytes)){msg(`The selected file is not a valid PDF: ${f.name}`,"err");return}
+    seen.add(key);
+  }
+  for(const f of files){
+    const bytes=new Uint8Array(await f.arrayBuffer());
+    const {error}=await sb.from("documents").insert({user_id:user.id,file_name:f.name,file_size:f.size,mime_type:"application/pdf",file_data:bytesToHex(bytes)});
+    if(error){msg(error.message,"err");await loadOwnerDocuments();input.value="";return}
+  }
   input.value="";
   await loadOwnerDocuments();
-  msg(window.currentLang==="bn"?"PDF যোগ হয়েছে এবং পরবর্তী অস্থায়ী শেয়ারের জন্য নির্বাচিত আছে।":"PDF added and selected for your next Temporary Share.","ok");
+  msg(files.length===1?"PDF added and selected for your next Temporary Share.":`${files.length} PDFs added in one action and selected for your next Temporary Share.`,"ok");
 }
 async function loadPublicDocuments(token){
   const box=$("publicDocuments"),list=$("publicDocumentList"); if(!box||!list)return;box.style.display="none";list.innerHTML="";
