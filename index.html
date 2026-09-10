@@ -1,5 +1,5 @@
 <!doctype html>
-<!-- DShario RC32.27 WORKING — robust Personal DShario Address detection + true public-card-only rendering. -->
+<!-- DShario RC32.29 WORKING — RC32.28 stable + owner-only Personal Address QR PNG download. -->
 <html lang="en">
 <head>
 <meta charset="utf-8">
@@ -190,6 +190,8 @@ button,input,textarea{font:inherit}button{cursor:pointer}.app{max-width:980px;ma
 .publicMode #simpleShareLauncher,.publicMode #shareHistoryToggleRow,.publicMode #shareHistoryPanel,.publicMode #ownerLiveQr{display:none!important}
 #card{position:relative}
 #ownerInlineQr{position:absolute;right:18px;bottom:18px;width:76px;height:76px;border-radius:10px;background:#fff;padding:5px;border:1px solid #dbe5f2;display:none;z-index:3}
+#downloadPersonalQrBtn{display:none;margin:12px auto 0;max-width:260px;width:100%;min-height:48px;border:1px solid #cbd5e1;border-radius:13px;background:#fff;color:#123a78;font-weight:850;font-size:15px;align-items:center;justify-content:center;gap:8px;cursor:pointer}
+.publicMode #downloadPersonalQrBtn,.connectionOnlyMode #downloadPersonalQrBtn,body.personalProfileMode #downloadPersonalQrBtn{display:none!important}
 #card.ownerCardHasQr{padding-bottom:112px}
 #card.ownerCardHasQr #ownerInlineQr{display:block}
 #card.ownerCardHasQr .cl{right:auto;left:23px}
@@ -1891,6 +1893,7 @@ input,select,textarea{border-color:#cbdcf0!important;background:#fbfdff!importan
     <img id="ownerInlineQr" alt="Scan my DShario QR code">
     <div class="cl">DS</div>
   </div>
+  <button id="downloadPersonalQrBtn" type="button">▦ Download QR</button>
 
   <div id="savedBanner" class="saved" style="display:none"></div>
   <div id="updateNotifyBar" class="updateNotifyBar">
@@ -3332,9 +3335,11 @@ function render(card){
     $("card")?.classList.add("ownerCardHasQr");
     $("ownerInlineQr").classList.toggle("connectionQr",publicMode);
     $("ownerInlineQr").style.display="block";
+    if($("downloadPersonalQrBtn")) $("downloadPersonalQrBtn").style.display=publicMode?"none":"flex";
   }else{
     $("card")?.classList.remove("ownerCardHasQr");
     if($("ownerInlineQr"))$("ownerInlineQr").style.display="none";
+    if($("downloadPersonalQrBtn"))$("downloadPersonalQrBtn").style.display="none";
   }
   if($("exchangeBox")) $("exchangeBox").style.display=(publicMode&&!!c.slug)?"block":"none";
   // Owner manages/shares their own card; recipients save or exchange details.
@@ -4443,6 +4448,18 @@ async function makeLocalQrDataUrl(text,size=180){
     }catch(e){resolve("")}
   });
 }
+async function downloadPersonalQrOnly(){
+  if(!user||!currentCard?.slug)return;
+  const target=personalAddressFor(currentCard.slug);
+  const dataUrl=await makeLocalQrDataUrl(target,1200);
+  if(!dataUrl){msg("Could not create QR image.","err");return;}
+  const a=document.createElement("a");
+  a.href=dataUrl;
+  a.download="DShario-QR-"+String(currentCard.slug).replace(/[^a-z0-9-]/gi,"-")+".png";
+  document.body.appendChild(a);a.click();a.remove();
+}
+if($("downloadPersonalQrBtn")) $("downloadPersonalQrBtn").onclick=downloadPersonalQrOnly;
+
 function ownArea(which){
   publicMode=false;
   goMainArea(which==="account"?"account":"mycard");
