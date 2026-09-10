@@ -1975,7 +1975,7 @@ input,select,textarea{border-color:#cbdcf0!important;background:#fbfdff!importan
             <input id="shareDocumentUpload" class="documentUploadInput" type="file" multiple accept="application/pdf,.pdf,.doc,.docx,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document,image/jpeg,.jpg,.jpeg,image/png,.png">
             <button id="shareUploadDocumentBtn" class="mini" type="button">Upload Selected</button>
           </div>
-          <div class="docHint">Tip: in your phone's file picker, use Select/checkboxes to choose several files, then tap Open/Done once. All selected files will upload together.</div>
+          <div class="docHint">Tap Upload Selected. Where your browser supports it, DShario opens a true multi-select picker. Choose several files and confirm once; all selected files upload together.</div>
           <div id="shareDocumentChecks" class="docList"></div>
           <div class="docHint">Selected documents stop being available from DShario when this link expires or is revoked. A copy already downloaded by the receiver cannot be removed from their device.</div>
         </div>
@@ -3605,9 +3605,9 @@ function renderOwnerDocuments(){
     c.appendChild(pick);c.appendChild(remove);checks.appendChild(c);
   });
 }
-async function uploadDocuments(inputId="documentUpload"){
+async function uploadDocuments(inputId="documentUpload", suppliedFiles=null){
   if(!user){msg("Sign in to add documents.","info");return}
-  const input=$(inputId);const files=[...(input?.files||[])];
+  const input=$(inputId);const files=suppliedFiles?[...suppliedFiles]:[...(input?.files||[])];
   if(!files.length){msg("Choose one or more documents.","info");return}
   let added=0,skipped=0;
   for(const f of files){
@@ -3623,7 +3623,7 @@ async function uploadDocuments(inputId="documentUpload"){
     // Update local duplicate checking before the next file in the same selection.
     ownerDocuments.push({id:"pending-"+added,file_name:f.name,file_size:f.size,mime_type:documentMime(f.name,f.type),created_at:new Date().toISOString()});
   }
-  input.value="";
+  if(input) input.value="";
   await loadOwnerDocuments();
   if(added)msg(`${added} document${added===1?"":"s"} uploaded. Select only the files you want to attach when creating a Temporary Share.${skipped?` ${skipped} skipped.`:""}`,"ok");
 }
@@ -3665,13 +3665,41 @@ function updateHelpLanguage(){
 }
 $("helpBtn").onclick=openHelp;
 $("helpClose").onclick=closeHelp;
-$("uploadDocumentBtn").onclick=()=>uploadDocument("documentUpload");
-$("cardUploadDocumentBtn").onclick=()=>uploadDocument("cardDocumentUpload");
-if($("shareUploadDocumentBtn")) $("shareUploadDocumentBtn").onclick=()=>uploadDocument("shareDocumentUpload");
-// RC32.33: on mobile/desktop, selecting multiple files uploads the whole selection in one action.
+async function pickAndUploadDocuments(inputId){
+  if(!user){msg("Sign in to add documents.","info");return}
+  // Chrome/Edge File System Access API gives an explicit true multi-select picker when available.
+  if(typeof window.showOpenFilePicker==="function"){
+    try{
+      const handles=await window.showOpenFilePicker({
+        multiple:true,
+        types:[{description:"DShario documents",accept:{
+          "application/pdf":[".pdf"],
+          "application/msword":[".doc"],
+          "application/vnd.openxmlformats-officedocument.wordprocessingml.document":[".docx"],
+          "image/jpeg":[".jpg",".jpeg"],
+          "image/png":[".png"]
+        }}]
+      });
+      const files=[];
+      for(const h of handles) files.push(await h.getFile());
+      if(files.length) await uploadDocuments(inputId,files);
+      return;
+    }catch(e){
+      if(e?.name==="AbortError") return;
+      // Fall through to the standard browser picker if this API is unavailable/restricted.
+    }
+  }
+  const input=$(inputId);
+  if(!input)return;
+  input.value="";
+  input.click();
+}
+$("uploadDocumentBtn").onclick=()=>pickAndUploadDocuments("documentUpload");
+$("cardUploadDocumentBtn").onclick=()=>pickAndUploadDocuments("cardDocumentUpload");
+if($("shareUploadDocumentBtn")) $("shareUploadDocumentBtn").onclick=()=>pickAndUploadDocuments("shareDocumentUpload");
 ["documentUpload","cardDocumentUpload","shareDocumentUpload"].forEach(id=>{
   const el=$(id); if(!el)return;
-  el.addEventListener("change",()=>{ if(el.files&&el.files.length) uploadDocuments(id); });
+  el.addEventListener("change",async()=>{ if(el.files&&el.files.length) await uploadDocuments(id,el.files); });
 });
 
 
@@ -3719,30 +3747,29 @@ $("authSubmit").onclick=async()=>{
     if(error){$("authStatus").textContent="Email or password is incorrect, or no DShario account exists with these sign-in details.";return}
     $("authStatus").textContent="Signed in.";
     if(publicMode){
-      await refreshAuth(false);
       const intendedAction=pendingSharedAction||savedSharedIntent();
-      // Exchange is resumed immediately on the already-open received card.
-      // Avoiding a reload here prevents the shared-card context from being lost after sign-in.
-      if(intendedAction==="exchange"){
-        setView("card");
-        normalizeReceiverActions();
-        updateSaveConnectionButton();
-        updateSharedMemberNav();
-        msg("Signed in successfully. Opening My Card → Share Card…","ok");
-        await resumeSharedIntentAfterLoad();
-        return;
-      }
-      // RC21 stabilization: Save uses the same in-place received-card continuation as Exchange.
-      // Do not reload or enter the owner's area after authentication; currentCard must remain
-      // the sender's received card until the pending Save has completed.
+      // Keep received-card state completely isolated from owner/account refresh after sign-in.
+      // refreshAuth() is intentionally NOT called here because it can rebuild owner UI while a
+      // received card is still authoritative.
       setView("card");
       normalizeReceiverActions();
       updateSaveConnectionButton();
       updateSharedMemberNav();
-      msg(intendedAction==="save"
-        ? "Signed in successfully. Saving the received DShario to My Connections…"
-        : "Signed in successfully. The shared DShario is still open.","ok");
-      await resumeSharedIntentAfterLoad();
+      if(intendedAction==="exchange"){
+        msg("Signed in successfully. Opening My Card → Share Card…","ok");
+        await resumeSharedIntentAfterLoad();
+        return;
+      }
+      if(intendedAction==="save"){
+        msg("Signed in successfully. Saving the received DShario…","info");
+        const savedOk=await saveCurrentConnection();
+        if(savedOk){
+          await openSavedConnectionList();
+          msg("✓ Saved. My Connections is open.","ok");
+        }
+        return;
+      }
+      msg("Signed in successfully. The shared DShario is still open.","ok");
     }else{
       await refreshAuth(true);
       setView(currentCard?"card":"edit");
@@ -5405,7 +5432,7 @@ body.personalProfileMode .cardWrap{margin-top:0!important;}
 </script>
 
 
-<!-- RC32.32 Document Sharing v1
+<!-- RC32.34 Document Sharing + recipient flow fix
      - multiple document upload
      - 10 MB per file
      - PDF, DOC/DOCX, JPG/PNG
