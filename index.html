@@ -1854,6 +1854,21 @@ input,select,textarea{border-color:#cbdcf0!important;background:#fbfdff!importan
 }
 #downloadPersonalQrBtn:hover,#downloadPersonalQrBtn:focus{background:#f5f9ff!important;}
 </style>
+
+<style>
+/* RC32_32B — document layout only. No sharing/auth/upload logic changed. */
+.docList,.docItem,.docMeta,.docCheck,#wizDocs,#publicDocumentList,#ownerDocumentList,#cardOwnerDocumentList,#shareDocumentChecks{max-width:100%;min-width:0;box-sizing:border-box}
+.docItem{overflow:hidden}
+.docItem .docMeta,.docItem .grow,.docItem label{min-width:0;max-width:100%}
+.docName,.docItem .grow,.docItem label span{overflow-wrap:anywhere;word-break:break-word;white-space:normal;line-height:1.3}
+#wizDocs .docItem{display:grid;grid-template-columns:auto minmax(0,1fr) auto;align-items:center;gap:8px}
+#wizDocs .docItem .grow{white-space:normal;overflow-wrap:anywhere;word-break:break-word}
+#publicDocumentList a,#publicDocumentList button{max-width:100%;box-sizing:border-box;overflow-wrap:anywhere;word-break:break-word;white-space:normal}
+@media(max-width:480px){
+ .docItem{gap:7px;padding:9px}
+ .docItem button,.docItem .mini{max-width:82px;padding:7px 9px;font-size:12px}
+}
+</style>
 </head>
 <body>
 <div class="app">
