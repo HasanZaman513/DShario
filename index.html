@@ -1984,11 +1984,11 @@ input,select,textarea{border-color:#cbdcf0!important;background:#fbfdff!importan
           </div>
         </div>
         <div id="shareDocumentsPicker" style="display:block;margin-top:12px">
-          <label>Attach PDF (optional)</label>
-          <div class="docHint">Up to 2 PDFs, maximum 2 MB each. Documents are available only through this temporary link.</div>
+          <label>Attach documents (optional)</label>
+          <div class="docHint">Up to 10 documents, maximum 10 MB each. PDF, DOC, DOCX, JPG and PNG are supported. Documents are available only through this temporary link.</div>
           <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-top:9px">
-            <input id="shareDocumentUpload" type="file" accept="application/pdf,.pdf" multiple style="flex:1;min-width:180px">
-            <button id="shareUploadDocumentBtn" class="mini" type="button">Add PDF</button>
+            <input id="shareDocumentUpload" type="file" accept="application/pdf,.pdf,application/msword,.doc,application/vnd.openxmlformats-officedocument.wordprocessingml.document,.docx,image/jpeg,.jpg,.jpeg,image/png,.png" multiple style="flex:1;min-width:180px">
+            <button id="shareUploadDocumentBtn" class="mini" type="button">Add documents</button>
           </div>
           <div id="shareDocumentChecks" class="docList"></div>
           <div class="docHint">Selected documents stop being available from DShario when this link expires or is revoked. A copy already downloaded by the receiver cannot be removed from their device.</div>
@@ -2004,10 +2004,10 @@ input,select,textarea{border-color:#cbdcf0!important;background:#fbfdff!importan
 
   <div id="ownerCardDocuments" class="docBox" style="display:none!important;margin-top:16px">
     <h3 id="ownerCardDocumentsTitle" style="margin:0 0 6px">Documents</h3>
-    <div id="ownerCardDocumentsHint" class="docHint">Add up to 2 PDF documents (maximum 2 MB each), then choose which document to include with a secure share link.</div>
+    <div id="ownerCardDocumentsHint" class="docHint">Add up to 10 documents (maximum 10 MB each). PDF, DOC, DOCX, JPG and PNG are supported; choose which documents to include with a secure share link.</div>
     <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-top:10px">
-      <input id="cardDocumentUpload" type="file" accept="application/pdf,.pdf" multiple style="flex:1;min-width:190px">
-      <button id="cardUploadDocumentBtn" class="mini" type="button">Add PDF</button>
+      <input id="cardDocumentUpload" type="file" accept="application/pdf,.pdf,application/msword,.doc,application/vnd.openxmlformats-officedocument.wordprocessingml.document,.docx,image/jpeg,.jpg,.jpeg,image/png,.png" multiple style="flex:1;min-width:190px">
+      <button id="cardUploadDocumentBtn" class="mini" type="button">Add documents</button>
     </div>
     <div id="cardOwnerDocumentList" class="docList"></div>
   </div>
@@ -2091,11 +2091,11 @@ input,select,textarea{border-color:#cbdcf0!important;background:#fbfdff!importan
         <textarea id="wizMessage" maxlength="500" class="accountTempMessage" placeholder="Add a short message"></textarea>
 
         <div id="wizPdfManage">
-          <strong>PDF attachments (optional)</strong>
-          <div class="hint">Up to 2 PDFs, maximum 2 MB each. They remain available only while the Temporary Share is valid.</div>
+          <strong>Document attachments (optional)</strong>
+          <div class="hint">Up to 10 documents, maximum 10 MB each. PDF, DOC, DOCX, JPG and PNG are supported. They remain available only while the Temporary Share is valid.</div>
           <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-top:8px">
-            <input id="wizPdfUpload" type="file" accept="application/pdf,.pdf" multiple>
-            <button id="wizAddPdfBtn" class="mini" type="button">Add PDF</button>
+            <input id="wizPdfUpload" type="file" accept="application/pdf,.pdf,application/msword,.doc,application/vnd.openxmlformats-officedocument.wordprocessingml.document,.docx,image/jpeg,.jpg,.jpeg,image/png,.png" multiple>
+            <button id="wizAddPdfBtn" class="mini" type="button">Add documents</button>
           </div>
           <div id="wizDocs"></div>
         </div>
@@ -2252,7 +2252,7 @@ input,select,textarea{border-color:#cbdcf0!important;background:#fbfdff!importan
 
   <details class="editSection" style="display:none">
     <summary>5. Documents</summary>
-    <div class="editSectionBody"><div class="docHint">Optional beta feature. Upload up to 2 PDF documents, maximum 2 MB each. Document sharing will be tested separately from the core card.</div><div style="margin-top:10px"><input id="documentUpload" type="file" accept="application/pdf,.pdf" multiple><button id="uploadDocumentBtn" class="mini" type="button" style="margin-left:6px">Add PDF</button></div><div id="ownerDocumentList" class="docList"></div></div>
+    <div class="editSectionBody"><div class="docHint">Optional beta feature. Upload up to 10 documents, maximum 10 MB each. PDF, DOC, DOCX, JPG and PNG are supported. Document sharing is tested separately from the core card.</div><div style="margin-top:10px"><input id="documentUpload" type="file" accept="application/pdf,.pdf,application/msword,.doc,application/vnd.openxmlformats-officedocument.wordprocessingml.document,.docx,image/jpeg,.jpg,.jpeg,image/png,.png" multiple><button id="uploadDocumentBtn" class="mini" type="button" style="margin-left:6px">Add documents</button></div><div id="ownerDocumentList" class="docList"></div></div>
   </details>
 
   <div class="privacyNotice"><strong>Privacy notice:</strong> Only add information you are comfortable sharing. When you share, choose Business, Career, Networking, Social or Full to control what the recipient receives. <button type="button" class="openPrivacy">Read Privacy Policy</button> • <button type="button" class="openTerms">Terms of Use</button></div>
@@ -2374,7 +2374,7 @@ input,select,textarea{border-color:#cbdcf0!important;background:#fbfdff!importan
           <label for="accountTempMessage" style="margin-top:10px">Message (optional)</label>
           <textarea id="accountTempMessage" class="accountTempMessage" maxlength="500" placeholder="Add a message for this recipient"></textarea>
           <div class="hint">The message will pop up when the recipient opens the Temporary Share and stays available only while it is valid.</div>
-          <div style="margin-top:10px;font-weight:850">PDF attachments (optional)</div>
+          <div style="margin-top:10px;font-weight:850">Document attachments (optional)</div>
           <div id="accountTempDocs" class="accountTempDocs"><div class="hint">No PDFs selected.</div></div>
         </div>
       </div>
@@ -2434,7 +2434,7 @@ input,select,textarea{border-color:#cbdcf0!important;background:#fbfdff!importan
       <div class="helpStep"><strong id="hs1">1. Create your card</strong><span id="hb1">Add the professional and contact information you want to use. Keep optional details blank when you do not need them.</span></div>
       <div class="helpStep"><strong id="hs2">2. Choose a share type</strong><span id="hb2">Choose Business, Career, Networking, Social or Full. The selected share type determines what information the card will carry.</span></div>
       <div class="helpStep"><strong id="hs3">3. Choose how to share</strong><span id="hb3">My DShario Link is your permanent card address. Temporary Share lasts 24 hours, 7 days or 30 days and can be revoked early.</span></div>
-      <div class="helpStep"><strong id="hs4">4. Add PDFs to Temporary Share</strong><span id="hb4">Add an optional message and upload up to 2 PDFs, maximum 2 MB each. The message and PDFs stay available only while the Temporary Share is valid. Expiry or revocation stops future DShario access, but cannot remove a copy already downloaded by the recipient.</span></div>
+      <div class="helpStep"><strong id="hs4">4. Add documents to Temporary Share</strong><span id="hb4">Add an optional message and upload up to 10 documents, maximum 10 MB each. PDF, DOC, DOCX, JPG and PNG are supported. The message and documents stay available only while the Temporary Share is valid. Expiry or revocation stops future DShario access, but cannot remove a copy already downloaded by the recipient.</span></div>
       <div class="helpStep"><strong id="hs5">5. Share, QR and download</strong><span id="hb5">Send a link or QR. You can also download a digital-card image, choose a card template, and use its QR to return to the live DShario card.</span></div>
       <div class="helpStep"><strong id="hs6">6. Save a received DShario</strong><span id="hb6">From a permanent or valid Temporary Share, choose Save to My Connections. If sign-in is required, DShario returns to the received card and completes the save. Once saved, View in My Connections becomes the single navigation action and opens your saved connections directly.</span></div>
       <div class="helpStep"><strong id="hs7">7. Exchange with my DShario</strong><span id="hb7">A DShario member signs in and is taken to My Card → Share Card, where the same five Share Types are used. People who do not use DShario can use the separate contact-return option when it is available.</span></div>
@@ -3596,51 +3596,68 @@ function renderOwnerDocuments(){
   if(!ownerDocuments.length){list.innerHTML=emptyOwner;if(cardList)cardList.innerHTML=emptyOwner;checks.innerHTML=`<div class="docHint">${window.currentLang==="bn"?"শেয়ার করার জন্য কোনো ডকুমেন্ট নেই।":"No documents available to share."}</div>`;return}
   ownerDocuments.forEach(d=>{
     const makeRow=()=>{
-      const row=document.createElement("div");row.className="docItem";row.innerHTML=`<div class="docMeta"><div class="docName">📄 ${d.file_name}</div><div class="docSize">${formatBytes(d.file_size)}</div></div>`;
+      const row=document.createElement("div");row.className="docItem";row.innerHTML=`<div class="docMeta"><div class="docName">${documentIconForMime(d.mime_type,d.file_name)} ${d.file_name}</div><div class="docSize">${formatBytes(d.file_size)}</div></div>`;
       const del=document.createElement("button");del.className="mini";del.textContent=window.currentLang==="bn"?"মুছুন":"Delete";del.onclick=async()=>{if(!confirm(window.currentLang==="bn"?"এই ডকুমেন্টটি মুছবেন?":"Delete this document?"))return;const {error}=await sb.from("documents").delete().eq("id",d.id);if(error)msg(error.message,"err");else{await loadOwnerDocuments();msg(window.currentLang==="bn"?"ডকুমেন্ট মুছে ফেলা হয়েছে।":"Document deleted.","ok")}};row.appendChild(del);return row;
     };
     list.appendChild(makeRow()); if(cardList)cardList.appendChild(makeRow());
     const c=document.createElement("div");c.className="docItem docCheck";
     const pick=document.createElement("label");pick.style.cssText="display:flex;align-items:center;gap:8px;flex:1;min-width:0;cursor:pointer";
-    pick.innerHTML=`<input class="shareDocCheck" type="checkbox" value="${d.id}" checked><span style="min-width:0;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">📄 ${d.file_name} <small>(${formatBytes(d.file_size)})</small></span>`;
+    pick.innerHTML=`<input class="shareDocCheck" type="checkbox" value="${d.id}" checked><span style="min-width:0;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${documentIconForMime(d.mime_type,d.file_name)} ${d.file_name} <small>(${formatBytes(d.file_size)})</small></span>`;
     const remove=document.createElement("button");remove.type="button";remove.className="mini";
     remove.style.cssText="flex:0 0 auto;padding:7px 10px";
     remove.textContent=window.currentLang==="bn"?"সরান":"Remove";
     remove.onclick=async()=>{
-      if(!confirm(window.currentLang==="bn"?"এই PDF সরাবেন?":"Remove this PDF?"))return;
+      if(!confirm("Remove this document?"))return;
       const {error}=await sb.from("documents").delete().eq("id",d.id).eq("user_id",user.id);
       if(error){msg(error.message,"err");return}
       await loadOwnerDocuments();
-      msg(window.currentLang==="bn"?"PDF সরানো হয়েছে।":"PDF removed.","ok");
+      msg("Document removed.","ok");
     };
     c.appendChild(pick);c.appendChild(remove);checks.appendChild(c);
   });
 }
+function documentTypeForFile(f){
+  const name=String(f?.name||"").toLowerCase();
+  if(name.endsWith(".pdf")) return "application/pdf";
+  if(name.endsWith(".docx")) return "application/vnd.openxmlformats-officedocument.wordprocessingml.document";
+  if(name.endsWith(".doc")) return "application/msword";
+  if(name.endsWith(".jpg")||name.endsWith(".jpeg")) return "image/jpeg";
+  if(name.endsWith(".png")) return "image/png";
+  return "";
+}
+function documentIconForMime(mime,name){
+  const m=String(mime||"").toLowerCase(), n=String(name||"").toLowerCase();
+  if(m.startsWith("image/")||/\.(jpg|jpeg|png)$/.test(n)) return "🖼️";
+  if(m.includes("word")||/\.docx?$/.test(n)) return "📝";
+  return "📄";
+}
 async function uploadDocument(inputId="documentUpload"){
-  if(!user){msg(window.currentLang==="bn"?"ডকুমেন্ট যোগ করতে সাইন ইন করুন।":"Sign in to add a document.","info");return}
-  if(ownerDocuments.length>=2){msg(window.currentLang==="bn"?"সর্বোচ্চ ২টি ডকুমেন্ট রাখা যাবে।":"You can keep a maximum of 2 documents.","err");return}
+  if(!user){msg("Sign in to add a document.","info");return}
+  const MAX_DOCS=10, MAX_SIZE=10*1024*1024;
+  if(ownerDocuments.length>=MAX_DOCS){msg(`You can keep a maximum of ${MAX_DOCS} documents during beta.`,"err");return}
   const input=$(inputId); const files=Array.from(input?.files||[]);
-  if(!files.length){msg(window.currentLang==="bn"?"একটি PDF ফাইল বেছে নিন।":"Choose one or more PDF files.","info");return}
-  const slots=2-ownerDocuments.length;
-  if(files.length>slots){msg(`You can add only ${slots} more PDF${slots===1?"":"s"}. The current limit remains 2 documents.`,"err");return}
+  if(!files.length){msg("Choose one or more documents.","info");return}
+  const slots=MAX_DOCS-ownerDocuments.length;
+  if(files.length>slots){msg(`You can add only ${slots} more document${slots===1?"":"s"}. The current beta limit is ${MAX_DOCS}.`,"err");return}
   const seen=new Set(ownerDocuments.map(d=>`${d.file_name}::${Number(d.file_size)}`));
+  const prepared=[];
   for(const f of files){
-    if(f.type!=="application/pdf"&&!f.name.toLowerCase().endsWith(".pdf")){msg("PDF files only.","err");return}
-    if(f.size>2*1024*1024){msg(`PDF must be 2 MB or smaller: ${f.name}`,"err");return}
+    const mime=documentTypeForFile(f);
+    if(!mime){msg(`Unsupported file type: ${f.name}. Use PDF, DOC, DOCX, JPG or PNG.`,"err");return}
+    if(f.size>MAX_SIZE){msg(`File must be 10 MB or smaller: ${f.name}`,"err");return}
     const key=`${f.name}::${Number(f.size)}`;
-    if(seen.has(key)){msg(`This same PDF has already been added: ${f.name}`,"err");return}
+    if(seen.has(key)){msg(`This same document has already been added: ${f.name}`,"err");return}
     const bytes=new Uint8Array(await f.arrayBuffer());
-    if(!isPdfBytes(bytes)){msg(`The selected file is not a valid PDF: ${f.name}`,"err");return}
-    seen.add(key);
+    if(mime==="application/pdf" && !isPdfBytes(bytes)){msg(`The selected file is not a valid PDF: ${f.name}`,"err");return}
+    prepared.push({f,mime,bytes}); seen.add(key);
   }
-  for(const f of files){
-    const bytes=new Uint8Array(await f.arrayBuffer());
-    const {error}=await sb.from("documents").insert({user_id:user.id,file_name:f.name,file_size:f.size,mime_type:"application/pdf",file_data:bytesToHex(bytes)});
+  for(const x of prepared){
+    const {error}=await sb.from("documents").insert({user_id:user.id,file_name:x.f.name,file_size:x.f.size,mime_type:x.mime,file_data:bytesToHex(x.bytes)});
     if(error){msg(error.message,"err");await loadOwnerDocuments();input.value="";return}
   }
   input.value="";
   await loadOwnerDocuments();
-  msg(files.length===1?"PDF added and selected for your next Temporary Share.":`${files.length} PDFs added in one action and selected for your next Temporary Share.`,"ok");
+  msg(files.length===1?"Document added and selected for your next Temporary Share.":`${files.length} documents added in one action and selected for your next Temporary Share.`,"ok");
 }
 async function loadPublicDocuments(token){
   const box=$("publicDocuments"),list=$("publicDocumentList"); if(!box||!list)return;box.style.display="none";list.innerHTML="";
@@ -3649,19 +3666,20 @@ async function loadPublicDocuments(token){
   data.forEach(d=>{
     const b=document.createElement("button");
     b.className="actionBtn"; b.type="button";
-    b.textContent=`📄 ${window.currentLang==="bn"?"PDF খুলুন / ডাউনলোড":"Open / Download PDF"}: ${d.file_name}`;
+    const icon=documentIconForMime(d.mime_type,d.file_name);
+    b.textContent=`${icon} Open / Download: ${d.file_name}`;
     b.onclick=()=>{
       const bytes=storedBytesToUint8(d.file_data);
-      if(!isPdfBytes(bytes)){
-        msg(window.currentLang==="bn"?"PDF ডেটা সঠিকভাবে পাওয়া যায়নি। নতুন করে ফাইলটি আপলোড করে চেষ্টা করুন।":"The PDF data could not be reconstructed correctly. Please upload the file again and retry.","err");
-        return;
-      }
-      const blob=new Blob([bytes],{type:"application/pdf"});
+      if(!bytes?.length){msg("The document data could not be reconstructed correctly. Please ask the sender to upload the file again.","err");return}
+      const mime=d.mime_type||documentTypeForFile({name:d.file_name})||"application/octet-stream";
+      if(mime==="application/pdf" && !isPdfBytes(bytes)){msg("The PDF data could not be reconstructed correctly. Please ask the sender to upload the file again.","err");return}
+      const blob=new Blob([bytes],{type:mime});
       downloadBlob(blob,d.file_name);
     };
     list.appendChild(b);
   });
 }
+
 function openHelp(){$("helpModal").classList.add("show");document.body.style.overflow="hidden";updateHelpLanguage()}
 function closeHelp(){$("helpModal").classList.remove("show");document.body.style.overflow=""}
 function updateHelpLanguage(){
@@ -3672,7 +3690,7 @@ function updateHelpLanguage(){
     ["1. Create your card","Add the professional and contact information you want to use. Keep optional details blank when you do not need them."],
     ["2. Choose a share type","Business, Career, Networking, Social or Full determines what information the recipient can see. LinkedIn is included with Career, Networking and Full—not Business or Social."],
     ["3. Choose how to share","My DShario Link is your permanent card address. Temporary Share lasts 24 hours, 7 days or 30 days and can be revoked early."],
-    ["4. Add PDFs to Temporary Share","Add an optional message and upload up to 2 PDFs, maximum 2 MB each. The message and PDFs stay available only while the Temporary Share is valid. Expiry or revocation stops future DShario access, but cannot remove a copy already downloaded by the recipient."],
+    ["4. Add documents to Temporary Share","Add an optional message and upload up to 10 documents, maximum 10 MB each. PDF, DOC, DOCX, JPG and PNG are supported. The message and documents stay available only while the Temporary Share is valid. Expiry or revocation stops future DShario access, but cannot remove a copy already downloaded by the recipient."],
     ["5. Share, QR and download","Send a link or QR. You can also download a digital-card image, choose a card template, and use its QR to return to the live DShario card."],
     ["6. Save a received DShario","From a permanent or valid Temporary Share, choose Save to My Connections. If sign-in is required, DShario returns to the received card and completes the save. Once saved, View in My Connections becomes the single navigation action and opens your saved connections directly."],
     ["7. Exchange with my DShario","A DShario member signs in and is taken to My Card → Share Card, where the same five Share Types are used. People who do not use DShario can use the separate contact-return option when it is available."],
@@ -5025,7 +5043,7 @@ if($("accountSendType")) $("accountSendType").onchange=updateAccountSendType;
 function renderAccountTempDocs(){
   const box=$("accountTempDocs");if(!box)return;
   box.innerHTML="";
-  if(!ownerDocuments?.length){box.innerHTML='<div class="hint">No uploaded PDFs. Add PDFs from My Card → Temporary Share first.</div>';return}
+  if(!ownerDocuments?.length){box.innerHTML='<div class="hint">No uploaded documents. Add documents from My Card → Temporary Share first.</div>';return}
   ownerDocuments.forEach(d=>{
     const lab=document.createElement("label");
     lab.innerHTML=`<input class="accountTempDocCheck" type="checkbox" value="${escHtml(d.id)}"><span>${escHtml(d.file_name)} (${formatBytes(d.file_size)})</span>`;
