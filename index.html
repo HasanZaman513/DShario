@@ -1,5 +1,5 @@
 <!doctype html>
-<!-- DShario RC32.30 WORKING — RC32.29 stable + protective border/quiet-zone on downloaded Personal Address QR only. -->
+<!-- DShario RC32.31 WORKING — RC32.30 stable + cosmetic nav font and compact Public QR download control only. -->
 <html lang="en">
 <head>
 <meta charset="utf-8">
@@ -1832,6 +1832,28 @@ input,select,textarea{border-color:#cbdcf0!important;background:#fbfdff!importan
 
 </style>
 
+
+<style id="rc3231-cosmetic-only">
+/* RC32.31 cosmetic-only: slightly larger primary tabs; compact QR download link aligned under card at right. */
+.tabs .tab{font-size:17px!important;}
+@media(max-width:720px){.tabs .tab{font-size:15.5px!important;}}
+#downloadPersonalQrBtn{
+  display:block;
+  width:auto!important;
+  min-width:0!important;
+  margin:7px 10px 0 auto!important;
+  padding:6px 10px!important;
+  border:1px solid #c9d9eb!important;
+  border-radius:8px!important;
+  background:#fff!important;
+  color:#245c9f!important;
+  font-size:12px!important;
+  font-weight:750!important;
+  line-height:1.2!important;
+  box-shadow:none!important;
+}
+#downloadPersonalQrBtn:hover,#downloadPersonalQrBtn:focus{background:#f5f9ff!important;}
+</style>
 </head>
 <body>
 <div class="app">
@@ -1893,7 +1915,7 @@ input,select,textarea{border-color:#cbdcf0!important;background:#fbfdff!importan
     <img id="ownerInlineQr" alt="Scan my DShario QR code">
     <div class="cl">DS</div>
   </div>
-  <button id="downloadPersonalQrBtn" type="button">▦ Download QR</button>
+  <button id="downloadPersonalQrBtn" type="button">▦ Download Public QR Code</button>
 
   <div id="savedBanner" class="saved" style="display:none"></div>
   <div id="updateNotifyBar" class="updateNotifyBar">
