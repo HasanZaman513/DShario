@@ -1869,6 +1869,8 @@ input,select,textarea{border-color:#cbdcf0!important;background:#fbfdff!importan
  .docItem button,.docItem .mini{max-width:82px;padding:7px 9px;font-size:12px}
 }
 </style>
+
+<!-- RC32_32D: private Supabase Storage migration for Temporary Share documents; core auth/navigation unchanged. -->
 </head>
 <body>
 <div class="app">
@@ -3584,9 +3586,19 @@ function isPdfBytes(bytes){
 function formatBytes(n){return n<1024?`${n} B`:`${(n/1024/1024).toFixed(2)} MB`}
 async function loadOwnerDocuments(){
   if(!user){ownerDocuments=[];renderOwnerDocuments();return}
-  const {data,error}=await sb.from("documents").select("id,file_name,file_size,created_at").eq("user_id",user.id).order("created_at",{ascending:true});
+  const {data,error}=await sb.from("documents").select("id,file_name,file_size,mime_type,storage_path,created_at").eq("user_id",user.id).order("created_at",{ascending:true});
   if(error){msg(error.message,"err");return}
   ownerDocuments=data||[];renderOwnerDocuments();
+}
+
+async function deleteOwnerDocument(d){
+  if(!user||!d?.id) return {error:new Error("Document not available.")};
+  if(d.storage_path){
+    const rm=await sb.storage.from("dshario-documents").remove([d.storage_path]);
+    if(rm.error) return {error:rm.error};
+  }
+  const del=await sb.from("documents").delete().eq("id",d.id).eq("user_id",user.id);
+  return del;
 }
 function renderOwnerDocuments(){
   const list=$("ownerDocumentList"),cardList=$("cardOwnerDocumentList"),checks=$("shareDocumentChecks");
@@ -3597,7 +3609,7 @@ function renderOwnerDocuments(){
   ownerDocuments.forEach(d=>{
     const makeRow=()=>{
       const row=document.createElement("div");row.className="docItem";row.innerHTML=`<div class="docMeta"><div class="docName">${documentIconForMime(d.mime_type,d.file_name)} ${d.file_name}</div><div class="docSize">${formatBytes(d.file_size)}</div></div>`;
-      const del=document.createElement("button");del.className="mini";del.textContent=window.currentLang==="bn"?"মুছুন":"Delete";del.onclick=async()=>{if(!confirm(window.currentLang==="bn"?"এই ডকুমেন্টটি মুছবেন?":"Delete this document?"))return;const {error}=await sb.from("documents").delete().eq("id",d.id);if(error)msg(error.message,"err");else{await loadOwnerDocuments();msg(window.currentLang==="bn"?"ডকুমেন্ট মুছে ফেলা হয়েছে।":"Document deleted.","ok")}};row.appendChild(del);return row;
+      const del=document.createElement("button");del.className="mini";del.textContent=window.currentLang==="bn"?"মুছুন":"Delete";del.onclick=async()=>{if(!confirm(window.currentLang==="bn"?"এই ডকুমেন্টটি মুছবেন?":"Delete this document?"))return;const {error}=await deleteOwnerDocument(d);if(error)msg(error.message,"err");else{await loadOwnerDocuments();msg(window.currentLang==="bn"?"ডকুমেন্ট মুছে ফেলা হয়েছে।":"Document deleted.","ok")}};row.appendChild(del);return row;
     };
     list.appendChild(makeRow()); if(cardList)cardList.appendChild(makeRow());
     const c=document.createElement("div");c.className="docItem docCheck";
@@ -3608,7 +3620,7 @@ function renderOwnerDocuments(){
     remove.textContent=window.currentLang==="bn"?"সরান":"Remove";
     remove.onclick=async()=>{
       if(!confirm("Remove this document?"))return;
-      const {error}=await sb.from("documents").delete().eq("id",d.id).eq("user_id",user.id);
+      const {error}=await deleteOwnerDocument(d);
       if(error){msg(error.message,"err");return}
       await loadOwnerDocuments();
       msg("Document removed.","ok");
@@ -3647,34 +3659,78 @@ async function uploadDocument(inputId="documentUpload"){
     if(f.size>MAX_SIZE){msg(`File must be 10 MB or smaller: ${f.name}`,"err");return}
     const key=`${f.name}::${Number(f.size)}`;
     if(seen.has(key)){msg(`This same document has already been added: ${f.name}`,"err");return}
-    const bytes=new Uint8Array(await f.arrayBuffer());
-    if(mime==="application/pdf" && !isPdfBytes(bytes)){msg(`The selected file is not a valid PDF: ${f.name}`,"err");return}
-    prepared.push({f,mime,bytes}); seen.add(key);
+    if(mime==="application/pdf"){
+      const head=new Uint8Array(await f.slice(0,5).arrayBuffer());
+      if(!isPdfBytes(head)){msg(`The selected file is not a valid PDF: ${f.name}`,"err");return}
+    }
+    prepared.push({f,mime}); seen.add(key);
   }
+
+  let completed=0;
   for(const x of prepared){
-    const {error}=await sb.from("documents").insert({user_id:user.id,file_name:x.f.name,file_size:x.f.size,mime_type:x.mime,file_data:bytesToHex(x.bytes)});
-    if(error){msg(error.message,"err");await loadOwnerDocuments();input.value="";return}
+    const ext=(x.f.name.split(".").pop()||"bin").toLowerCase().replace(/[^a-z0-9]/g,"")||"bin";
+    const objectId=(crypto.randomUUID?crypto.randomUUID().replace(/-/g,""):(Date.now().toString(36)+Math.random().toString(36).slice(2)));
+    const storagePath=`${user.id}/${objectId}.${ext}`;
+    const up=await sb.storage.from("dshario-documents").upload(storagePath,x.f,{
+      contentType:x.mime,
+      upsert:false,
+      cacheControl:"3600"
+    });
+    if(up.error){
+      msg(`Could not upload ${x.f.name}: ${up.error.message}`,"err");
+      await loadOwnerDocuments(); input.value=""; return;
+    }
+    const ins=await sb.from("documents").insert({
+      user_id:user.id,
+      file_name:x.f.name,
+      file_size:x.f.size,
+      mime_type:x.mime,
+      storage_path:storagePath,
+      file_data:null
+    });
+    if(ins.error){
+      await sb.storage.from("dshario-documents").remove([storagePath]);
+      msg(`Could not save ${x.f.name}: ${ins.error.message}`,"err");
+      await loadOwnerDocuments(); input.value=""; return;
+    }
+    completed++;
   }
   input.value="";
   await loadOwnerDocuments();
-  msg(files.length===1?"Document added and selected for your next Temporary Share.":`${files.length} documents added in one action and selected for your next Temporary Share.`,"ok");
+  msg(completed===1?"Document added and selected for your next Temporary Share.":`${completed} documents added in one action and selected for your next Temporary Share.`,"ok");
 }
 async function loadPublicDocuments(token){
   const box=$("publicDocuments"),list=$("publicDocumentList"); if(!box||!list)return;box.style.display="none";list.innerHTML="";
-  const {data,error}=await sb.rpc("get_shared_documents",{link_token:token}); if(error||!data?.length)return;
+  let data=null,error=null;
+  let r=await sb.rpc("get_shared_documents_storage",{link_token:token});
+  data=r.data; error=r.error;
+  // Legacy fallback keeps old database-stored beta PDFs readable during migration.
+  if(error){
+    r=await sb.rpc("get_shared_documents",{link_token:token});
+    data=r.data; error=r.error;
+  }
+  if(error||!data?.length)return;
   box.style.display="block";
   data.forEach(d=>{
     const b=document.createElement("button");
     b.className="actionBtn"; b.type="button";
     const icon=documentIconForMime(d.mime_type,d.file_name);
     b.textContent=`${icon} Open / Download: ${d.file_name}`;
-    b.onclick=()=>{
-      const bytes=storedBytesToUint8(d.file_data);
-      if(!bytes?.length){msg("The document data could not be reconstructed correctly. Please ask the sender to upload the file again.","err");return}
-      const mime=d.mime_type||documentTypeForFile({name:d.file_name})||"application/octet-stream";
-      if(mime==="application/pdf" && !isPdfBytes(bytes)){msg("The PDF data could not be reconstructed correctly. Please ask the sender to upload the file again.","err");return}
-      const blob=new Blob([bytes],{type:mime});
-      downloadBlob(blob,d.file_name);
+    b.onclick=async()=>{
+      b.disabled=true;
+      try{
+        const mime=d.mime_type||documentTypeForFile({name:d.file_name})||"application/octet-stream";
+        if(d.storage_path){
+          const dl=await sb.storage.from("dshario-documents").download(d.storage_path);
+          if(dl.error||!dl.data){msg(dl.error?.message||"This document is no longer available.","err");return}
+          downloadBlob(dl.data,d.file_name);
+          return;
+        }
+        const bytes=storedBytesToUint8(d.file_data);
+        if(!bytes?.length){msg("The document data could not be reconstructed correctly. Please ask the sender to upload the file again.","err");return}
+        if(mime==="application/pdf" && !isPdfBytes(bytes)){msg("The PDF data could not be reconstructed correctly. Please ask the sender to upload the file again.","err");return}
+        downloadBlob(new Blob([bytes],{type:mime}),d.file_name);
+      }finally{b.disabled=false}
     };
     list.appendChild(b);
   });
@@ -4310,7 +4366,7 @@ function renderWizDocs(){
     const row=document.createElement("div");row.className="docItem";
     row.innerHTML=`<input class="wizDoc" type="checkbox" value="${escHtml(d.id)}" checked><span class="grow">📄 ${escHtml(d.file_name)} (${formatBytes(d.file_size)})</span>`;
     const rm=document.createElement("button");rm.className="mini";rm.type="button";rm.textContent="Remove";
-    rm.onclick=async()=>{if(!confirm("Remove this PDF from DShario?"))return;const {error}=await sb.from("documents").delete().eq("id",d.id).eq("user_id",user.id);if(error){msg(error.message,"err");return}await loadOwnerDocuments();renderWizDocs()};
+    rm.onclick=async()=>{if(!confirm("Remove this PDF from DShario?"))return;const {error}=await deleteOwnerDocument(d);if(error){msg(error.message,"err");return}await loadOwnerDocuments();renderWizDocs()};
     row.appendChild(rm);b.appendChild(row);
   });
 }
