@@ -1870,7 +1870,7 @@ input,select,textarea{border-color:#cbdcf0!important;background:#fbfdff!importan
 }
 </style>
 
-<!-- RC32_32D: private Supabase Storage migration for Temporary Share documents; core auth/navigation unchanged. -->
+<!-- RC32_32E: keep revoked/expired saved-connection trace visible; add Remove all for owner documents; clear document selection after successful share. Core auth/navigation unchanged. -->
 </head>
 <body>
 <div class="app">
@@ -2815,6 +2815,7 @@ async function createExpiringShareLink(){
   setLocalQr("qrImg",currentShareUrl);
   $("qrText").textContent=currentShareUrl;
   const labels={"24h":["✓ 24-hour temporary link created.","✓ ২৪ ঘণ্টার অস্থায়ী লিংক তৈরি হয়েছে।"],"7d":["✓ 7-day temporary link created.","✓ ৭ দিনের অস্থায়ী লিংক তৈরি হয়েছে।"],"30d":["✓ 30-day temporary link created.","✓ ৩০ দিনের অস্থায়ী লিংক তৈরি হয়েছে।"]};
+  clearDocumentShareSelections();
   msg(labels[choice][window.currentLang==="bn"?1:0],"ok");
   return currentShareUrl;
 }
@@ -3600,6 +3601,20 @@ async function deleteOwnerDocument(d){
   const del=await sb.from("documents").delete().eq("id",d.id).eq("user_id",user.id);
   return del;
 }
+
+async function deleteAllOwnerDocuments(){
+  if(!user) return {error:new Error("Sign in first.")};
+  if(!ownerDocuments.length) return {error:null};
+  const paths=ownerDocuments.map(d=>d.storage_path).filter(Boolean);
+  if(paths.length){
+    const rm=await sb.storage.from("dshario-documents").remove(paths);
+    if(rm.error) return {error:rm.error};
+  }
+  return await sb.from("documents").delete().eq("user_id",user.id);
+}
+function clearDocumentShareSelections(){
+  document.querySelectorAll(".shareDocCheck,.wizDoc,.accountTempDocCheck").forEach(x=>x.checked=false);
+}
 function renderOwnerDocuments(){
   const list=$("ownerDocumentList"),cardList=$("cardOwnerDocumentList"),checks=$("shareDocumentChecks");
   if(!list||!checks)return;
@@ -3614,7 +3629,7 @@ function renderOwnerDocuments(){
     list.appendChild(makeRow()); if(cardList)cardList.appendChild(makeRow());
     const c=document.createElement("div");c.className="docItem docCheck";
     const pick=document.createElement("label");pick.style.cssText="display:flex;align-items:center;gap:8px;flex:1;min-width:0;cursor:pointer";
-    pick.innerHTML=`<input class="shareDocCheck" type="checkbox" value="${d.id}" checked><span style="min-width:0;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${documentIconForMime(d.mime_type,d.file_name)} ${d.file_name} <small>(${formatBytes(d.file_size)})</small></span>`;
+    pick.innerHTML=`<input class="shareDocCheck" type="checkbox" value="${d.id}"><span style="min-width:0;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${documentIconForMime(d.mime_type,d.file_name)} ${d.file_name} <small>(${formatBytes(d.file_size)})</small></span>`;
     const remove=document.createElement("button");remove.type="button";remove.className="mini";
     remove.style.cssText="flex:0 0 auto;padding:7px 10px";
     remove.textContent=window.currentLang==="bn"?"সরান":"Remove";
@@ -3627,6 +3642,16 @@ function renderOwnerDocuments(){
     };
     c.appendChild(pick);c.appendChild(remove);checks.appendChild(c);
   });
+  const removeAll=document.createElement("button");
+  removeAll.type="button";removeAll.className="mini";removeAll.style.cssText="margin-top:8px";removeAll.textContent="Remove all documents";
+  removeAll.onclick=async()=>{
+    if(!confirm(`Remove all ${ownerDocuments.length} uploaded documents from DShario? This cannot be undone.`))return;
+    const {error}=await deleteAllOwnerDocuments();
+    if(error){msg(error.message,"err");return}
+    await loadOwnerDocuments();
+    msg("All uploaded documents removed.","ok");
+  };
+  checks.appendChild(removeAll);
 }
 function documentTypeForFile(f){
   const name=String(f?.name||"").toLowerCase();
@@ -3697,7 +3722,7 @@ async function uploadDocument(inputId="documentUpload"){
   }
   input.value="";
   await loadOwnerDocuments();
-  msg(completed===1?"Document added and selected for your next Temporary Share.":`${completed} documents added in one action and selected for your next Temporary Share.`,"ok");
+  msg(completed===1?"Document added. Select it when you want to include it in a Temporary Share.":`${completed} documents added in one action. Select the documents you want to include in a Temporary Share.`,"ok");
 }
 async function loadPublicDocuments(token){
   const box=$("publicDocuments"),list=$("publicDocumentList"); if(!box||!list)return;box.style.display="none";list.innerHTML="";
@@ -4361,14 +4386,17 @@ function setWizPurpose(p){
 if($("shareTypeInfoBtn"))$("shareTypeInfoBtn").onclick=()=>$("shareTypeInfo")?.classList.toggle("show");
 function renderWizDocs(){
   const b=$("wizDocs");if(!b)return;b.innerHTML="";
-  if(!ownerDocuments?.length){b.innerHTML='<div class="hint">No PDFs uploaded.</div>';return}
+  if(!ownerDocuments?.length){b.innerHTML='<div class="hint">No documents uploaded.</div>';return}
   ownerDocuments.forEach(d=>{
     const row=document.createElement("div");row.className="docItem";
-    row.innerHTML=`<input class="wizDoc" type="checkbox" value="${escHtml(d.id)}" checked><span class="grow">📄 ${escHtml(d.file_name)} (${formatBytes(d.file_size)})</span>`;
+    row.innerHTML=`<input class="wizDoc" type="checkbox" value="${escHtml(d.id)}"><span class="grow">${documentIconForMime(d.mime_type,d.file_name)} ${escHtml(d.file_name)} (${formatBytes(d.file_size)})</span>`;
     const rm=document.createElement("button");rm.className="mini";rm.type="button";rm.textContent="Remove";
-    rm.onclick=async()=>{if(!confirm("Remove this PDF from DShario?"))return;const {error}=await deleteOwnerDocument(d);if(error){msg(error.message,"err");return}await loadOwnerDocuments();renderWizDocs()};
+    rm.onclick=async()=>{if(!confirm("Remove this document from DShario?"))return;const {error}=await deleteOwnerDocument(d);if(error){msg(error.message,"err");return}await loadOwnerDocuments();renderWizDocs()};
     row.appendChild(rm);b.appendChild(row);
   });
+  const removeAll=document.createElement("button");removeAll.className="mini";removeAll.type="button";removeAll.style.cssText="margin-top:8px";removeAll.textContent="Remove all";
+  removeAll.onclick=async()=>{if(!confirm(`Remove all ${ownerDocuments.length} uploaded documents from DShario? This cannot be undone.`))return;const {error}=await deleteAllOwnerDocuments();if(error){msg(error.message,"err");return}await loadOwnerDocuments();renderWizDocs();msg("All uploaded documents removed.","ok")};
+  b.appendChild(removeAll);
 }
 $("openShareWizardBtn").onclick=async()=>{await loadOwnerDocuments();renderWizDocs();wizRecipients=[];renderWizRecipients();wizPurpose="";wizAudience="";wizType="";["purposeBusiness","purposeCareer","purposeNetworking","purposeSocial","purposeFull"].forEach(id=>$(id)?.classList.remove("active"));if($("wizAudienceBlock"))$("wizAudienceBlock").classList.add("disabled");if($("purposeHint"))$("purposeHint").textContent="Select a share type to see exactly what information the card will carry.";if($("shareTypeInfo"))$("shareTypeInfo").classList.remove("show");$("shareWizard").classList.add("show");wizStep("wiz1");updateWizPrivacyHelp();loadShareHistory()};
 $("wizClose").onclick=()=>$("shareWizard").classList.remove("show");
@@ -4426,8 +4454,8 @@ async function wizPermanentUrl(){
   return u;
 }
 async function wizUrl(){return wizType==="temporary"?(await makeWizTemp()).url:await wizPermanentUrl()}
-$("wizCopy").onclick=async()=>{try{const u=await wizUrl();await navigator.clipboard.writeText(u);msg("✓ Link copied.","ok");loadShareHistory()}catch(e){msg(e.message,"err")}};
-$("wizShare").onclick=async()=>{try{const u=await wizUrl();if(navigator.share)await navigator.share({title:"DShario",url:u});else{await navigator.clipboard.writeText(u);msg("✓ Link copied.","ok")}loadShareHistory()}catch(e){if(e.name!=="AbortError")msg(e.message,"err")}};
+$("wizCopy").onclick=async()=>{try{const u=await wizUrl();await navigator.clipboard.writeText(u);if(wizType==="temporary")clearDocumentShareSelections();msg("✓ Link copied.","ok");loadShareHistory()}catch(e){msg(e.message,"err")}};
+$("wizShare").onclick=async()=>{try{const u=await wizUrl();if(navigator.share)await navigator.share({title:"DShario",url:u});else{await navigator.clipboard.writeText(u);msg("✓ Link copied.","ok")}if(wizType==="temporary")clearDocumentShareSelections();loadShareHistory()}catch(e){if(e.name!=="AbortError")msg(e.message,"err")}};
 
 function renderWizRecipients(){
   const box=$("wizSelectedRecipients"),send=$("sendSelectedBtn");if(!box||!send)return;box.innerHTML="";
@@ -4459,6 +4487,7 @@ $("sendSelectedBtn").onclick=async()=>{
       }
       sent++;
     }
+    if(wizType==="temporary")clearDocumentShareSelections();
     msg(`✓ Card sent to ${sent} selected DShario user${sent===1?"":"s"}.`,"ok");
     wizRecipients=[];renderWizRecipients();$("shareWizard").classList.remove("show");loadShareHistory();
   }catch(e){msg(e.message||String(e),"err")}finally{btn.disabled=false}
@@ -4900,7 +4929,11 @@ function connectionItem(c,isNew){
   const nick=c.nickname?`<div class="connectionNickname">${t("My label")}: ${escHtml(c.nickname)}</div>`:"";
   const badge=isNew?`<div class="connectionBadge">${t("New")}</div>`:"";
   const updated=(!isNew&&c.dshario_updated)?`<div class="connectionStatus updated">↻ ${t("Card updated")}</div>`:"";
-  const expiredText=expired?`<div class="connectionStatus expired">${t("Temporary DShario link expired or revoked")}</div>`:"";
+  const traceHistory=readConnectionHistory(c.connected_user_id);
+  const traceLatest=traceHistory.latest||{};
+  const traceReceived=traceLatest.received_at||c.received_at||c.created_at||c.notice_seen_at||null;
+  const traceSaved=traceLatest.saved_at||c.saved_at||null;
+  const expiredText=expired?`<div class="connectionStatus expired">${t("Temporary DShario link expired or revoked")}</div><div class="hint" style="margin-top:6px">Saved connection trace kept. Document access is no longer available.${traceReceived?` Received ${escHtml(format12HourDate(traceReceived))}.`:""}${traceSaved?` Saved ${escHtml(format12HourDate(traceSaved))}.`:""}</div>`:"";
 
   if(isNew){
     item.innerHTML=`${badge}<div class="connectionTop"><div class="connectionInfo"><div class="connectionName">${escHtml(name)}</div>${nick}</div></div>${updated}${expiredText}<div class="connectionActions"></div>`;
@@ -4957,7 +4990,7 @@ function filterSavedConnections(){
     const expired=item.dataset.expired==="1";
     const favouriteOk=!favouriteConnectionsOnly||item.dataset.favorite==="1";
     const textOk=!q||hay.includes(q);
-    item.style.display=(!expired&&favouriteOk&&textOk)?"":"none";
+    item.style.display=(favouriteOk&&textOk)?"":"none";
   });
   if($("savedFavouriteFilter")){ $("savedFavouriteFilter").classList.toggle("active",favouriteConnectionsOnly); $("savedFavouriteFilter").textContent=favouriteConnectionsOnly?"★":"☆"; }
 }
