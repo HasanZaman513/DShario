@@ -1924,7 +1924,7 @@ input,select,textarea{border-color:#cbdcf0!important;background:#fbfdff!importan
 @media(max-width:560px){body{background:linear-gradient(180deg,#edf6ff 0,#fff 520px)}.header{border-radius:0 0 18px 18px}.tabs{margin-top:10px}.purposeChoice{min-height:68px}.cardWrap{border-radius:18px}}
 /* RC32.20 FINDINGS-ONLY FIXES: preserve layout/functionality; fix card footer clearance, tab readability, purpose-based download labels. */
 .tabs .tab{font-size:16px!important;}
-@media(max-width:720px){.tabs .tab{font-size:14px!important;}}
+@media(max-width:720px){.tabs .tab{font-size:16px!important;}}
 #card.ownerCardHasQr{padding-bottom:112px!important;}
 .connectionOnlyMode #card.ownerCardHasQr{padding-bottom:112px!important;}
 @media(max-width:520px){#card.ownerCardHasQr{padding-bottom:112px!important;}#card.ownerCardHasQr .cl{left:18px;bottom:18px;}#card.ownerCardHasQr #ownerInlineQr{bottom:18px;}}
@@ -1970,6 +1970,13 @@ input,select,textarea{border-color:#cbdcf0!important;background:#fbfdff!importan
 </style>
 
 <!-- RC32_32E: keep revoked/expired saved-connection trace visible; add Remove all for owner documents; clear document selection after successful share. Core auth/navigation unchanged. -->
+
+<style id="rc57-cosmetic-final">
+/* RC57 cosmetic only: larger primary tab labels */
+.tabs .tab{font-size:17px!important;}
+@media(max-width:720px){.tabs .tab{font-size:14px!important;}}
+</style>
+
 </head>
 <body>
 <div class="app">
@@ -5845,7 +5852,7 @@ body.personalProfileMode .cardWrap{margin-top:0!important;}
     const wrap=document.createElement('section');
     wrap.id='dsTrialOppSection';
     wrap.innerHTML=`
-      <div class="dsTrialTitle">💼 Opportunity & AI Follow-Up <span style="font-size:11px;font-weight:800;color:#64748b">(Trial)</span> <button id="dsTrialInfoBtn" class="dsTrialInfoBtn" type="button" aria-label="How Opportunity and AI Follow-Up works">ⓘ</button></div>
+      <div class="dsTrialTitle">💼 Opportunity & AI Follow-Up <button id="dsTrialInfoBtn" class="dsTrialInfoBtn" type="button" aria-label="How Opportunity and AI Follow-Up works">ⓘ</button></div>
       <div id="dsTrialExplain" class="dsTrialExplain">Add and save an opportunity first. Connection Summary appears after it is saved and remains with this DShario connection. Set a follow-up date and DShario will place it under ⏰ AI Follow-Ups. Prepare the AI message when you are ready to contact the person.</div>
       <div class="dsTrialActions">
         <button class="primary" id="dsTrialOpen">+ Add Opportunity</button>
@@ -6448,6 +6455,17 @@ body.personalProfileMode .cardWrap{margin-top:0!important;}
   if(qr) qr.onclick=async()=>{try{await rc46QrShare();}finally{closeQs();}};
 })();
 </script>
+
+
+<style id="rc59-final-nav-font-override">
+/* Final cosmetic override: keep the 3 top navigation labels clearly readable on mobile. */
+.tabs .tab,
+.tab#myTab,
+.tab#editTab,
+.tab#accountTab {
+  font-size:15px !important;
+}
+</style>
 
 </body>
 </html>
