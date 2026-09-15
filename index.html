@@ -1,5 +1,5 @@
 <!doctype html>
-<!-- DShario RC32.31 WORKING — RC32.30 stable + cosmetic nav font and compact Public QR download control only. -->
+<!-- DShario RC34 AI FOLLOW-UP TRIAL — based on current RC32.31/32E production baseline; isolated local-only prototype. -->
 <html lang="en">
 <head>
 <meta charset="utf-8">
@@ -379,6 +379,95 @@ body.personalProfileMode .floatingCardBtn,body.personalProfileMode .floatingCard
 .usernameStatus{display:block;margin-top:5px;font-size:12px;font-weight:750}
 .usernameStatus.ok{color:#15803d}.usernameStatus.err{color:#b91c1c}.usernameStatus.info{color:#475569}
 .usernameConfirm{display:flex;gap:8px;align-items:flex-start;margin-top:9px;font-size:12px;color:#334155}
+
+/* === DShario RC56 Visible Shared Card Channels === */
+#dsTrialFab,#dsTrialModal{display:none!important}
+#dsTrialOppSection{margin:18px 0 10px;padding:16px;border:1px solid #dbe5f2;border-radius:16px;background:#f8fbff}
+#dsTrialOppSection .dsTrialTitle{font-weight:900;color:#163f7f;font-size:18px;margin-bottom:10px}
+#dsTrialOppSection .dsTrialActions{display:flex;flex-wrap:wrap;gap:9px}
+#dsTrialOppSection button{border:1px solid #cbd8ea;background:#fff;color:#174ea6;border-radius:12px;padding:11px 13px;font-weight:850}
+#dsTrialOppSection button.primary{background:linear-gradient(135deg,#14387a,#0f57ca);color:#fff;border-color:transparent}
+#dsTrialOppPanel{display:none;margin-top:12px}
+#dsTrialOppPanel.show{display:block}
+#dsTrialOppPanel input,#dsTrialOppPanel textarea,#dsTrialOppPanel select{width:100%;margin-top:6px;margin-bottom:10px;padding:11px 12px;border:1px solid #cfd9e8;border-radius:10px;background:#fff}
+#dsTrialOppPanel textarea{min-height:92px;resize:vertical}
+#dsTrialOppPanel label{display:block;font-size:13px;font-weight:800;color:#475569}
+#dsTrialOppPanel .row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+#dsTrialOppPanel .output{white-space:pre-wrap;background:#fff;border:1px solid #dbe5f2;border-radius:12px;padding:12px;margin-top:10px;color:#1e293b}
+#dsTrialSendRow{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
+#dsTrialSendRow button{padding:9px 11px}
+@media(max-width:560px){#dsTrialOppPanel .row{grid-template-columns:1fr}}
+
+
+/* === RC39 Follow-Up Centre === */
+#dsFollowupCentre{display:none;position:fixed;inset:0;z-index:10050;background:rgba(15,23,42,.62);padding:14px;overflow:auto}
+#dsFollowupCentre.show{display:block}
+.dsFuBox{max-width:760px;margin:16px auto;background:#fff;border-radius:20px;padding:18px;box-shadow:0 24px 70px rgba(15,23,42,.28)}
+.dsFuTop{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:12px}
+.dsFuTop h2{margin:0;color:#163f7f;font-size:23px}
+.dsFuClose{border:1px solid #dbe5f2;background:#fff;border-radius:10px;padding:9px 12px;font-weight:800}
+.dsFuTabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px}
+.dsFuTabs button{border:1px solid #dbe5f2;background:#fff;border-radius:999px;padding:8px 11px;font-weight:800;color:#174ea6}
+.dsFuTabs button.on{background:#16377c;color:#fff}
+.dsFuItem{border:1px solid #dbe5f2;border-radius:14px;padding:13px;margin:10px 0;background:#fbfdff}
+.dsFuName{font-weight:900;color:#0f2f68;font-size:17px}
+.dsFuMeta{font-size:13px;color:#64748b;margin-top:3px}
+.dsFuActions{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
+.dsFuActions button{border:1px solid #cbd8ea;background:#fff;color:#174ea6;border-radius:10px;padding:9px 10px;font-weight:800}
+.dsFuActions .primary{background:#16377c;color:#fff;border-color:#16377c}
+.dsFuEmpty{padding:18px;border:1px dashed #cbd5e1;border-radius:12px;color:#64748b;text-align:center}
+#dsFuBadge{display:none;min-width:20px;height:20px;padding:0 5px;border-radius:999px;background:#dc2626;color:#fff;font-size:11px;font-weight:900;align-items:center;justify-content:center;position:absolute;right:-4px;top:-4px}
+.dsFuBellWrap{position:relative;display:inline-flex}
+@media(max-width:560px){.dsFuBox{padding:14px}.dsFuActions{display:grid;grid-template-columns:1fr 1fr}}
+
+
+/* RC40: legacy Connection Notes quick panel retired from the trial flow */
+#notesBtn,#notesPanel{display:none!important}
+
+
+/* RC41 cleanup */
+#dsTrialFab,#dsTrialModal{display:none!important}
+
+
+#dsTrialOppSection button:disabled{opacity:.45;cursor:not-allowed;background:#eef2f7!important;color:#64748b!important}
+
+
+/* RC46 Quick Share: public card or QR only */
+#dsQuickShareModal{display:none;position:fixed;inset:0;z-index:10080;background:rgba(15,23,42,.62);padding:16px}
+#dsQuickShareModal.show{display:grid;place-items:center}
+.dsQsBox{width:min(420px,100%);background:#fff;border-radius:20px;padding:18px;box-shadow:0 24px 70px rgba(15,23,42,.28)}
+.dsQsHead{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:10px}
+.dsQsHead h2{margin:0;color:#163f7f;font-size:22px}
+.dsQsClose{border:1px solid #dbe5f2;background:#fff;border-radius:10px;padding:8px 11px;font-weight:800}
+.dsQsHint{color:#64748b;font-size:13px;line-height:1.45;margin-bottom:14px}
+.dsQsActions{display:grid;grid-template-columns:1fr;gap:10px}
+.dsQsActions button{min-height:54px;border-radius:13px;border:1px solid #cbd8ea;background:#fff;color:#174ea6;font-weight:900;font-size:16px}
+.dsQsActions button.primary{background:linear-gradient(135deg,#14387a,#0f57ca);color:#fff;border-color:transparent}
+
+
+.followupHeaderBtn{position:relative}
+.followupBadge{display:none;position:absolute;right:2px;top:0;min-width:18px;height:18px;padding:0 4px;border-radius:999px;background:#dc2626;color:#fff;font-size:11px;line-height:18px;font-weight:900;text-align:center}
+.followupBadge.show{display:block}
+.dsTrialInfoBtn{border:0!important;background:transparent!important;color:#1d4ed8!important;padding:2px 5px!important;font-size:17px!important;vertical-align:middle;box-shadow:none!important}
+.dsTrialExplain{display:none;margin:8px 0 12px;padding:10px 12px;border-radius:11px;background:#eff6ff;color:#53627a;font-size:13px;line-height:1.45}
+.dsTrialExplain.show{display:block}
+
+
+/* RC50 final AI follow-up trial flow */
+.dsTrialScheduleGrid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.dsTrialPrepared{display:none;margin-top:12px;padding:12px;border:1px solid #dbe5f2;border-radius:12px;background:#f8fbff}
+.dsTrialPrepared.show{display:block}
+.dsTrialPrepared textarea{width:100%;min-height:120px;box-sizing:border-box;margin-top:7px}
+@media(max-width:520px){.dsTrialScheduleGrid{grid-template-columns:1fr}}
+
+
+.dsSummaryOnlyModal{position:fixed;inset:0;z-index:10040;background:rgba(15,23,42,.48);display:none;align-items:center;justify-content:center;padding:20px}
+.dsSummaryOnlyModal.show{display:flex}
+.dsSummaryOnlyBox{width:min(520px,100%);background:#fff;border-radius:22px;padding:20px;box-shadow:0 22px 70px rgba(15,23,42,.24)}
+.dsSummaryOnlyHead{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:14px}
+.dsSummaryOnlyHead strong{font-size:21px;color:#173d7d}
+.dsSummaryOnlyText{font-size:16px;line-height:1.55;color:#334155;white-space:pre-wrap}
+
 </style>
 <script>
 /* Built-in QR generator: no external CDN request. */
@@ -1886,7 +1975,7 @@ input,select,textarea{border-color:#cbdcf0!important;background:#fbfdff!importan
 <div class="app">
 <header class="header">
   <div class="brand"><span class="brandIcon">DS</span><span>DShario</span></div>
-  <div style="display:flex;align-items:center;gap:8px"><button id="helpBtn" class="accountPill helpPill" type="button" aria-label="User Guide" title="User Guide">?</button><button id="notesBtn" class="accountPill headerQuickBtn" type="button" aria-label="Connection notes" title="Connection notes">📝</button><button id="remindersBtn" class="accountPill headerQuickBtn" type="button" aria-label="Follow-up reminders" title="Follow-up reminders">⏰</button><button id="accountPill" class="accountPill">Sign in</button></div>
+  <div style="display:flex;align-items:center;gap:8px"><button id="helpBtn" class="accountPill helpPill" type="button" aria-label="User Guide" title="User Guide">?</button><button id="quickShareBtn" class="accountPill headerQuickBtn show" type="button" aria-label="Quick share my DShario" title="Quick share my DShario">↗</button><button id="remindersBtn" class="accountPill headerQuickBtn followupHeaderBtn" type="button" aria-label="AI Follow-Ups" title="AI Follow-Ups">⏰<span class="followupBadge"></span></button><button id="accountPill" class="accountPill">Sign in</button></div>
 </header>
 
 <div id="tabs" class="tabs">
@@ -1897,12 +1986,12 @@ input,select,textarea{border-color:#cbdcf0!important;background:#fbfdff!importan
 
 <div id="notice" class="notice"></div>
 <div id="notificationPanel" aria-live="polite">
-  <div class="notificationHead"><strong>Notifications</strong><button id="closeNotificationsBtn" class="mini" type="button">Close</button></div>
+  <div class="notificationHead"><strong>🔔 Notifications</strong><button id="closeNotificationsBtn" class="mini" type="button">Close</button></div>
   <div id="notificationList"></div>
 </div>
-<div id="notesPanel" aria-live="polite"><div class="quickPanelHead"><strong>📝 Connection Notes</strong><button id="closeNotesBtn" class="mini" type="button">Close</button></div><div class="hint">Private notes you saved for your connections.</div><div id="notesList"></div></div>
-<div id="remindersPanel" aria-live="polite"><div class="quickPanelHead"><strong>⏰ Follow-up Reminders</strong><button id="closeRemindersBtn" class="mini" type="button">Close</button></div><div class="hint">Upcoming and overdue follow-ups for your connections.</div><div id="remindersList"></div></div>
-<div id="followupPopup" role="dialog" aria-live="assertive" aria-label="Follow-up reminder"><div class="followupPopupTitle">⏰ Follow-up Reminder</div><div id="followupPopupBody"></div><div id="followupPopupActions" class="followupPopupActions"></div></div>
+<div id="notesPanel" style="display:none!important" aria-live="polite"><div class="quickPanelHead"><strong>📝 Connection Notes</strong><button id="closeNotesBtn" class="mini" type="button">Close</button></div><div class="hint">Private notes you saved for your connections.</div><div id="notesList"></div></div>
+<div id="remindersPanel" style="display:none!important" aria-live="polite"><div class="quickPanelHead"><strong>⏰ Follow-up Reminders</strong><button id="closeRemindersBtn" class="mini" type="button">Close</button></div><div class="hint">Upcoming and overdue follow-ups for your connections.</div><div id="remindersList"></div></div>
+<div id="followupPopup" style="display:none!important" role="dialog" aria-live="assertive" aria-label="Follow-up reminder"><div class="followupPopupTitle">⏰ Follow-up Reminder</div><div id="followupPopupBody"></div><div id="followupPopupActions" class="followupPopupActions"></div></div>
 <div id="messagePopup" class="messagePopup" role="dialog" aria-live="polite">
   <h3 id="messagePopupTitle">Message from sender</h3>
   <p id="messagePopupText"></p>
@@ -2413,7 +2502,7 @@ input,select,textarea{border-color:#cbdcf0!important;background:#fbfdff!importan
 
       <div class="connectionSection">
         <div class="connectionSectionTitle">Saved Connections <button class="infoToggle" type="button" data-info-target="savedConnectionsInfo" aria-label="Saved Connections information">ⓘ</button></div>
-        <div id="savedSearchRow"><input id="savedConnectionsSearch" placeholder="Search name, @DShario, category, note or how you met"><button id="savedFavouriteFilter" class="mini favoriteSearchBtn" type="button" title="Show favourites only" aria-label="Show favourites only">☆</button><button id="savedSearchIcon" class="mini searchIcon" type="button">🔍</button></div><div id="savedConnectionsInfo" class="hint optionalExplain">Favourite, category, private note, connection context and follow-up reminder are visible only to you. During beta they are stored on this browser/device.</div>
+        <div id="savedSearchRow"><input id="savedConnectionsSearch" placeholder="Search name, @DShario, category, note or how you met"><button id="savedFavouriteFilter" class="mini favoriteSearchBtn" type="button" title="Show favourites only" aria-label="Show favourites only">☆</button><button id="savedSearchIcon" class="mini searchIcon" type="button">🔍</button></div><div id="savedConnectionsInfo" class="hint optionalExplain">Use ☆ Favourite directly on each connection. Open More only for connection history or removal. During beta these preferences are stored on this browser/device.</div>
         <div id="savedConnectionsList" class="connectionsList"></div>
       </div>
     </div>
@@ -2452,7 +2541,7 @@ input,select,textarea{border-color:#cbdcf0!important;background:#fbfdff!importan
       <div class="helpStep"><strong id="hs7">7. Exchange with my DShario</strong><span id="hb7">A DShario member signs in and is taken to My Card → Share Card, where the same five Share Types are used. People who do not use DShario can use the separate contact-return option when it is available.</span></div>
       <div class="helpStep"><strong id="hs8">8. My Connections and history</strong><span id="hb8">One sender appears as one active connection. Saving a newer view from the same sender makes it the current saved card. Earlier cards remain only as a lightweight history trace, without keeping the old card details. Received and Saved date/time help you track when the connection happened.</span></div>
       <div class="helpStep"><strong id="hs9">9. Temporary Share expiry and revocation</strong><span id="hb9">When a Temporary Share expires or is revoked, its live card actions and temporary details are no longer available. A searchable history trace may remain. If the same sender is later saved through a permanent link, that permanent card becomes the active connection.</span></div>
-      <div class="helpStep"><strong id="hs10">10. Organise professional connections</strong><span id="hb10">In My Connections you can search for people, mark favourites, add a category, record how you connected, keep a private note and set a follow-up. Use Manage for detailed controls and history. Notes can be edited or deleted without deleting the connection.</span></div>
+      <div class="helpStep"><strong id="hs10">10. Organise professional connections</strong><span id="hb10">In My Connections, use ☆ Favourite directly. Open a saved card to add an Opportunity and follow-up date. Due follow-ups appear under the top ⏰ AI Follow-Ups. Use More only for connection history or removing the connection.</span></div>
     </div>
   </div>
 </div>
@@ -4969,24 +5058,33 @@ function connectionItem(c,isNew){
   const savedPurpose=readConnectionPurpose(c.connected_user_id);
   const purposeLine=savedPurpose?`<div class="connectionContext compact primaryShareType">${escHtml(purposeLabel(savedPurpose))}</div>`:"";
 
-  item.innerHTML=`${badge}<div class="connectionTop"><div class="connectionInfo"><div class="connectionNameRow"><div class="connectionName">${escHtml(name)}</div>${favouriteMark}</div>${summaryBits?`<div class="connectionSummaryLine">${summaryBits}</div>`:""}${purposeLine}</div></div>${updated}${expiredText}<div class="connectionActions"></div><div class="connectionManagePanel"><div class="connectionManageHead"><strong>Manage Connection</strong><button class="mini closeManageBtn" type="button">Close</button></div><div class="connectionManageMeta">${savedPurpose?`Share type: ${escHtml(purposeLabel(savedPurpose))}`:""}</div><div class="connectionOrganiseEditor"><div class="organiseGrid"><div class="field"><label>Private label</label><input class="organiseLabel" maxlength="80" placeholder="e.g. Hasan – Adelaide meeting"></div><div class="field"><label>Category</label><select class="organiseCategory">${connectionCategories.map(x=>`<option value="${escHtml(x)}">${escHtml(x||"No category")}</option>`).join("")}</select></div><div class="field"><label>How we connected</label><select class="organiseHowMet">${howMetOptions.map(x=>`<option value="${escHtml(x)}">${escHtml(x||"Not specified")}</option>`).join("")}</select></div><div class="field"><label>Follow-up reminder</label><input class="organiseReminder" type="datetime-local"><div class="hint">Optional.</div></div><div class="field organiseFull"><label>Private note</label><textarea class="organiseNote" maxlength="300" placeholder="e.g. Discussed quotation — send details next week"></textarea><div class="hint">Only you can see this note.</div></div></div><div class="connectionOrganiseActions"><button class="mini saveOrganiseBtn" type="button">Save Changes</button><button class="mini deleteNoteManageBtn" type="button">🗑 Delete Note</button><button class="mini reminderDoneManageBtn" type="button">✓ Reminder Done</button><button class="mini clearReminderManageBtn" type="button">Clear Reminder</button></div></div><div class="connectionManageMeta connectionTraceWrap">${connectionTraceHtml(c)}</div><div class="connectionManageActions"><button class="mini manageFavouriteBtn" type="button">${metaInfo.favorite?"★ Remove Favourite":"☆ Add Favourite"}</button><button class="mini removeConnectionBtn" type="button">🗑 Remove Connection</button></div></div>`;
+  item.innerHTML=`${badge}<div class="connectionTop"><div class="connectionInfo"><div class="connectionNameRow"><div class="connectionName">${escHtml(name)}</div>${favouriteMark}</div>${summaryBits?`<div class="connectionSummaryLine">${summaryBits}</div>`:""}${purposeLine}</div></div>${updated}${expiredText}<div class="connectionActions"></div><div class="connectionManagePanel"><div class="connectionManageHead"><strong>More</strong><button class="mini closeManageBtn" type="button">Close</button></div><div class="connectionManageMeta connectionTraceWrap"><strong>📜 Connection History</strong>${connectionTraceHtml(c)}</div><div class="connectionManageActions"><button class="mini removeConnectionBtn" type="button">🗑 Remove Connection</button></div></div>`;
 
   const acts=item.querySelector(".connectionActions");
   if(!expired&&c.card_slug){
     const view=document.createElement("button");view.className="mini";view.textContent=t("View Card");view.onclick=async()=>{if(c.connection_update_at)await sb.rpc("mark_connection_update_seen",{target_user_id:c.connected_user_id,update_at:c.connection_update_at});const savedP=readConnectionPurpose(c.connected_user_id);const purposeQ=savedP?"&sharetype="+encodeURIComponent(savedP):"";const u=c.source_type==="temporary"&&c.source_share_token?location.origin+location.pathname+"?share="+encodeURIComponent(c.source_share_token)+"&connection=1"+purposeQ:location.origin+location.pathname+"?card="+encodeURIComponent(c.card_slug)+"&view="+encodeURIComponent(c.saved_privacy_view||"professional")+"&connection=1"+purposeQ;location.href=u;};acts.appendChild(view);
   }
   if(!expired){
-    const manage=document.createElement("button");manage.className="mini manageConnectionBtn";manage.textContent="Manage ›";acts.appendChild(manage);
-    const panel=item.querySelector(".connectionManagePanel"),ed=item.querySelector(".connectionOrganiseEditor");
-    const fillManage=()=>{const m=getConnectionMeta(c.connected_user_id);ed.querySelector(".organiseLabel").value=c.nickname||"";ed.querySelector(".organiseCategory").value=connectionCategories.includes(m.category)?m.category:"Other";ed.querySelector(".organiseNote").value=m.note||"";ed.querySelector(".organiseHowMet").value=howMetOptions.includes(m.howMet)?m.howMet:"Other";ed.querySelector(".organiseReminder").value=m.reminderAt?toLocalDateTimeInput(m.reminderAt):"";item.querySelector(".reminderDoneManageBtn").style.display=m.reminderAt?"inline-block":"none";item.querySelector(".clearReminderManageBtn").style.display=m.reminderAt?"inline-block":"none";item.querySelector(".deleteNoteManageBtn").style.display=m.note?"inline-block":"none";};
-    manage.onclick=()=>{fillManage();panel.classList.toggle("show");if(panel.classList.contains("show"))panel.scrollIntoView({behavior:"smooth",block:"nearest"});};
+    // RC45 simplified everyday flow: favourite is direct; follow-ups are handled by the top AI Follow-Ups centre.
+    const fav=document.createElement("button");
+    fav.className="mini favoriteQuickBtn";
+    fav.textContent=metaInfo.favorite?"★ Favourite":"☆ Favourite";
+    fav.onclick=()=>{const m=getConnectionMeta(c.connected_user_id);setConnectionMeta(c.connected_user_id,{favorite:!m.favorite});loadMyConnections();};
+
+    const more=document.createElement("button");
+    more.className="mini manageConnectionBtn";
+    more.textContent="More ›";
+    acts.append(fav,more);
+
+    const panel=item.querySelector(".connectionManagePanel");
+    more.onclick=()=>{panel.classList.toggle("show");if(panel.classList.contains("show"))panel.scrollIntoView({behavior:"smooth",block:"nearest"});};
     item.querySelector(".closeManageBtn").onclick=()=>panel.classList.remove("show");
-    item.querySelector(".saveOrganiseBtn").onclick=async()=>{const label=ed.querySelector(".organiseLabel").value.trim()||null;const category=ed.querySelector(".organiseCategory").value||"";const noteVal=ed.querySelector(".organiseNote").value.trim().slice(0,300);const howMetVal=ed.querySelector(".organiseHowMet").value||"";const reminderRaw=ed.querySelector(".organiseReminder").value;const reminderAt=reminderRaw?new Date(reminderRaw).toISOString():"";const previous=getConnectionMeta(c.connected_user_id);const {error}=await sb.rpc("set_connection_nickname",{target_user_id:c.connected_user_id,new_nickname:label});if(error){msg(error.message,"err");return}setConnectionMeta(c.connected_user_id,{category,note:noteVal,howMet:howMetVal,reminderAt,reminderDone:reminderAt===previous.reminderAt?previous.reminderDone:false});msg("Connection details saved.","ok");await loadMyConnections();renderConnectionNotes();renderReminders();};
-    item.querySelector(".deleteNoteManageBtn").onclick=()=>{if(!confirm("Delete this private note? The connection will be kept."))return;setConnectionMeta(c.connected_user_id,{note:""});msg("Private note deleted. Connection kept.","ok");loadMyConnections();renderConnectionNotes();};
-    item.querySelector(".reminderDoneManageBtn").onclick=()=>{const m=getConnectionMeta(c.connected_user_id);setConnectionMeta(c.connected_user_id,{reminderDone:!m.reminderDone});loadMyConnections();renderReminders();};
-    item.querySelector(".clearReminderManageBtn").onclick=()=>{if(!confirm("Clear this follow-up reminder?"))return;setConnectionMeta(c.connected_user_id,{reminderAt:"",reminderDone:false});loadMyConnections();renderReminders();};
-    item.querySelector(".manageFavouriteBtn").onclick=()=>{const m=getConnectionMeta(c.connected_user_id);setConnectionMeta(c.connected_user_id,{favorite:!m.favorite});loadMyConnections();};
-    item.querySelector(".removeConnectionBtn").onclick=async()=>{if(!confirm(t("Remove this DShario from My Connections?")))return;const {error}=await sb.rpc("remove_dshario_connection",{target_user_id:c.connected_user_id});if(error)msg(error.message,"err");else{removeConnectionMeta(c.connected_user_id);loadMyConnections();renderConnectionNotes();renderReminders();}};
+    item.querySelector(".removeConnectionBtn").onclick=async()=>{
+      if(!confirm(t("Remove this DShario from My Connections?")))return;
+      const {error}=await sb.rpc("remove_dshario_connection",{target_user_id:c.connected_user_id});
+      if(error)msg(error.message,"err");
+      else{removeConnectionMeta(c.connected_user_id);loadMyConnections();renderConnectionNotes();renderReminders();}
+    };
   }else{
     const remove=document.createElement("button");remove.className="mini";remove.textContent=t("Delete");remove.onclick=async()=>{if(!confirm(t("Remove this DShario from My Connections?")))return;const {error}=await sb.rpc("remove_dshario_connection",{target_user_id:c.connected_user_id});if(error)msg(error.message,"err");else{removeConnectionMeta(c.connected_user_id);loadMyConnections();}};acts.appendChild(remove);
   }
@@ -5127,11 +5225,68 @@ async function checkNearFollowupReminder(){
 setInterval(checkNearFollowupReminder,60000);
 
 if($("notesBtn")) $("notesBtn").onclick=async()=>{closeQuickPanels("notes");$("notesPanel").classList.toggle("show");if($("notesPanel").classList.contains("show"))await renderConnectionNotes();};
-if($("remindersBtn")) $("remindersBtn").onclick=async()=>{closeQuickPanels("reminders");$("remindersPanel").classList.toggle("show");if($("remindersPanel").classList.contains("show"))await renderReminders();};
+if($("quickShareBtn")) $("quickShareBtn").onclick=()=>{const modal=document.getElementById("dsQuickShareModal");if(modal){modal.classList.add("show");modal.setAttribute("aria-hidden","false");}};
+
+async function rc46PublicShare(){
+  if(!user||!currentCard?.slug){msg("Create your DShario card first.","info");return}
+  const url=personalAddressFor(currentCard.slug);
+  const data={title:"DShario",text:"Here is my public DShario card.",url};
+  try{
+    if(navigator.share) await navigator.share(data);
+    else if(navigator.clipboard){await navigator.clipboard.writeText(url);msg("Public DShario link copied.","ok");}
+    else prompt("Copy your public DShario link:",url);
+  }catch(e){}
+}
+
+function rc46DataUrlToFile(dataUrl,name){
+  const parts=dataUrl.split(","), mime=(parts[0].match(/:(.*?);/)||[])[1]||"image/png";
+  const bin=atob(parts[1]), arr=new Uint8Array(bin.length);
+  for(let i=0;i<bin.length;i++)arr[i]=bin.charCodeAt(i);
+  return new File([arr],name,{type:mime});
+}
+
+async function rc49BorderedQrDataUrl(url){
+  const raw=await makeLocalQrDataUrl(url,1200);
+  if(!raw)return "";
+  return await new Promise(resolve=>{
+    const img=new Image();
+    img.onload=()=>{
+      const qrSize=1200, margin=120, border=8;
+      const canvas=document.createElement("canvas");
+      canvas.width=qrSize+(margin*2); canvas.height=qrSize+(margin*2);
+      const ctx=canvas.getContext("2d");
+      ctx.fillStyle="#fff";ctx.fillRect(0,0,canvas.width,canvas.height);
+      ctx.drawImage(img,margin,margin,qrSize,qrSize);
+      ctx.strokeStyle="#000";ctx.lineWidth=border;
+      ctx.strokeRect(border/2,border/2,canvas.width-border,canvas.height-border);
+      resolve(canvas.toDataURL("image/png"));
+    };
+    img.onerror=()=>resolve("");
+    img.src=raw;
+  });
+}
+async function rc46QrShare(){
+  if(!user||!currentCard?.slug){msg("Create your DShario card first.","info");return}
+  const url=personalAddressFor(currentCard.slug);
+  const qrData=await rc49BorderedQrDataUrl(url);
+  if(!qrData){msg("Could not create QR code.","err");return}
+  const file=rc46DataUrlToFile(qrData,"DShario-QR-"+String(currentCard.slug).replace(/[^a-z0-9-]/gi,"-")+".png");
+  try{
+    if(navigator.share && (!navigator.canShare || navigator.canShare({files:[file]}))){
+      await navigator.share({title:"DShario QR Code",text:"Scan this QR code to open my public DShario card.",files:[file]});
+    }else{
+      const a=document.createElement("a");a.href=qrData;a.download=file.name;document.body.appendChild(a);a.click();a.remove();
+      msg("QR code downloaded. You can share the image from your phone.","ok");
+    }
+  }catch(e){}
+}
+
+
+if($("remindersBtn")) $("remindersBtn").onclick=()=>{try{closeQuickPanels()}catch(e){};if(window.dsOpenFollowups)window.dsOpenFollowups();};
 if($("closeNotesBtn")) $("closeNotesBtn").onclick=()=>$("notesPanel").classList.remove("show");
 if($("closeRemindersBtn")) $("closeRemindersBtn").onclick=()=>$("remindersPanel").classList.remove("show");
 
-function updateHeaderConnectionTools(){const show=!!user;$("notesBtn")?.classList.toggle("show",show);$("remindersBtn")?.classList.toggle("show",show);if(!show){$("notesPanel")?.classList.remove("show");$("remindersPanel")?.classList.remove("show");$("followupPopup")?.classList.remove("show");}else setTimeout(checkNearFollowupReminder,900);}
+function updateHeaderConnectionTools(){const show=!!user;$("quickShareBtn")?.classList.toggle("show",show);$("remindersBtn")?.classList.toggle("show",show);if(!show){$("notesPanel")?.classList.remove("show");$("remindersPanel")?.classList.remove("show");$("followupPopup")?.classList.remove("show");}else setTimeout(checkNearFollowupReminder,900);}
 
 function updateAccountSendType(){
   const temp=$("accountSendType")?.value==="temporary";
@@ -5532,6 +5687,765 @@ body.personalProfileMode .cardWrap{margin-top:0!important;}
   document.addEventListener('click',()=>setTimeout(syncFloatingCard,0),true);
   try{sb.auth.onAuthStateChange(()=>setTimeout(syncFloatingCard,0));}catch(e){}
   setTimeout(syncFloatingCard,150);
+})();
+</script>
+
+
+<!-- DShario AI Follow-Up Trial RC34: isolated local-only prototype; no paid AI/API -->
+<style id="dsharioAiTrialStyle">
+#dsTrialFab{position:fixed;right:18px;bottom:18px;z-index:10020;border:0;border-radius:999px;background:#16377c;color:#fff;padding:14px 18px;font-weight:900;box-shadow:0 12px 30px rgba(15,23,42,.25);font-size:15px}
+#dsTrialModal{display:none;position:fixed;inset:0;z-index:10030;background:rgba(15,23,42,.62);padding:14px;overflow:auto}
+#dsTrialModal.show{display:block}.dsTrialBox{max-width:720px;margin:18px auto;background:#fff;border-radius:20px;padding:18px;box-shadow:0 24px 70px rgba(15,23,42,.28)}
+.dsTrialTop{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:12px}.dsTrialTop h2{margin:0;font-size:24px}.dsTrialClose{border:1px solid #dbe5f2;background:#fff;border-radius:10px;padding:8px 11px;font-weight:800}
+.dsTrialSteps{display:grid;grid-template-columns:repeat(4,1fr);gap:7px;margin:8px 0 16px}.dsTrialStep{padding:9px 6px;border-radius:10px;background:#eef4ff;color:#53627a;text-align:center;font-size:11px;font-weight:850}.dsTrialStep.on{background:#16377c;color:#fff}
+.dsTrialPane{display:none}.dsTrialPane.on{display:block}.dsTrialGrid{display:grid;grid-template-columns:1fr 1fr;gap:11px}.dsTrialField{display:flex;flex-direction:column;gap:6px}.dsTrialField.full{grid-column:1/-1}.dsTrialField label{font-size:12px;font-weight:850;color:#334155}.dsTrialField input,.dsTrialField textarea,.dsTrialField select{width:100%;border:1px solid #cbd8ea;border-radius:11px;padding:12px;background:#fbfdff}.dsTrialField textarea{min-height:90px;resize:vertical}
+.dsTrialActions{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}.dsTrialBtn{border:0;border-radius:11px;padding:11px 14px;background:#2563eb;color:#fff;font-weight:850}.dsTrialBtn.secondary{background:#eff6ff;color:#1d4ed8;border:1px solid #dbeafe}.dsTrialBtn.ghost{background:#fff;color:#334155;border:1px solid #dbe3ee}
+.dsTrialAi{background:linear-gradient(135deg,#f4f7ff,#eef8ff);border:1px solid #d8e5fb;border-radius:14px;padding:14px;margin-top:12px}.dsTrialAi h3{margin:0 0 8px;color:#16377c}.dsTrialCard{border:1px solid #dbe5f2;border-radius:14px;padding:14px;background:#fff;margin-top:10px}.dsTrialMuted{color:#64748b;font-size:12px;line-height:1.45}.dsTrialSend{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:12px}.dsTrialSend button{min-height:45px;border-radius:11px;border:1px solid #dbe5f2;background:#fff;font-weight:800;color:#16377c}
+.dsTrialTag{display:inline-block;padding:5px 9px;border-radius:999px;background:#ecfdf5;color:#166534;font-size:11px;font-weight:850}.dsTrialNotice{padding:10px 12px;border-radius:11px;background:#fff7ed;color:#9a3412;font-size:12px;font-weight:750;margin-bottom:12px}
+@media(max-width:620px){#dsTrialFab{right:12px;bottom:12px;padding:13px 15px;font-size:14px}.dsTrialBox{margin:4px auto;padding:14px}.dsTrialGrid{grid-template-columns:1fr}.dsTrialField.full{grid-column:auto}.dsTrialSteps{grid-template-columns:1fr 1fr}.dsTrialSend{grid-template-columns:1fr 1fr}}
+</style>
+<button id="dsTrialFab" type="button">✨ AI Follow-Up Trial</button>
+<div id="dsTrialModal" aria-hidden="true">
+  <div class="dsTrialBox">
+    <div class="dsTrialTop"><h2>✨ Opportunity + AI Follow-Up</h2><button class="dsTrialClose" id="dsTrialClose" type="button">Close</button></div>
+    <div class="dsTrialNotice">Trial mode only — works locally on this device. No paid AI, no API key, and it does not change your live DShario data.</div>
+    <div class="dsTrialSteps"><div class="dsTrialStep on" data-s="1">1 Opportunity</div><div class="dsTrialStep" data-s="2">2 AI Assist</div><div class="dsTrialStep" data-s="3">3 Follow-Up</div><div class="dsTrialStep" data-s="4">4 Summary</div></div>
+
+    <section class="dsTrialPane on" data-p="1">
+      <div class="dsTrialGrid">
+        <div class="dsTrialField"><label>Connection name</label><input id="dsTName" placeholder="Rahim Ahmed"></div>
+        <div class="dsTrialField"><label>Opportunity</label><input id="dsTOpp" placeholder="Restaurant website"></div>
+        <div class="dsTrialField"><label>Estimated value (optional)</label><input id="dsTValue" placeholder="৳30,000"></div>
+        <div class="dsTrialField"><label>Stage</label><select id="dsTStage"><option>Interested</option><option>Contacted</option><option>Proposal sent</option><option>Negotiating</option><option>Won</option><option>Lost</option></select></div>
+        <div class="dsTrialField"><label>Next action</label><input id="dsTNext" placeholder="Send quotation"></div>
+        <div class="dsTrialField"><label>Follow-up date</label><input id="dsTDate" type="date"></div>
+        <div class="dsTrialField full"><label>Notes</label><textarea id="dsTNotes" placeholder="Wants a simple restaurant website"></textarea></div>
+      </div>
+      <div class="dsTrialActions"><button class="dsTrialBtn" id="dsTSave" type="button">Save Opportunity</button><button class="dsTrialBtn secondary" id="dsTToAi" type="button">✨ AI Assist</button></div>
+    </section>
+
+    <section class="dsTrialPane" data-p="2">
+      <div class="dsTrialField full"><label>Type or paste a natural note</label><textarea id="dsTAiNote" placeholder="Met Rahim today. He wants a restaurant website around 30,000 taka. I promised to send him a quotation Friday."></textarea></div>
+      <div class="dsTrialActions"><button class="dsTrialBtn" id="dsTAiParse" type="button">✨ Suggest Details</button><button class="dsTrialBtn ghost" data-go="1" type="button">Back</button></div>
+      <div class="dsTrialAi" id="dsTAiResult" style="display:none"></div>
+    </section>
+
+    <section class="dsTrialPane" data-p="3">
+      <div class="dsTrialCard" id="dsTFollowCard"></div>
+      <div class="dsTrialAi"><h3>Suggested follow-up message</h3><textarea id="dsTMessage" style="width:100%;min-height:120px;border:1px solid #cbd8ea;border-radius:11px;padding:12px"></textarea>
+      <div class="dsTrialSend"><button data-send="wa">WhatsApp</button><button data-send="sms">Messages / SMS</button><button data-send="messenger">Messenger</button><button data-send="email">Email</button><button data-send="telegram">Telegram</button><button data-send="more">More…</button><button data-send="copy">Copy</button><button data-go="4">AI Summary</button></div></div>
+      <div class="dsTrialActions"><button class="dsTrialBtn ghost" data-go="1" type="button">Edit Opportunity</button></div>
+    </section>
+
+    <section class="dsTrialPane" data-p="4">
+      <div class="dsTrialAi"><h3>✨ AI Connection Summary</h3><div id="dsTSummary"></div></div>
+      <div class="dsTrialActions"><button class="dsTrialBtn" data-go="3" type="button">Create Follow-Up</button><button class="dsTrialBtn ghost" data-go="1" type="button">Edit Details</button></div>
+    </section>
+  </div>
+</div>
+<script id="dsharioAiTrialScript">
+(()=>{
+ const $=id=>document.getElementById(id), modal=$('dsTrialModal');
+ const fields=['Name','Opp','Value','Stage','Next','Date','Notes'];
+ function esc(s){return String(s||'').replace(/[&<>\"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','\"':'&quot;',"'":'&#39;'}[c]))}
+ function data(){let o={};fields.forEach(k=>o[k.toLowerCase()]=$('dsT'+k)?.value||'');return o}
+ function persist(){try{localStorage.setItem('dshario-ai-trial-opportunity',JSON.stringify(data()))}catch(e){}}
+ function load(){try{let o=JSON.parse(localStorage.getItem('dshario-ai-trial-opportunity')||'{}');fields.forEach(k=>{let e=$('dsT'+k);if(e&&o[k.toLowerCase()]!=null)e.value=o[k.toLowerCase()]})}catch(e){}}
+ function go(n){document.querySelectorAll('.dsTrialPane').forEach(x=>x.classList.toggle('on',x.dataset.p==n));document.querySelectorAll('.dsTrialStep').forEach(x=>x.classList.toggle('on',x.dataset.s==n)); if(n==3)renderFollow(); if(n==4)renderSummary()}
+ function prettyDate(v){if(!v)return 'No date selected';try{return new Date(v+'T12:00:00').toLocaleDateString(undefined,{weekday:'short',day:'numeric',month:'short',year:'numeric'})}catch(e){return v}}
+ function makeMessage(o){let name=o.name?.trim()||'there', topic=o.opp?.trim()||'our recent discussion', next=o.next?.trim();return `Hi ${name}, it was great speaking with you about ${topic}. ${next?`As discussed, I’m following up regarding ${next.toLowerCase()}. `:''}Please let me know if you’d like to continue or if you need any further details.`}
+ function renderFollow(){let o=data();persist();$('dsTFollowCard').innerHTML=`<span class="dsTrialTag">${esc(o.stage||'Interested')}</span><h3 style="margin:9px 0 5px">${esc(o.name||'Connection')}</h3><div><strong>${esc(o.opp||'Opportunity')}</strong>${o.value?' • '+esc(o.value):''}</div><div class="dsTrialMuted" style="margin-top:7px">Next: ${esc(o.next||'Follow up')} • ${esc(prettyDate(o.date))}</div>`;$('dsTMessage').value=makeMessage(o)}
+ function renderSummary(){let o=data(), parts=[];parts.push(`You are tracking ${o.opp||'an opportunity'} with ${o.name||'this connection'}.`);if(o.value)parts.push(`Estimated value: ${o.value}.`);if(o.stage)parts.push(`Current stage: ${o.stage}.`);if(o.next)parts.push(`Next action: ${o.next}.`);if(o.date)parts.push(`Follow-up is set for ${prettyDate(o.date)}.`);if(o.notes)parts.push(`Context: ${o.notes}.`);$('dsTSummary').innerHTML='<p style="margin:0;line-height:1.6">'+esc(parts.join(' '))+'</p>'}
+ function aiSuggest(){let t=$('dsTAiNote').value.trim();if(!t){$('dsTAiResult').style.display='block';$('dsTAiResult').innerHTML='<h3>AI Assist</h3><p class="dsTrialMuted">Enter a short note first.</p>';return}
+   let o=data(); let lower=t.toLowerCase();
+   let m=t.match(/(?:around|about|value|worth)\s*(?:৳|tk|bdt)?\s*([0-9][0-9,]*)/i); if(m&&!o.value)o.value='৳'+m[1];
+   if(/quotation|quote/.test(lower)&&!o.next)o.next='Send quotation'; else if(/call/.test(lower)&&!o.next)o.next='Call and follow up'; else if(/proposal/.test(lower)&&!o.next)o.next='Send proposal';
+   if(/website/.test(lower)&&!o.opp)o.opp=/restaurant/.test(lower)?'Restaurant website':'Website project';
+   if(!o.notes)o.notes=t;
+   if(!o.stage)o.stage='Interested';
+   let weekday=['sunday','monday','tuesday','wednesday','thursday','friday','saturday'].find(x=>lower.includes(x)); if(weekday&&!o.date){let d=new Date(),target=['sunday','monday','tuesday','wednesday','thursday','friday','saturday'].indexOf(weekday),add=(target-d.getDay()+7)%7||7;d.setDate(d.getDate()+add);o.date=d.toISOString().slice(0,10)}
+   $('dsTAiResult').style.display='block';$('dsTAiResult').innerHTML=`<h3>Suggested details</h3><div class="dsTrialCard"><b>Opportunity:</b> ${esc(o.opp||'Please enter')}<br><b>Value:</b> ${esc(o.value||'Not detected')}<br><b>Stage:</b> ${esc(o.stage||'Interested')}<br><b>Next action:</b> ${esc(o.next||'Follow up')}<br><b>Follow-up:</b> ${esc(prettyDate(o.date))}</div><div class="dsTrialActions"><button class="dsTrialBtn" id="dsTAccept" type="button">Use these details</button></div>`;
+   setTimeout(()=>{let b=$('dsTAccept');if(b)b.onclick=()=>{if(o.opp)$('dsTOpp').value=o.opp;if(o.value)$('dsTValue').value=o.value;if(o.stage)$('dsTStage').value=o.stage;if(o.next)$('dsTNext').value=o.next;if(o.date)$('dsTDate').value=o.date;if(o.notes)$('dsTNotes').value=o.notes;persist();go(1)}},0)
+ }
+ async function send(kind){let text=$('dsTMessage').value.trim(), o=data(), enc=encodeURIComponent(text);if(kind==='copy'){try{await navigator.clipboard.writeText(text);alert('Message copied.')}catch(e){prompt('Copy this message:',text)}return}
+   if(kind==='more'&&navigator.share){try{await navigator.share({title:'DShario follow-up',text});}catch(e){}return}
+   if(kind==='wa'){window.open('https://wa.me/?text='+enc,'_blank');return}
+   if(kind==='sms'){location.href='sms:?&body='+enc;return}
+   if(kind==='email'){location.href='mailto:?subject='+encodeURIComponent('Following up: '+(o.opp||'our discussion'))+'&body='+enc;return}
+   if(kind==='telegram'){window.open('https://t.me/share/url?url=&text='+enc,'_blank');return}
+   if(kind==='messenger'){if(navigator.share){try{await navigator.share({title:'DShario follow-up',text});return}catch(e){}} try{await navigator.clipboard.writeText(text)}catch(e){} window.open('https://www.messenger.com/','_blank');return}
+   if(kind==='more'){try{await navigator.clipboard.writeText(text);alert('Sharing is not supported by this browser. Message copied instead.')}catch(e){prompt('Copy this message:',text)}}
+ }
+ $('dsTrialFab').onclick=()=>{load();modal.classList.add('show');modal.setAttribute('aria-hidden','false');go(1)};$('dsTrialClose').onclick=()=>{modal.classList.remove('show');modal.setAttribute('aria-hidden','true')};
+ $('dsTSave').onclick=()=>{persist();go(3)};$('dsTToAi').onclick=()=>go(2);$('dsTAiParse').onclick=aiSuggest;
+ document.querySelectorAll('[data-go]').forEach(b=>b.addEventListener('click',()=>go(b.dataset.go)));document.querySelectorAll('[data-send]').forEach(b=>b.addEventListener('click',()=>send(b.dataset.send)));
+ modal.addEventListener('click',e=>{if(e.target===modal){modal.classList.remove('show');modal.setAttribute('aria-hidden','true')}});load();
+})();
+</script>
+
+
+<script>
+(function(){
+  const LEGACY_KEY='dshario-rc43-opportunity';
+  function relationshipId(){
+    if(window.currentPublicTargetUserId) return String(window.currentPublicTargetUserId);
+    const qp=new URLSearchParams(location.search);
+    return qp.get('userid')||qp.get('user')||qp.get('card')||qp.get('share')||'unknown';
+  }
+  function opportunityKey(){return 'dshario-opportunity-by-user:'+relationshipId();}
+  function txt(el){ return (el?.innerText||el?.textContent||'').trim(); }
+  function findConnectionName(){
+    /* Prefer the visible saved-card name, never header controls such as Connection Notes. */
+    const saveBtn=document.getElementById('connectionOnlyVcfBtn');
+    if(!saveBtn) return 'Saved connection';
+    const visible=[...document.querySelectorAll('h1,h2,h3,h4,.connectionName,.cardName,.savedName')].filter(isVisible);
+    const banned=/save to contacts|download as image|shared as|my connections|dshario|opportunity|follow-up|connection notes|reminder|full|social|business|networking|career/i;
+    for(const el of visible){
+      const t=txt(el);
+      if(!t || t.length>80 || banned.test(t)) continue;
+      if(t.split(/\s+/).length>=2) return t;
+    }
+    return 'Saved connection';
+  }
+  function isVisible(el){
+    if(!el) return false;
+    const st=getComputedStyle(el);
+    if(st.display==='none'||st.visibility==='hidden'||Number(st.opacity)===0) return false;
+    const r=el.getBoundingClientRect();
+    return r.width>0 && r.height>0;
+  }
+  function visibleTextMatches(re){
+    return [...document.querySelectorAll('button,a,div,span,h1,h2,h3,h4,p')]
+      .some(el=>isVisible(el) && re.test(txt(el)));
+  }
+  function findAnchorButton(){
+    /* Exact saved-connection action only.
+       This avoids matching parent containers or the public/landing templates. */
+    const exact=document.getElementById('connectionOnlyVcfBtn');
+    return (exact && isVisible(exact)) ? exact : null;
+  }
+  function ensureSection(){
+    const existing=document.getElementById('dsTrialOppSection');
+    const anchor=findAnchorButton();
+
+    const landingSignIn=visibleTextMatches(/^sign in$/i);
+    const savedCardContext=!!anchor;
+
+    if(landingSignIn || !savedCardContext){
+      if(existing) existing.remove();
+      return;
+    }
+    if(existing){
+      /* Keep the section immediately before Save to Contacts even after rerenders. */
+      if(existing.nextElementSibling !== anchor){
+        anchor.parentElement.insertBefore(existing,anchor);
+      }
+      return;
+    }
+    const wrap=document.createElement('section');
+    wrap.id='dsTrialOppSection';
+    wrap.innerHTML=`
+      <div class="dsTrialTitle">💼 Opportunity & AI Follow-Up <span style="font-size:11px;font-weight:800;color:#64748b">(Trial)</span> <button id="dsTrialInfoBtn" class="dsTrialInfoBtn" type="button" aria-label="How Opportunity and AI Follow-Up works">ⓘ</button></div>
+      <div id="dsTrialExplain" class="dsTrialExplain">Add and save an opportunity first. Connection Summary appears after it is saved and remains with this DShario connection. Set a follow-up date and DShario will place it under ⏰ AI Follow-Ups. Prepare the AI message when you are ready to contact the person.</div>
+      <div class="dsTrialActions">
+        <button class="primary" id="dsTrialOpen">+ Add Opportunity</button>
+        <button id="dsTrialSummaryBtn" style="display:none">✨ Connection Summary</button>
+      </div>
+      <div id="dsTrialOppPanel">
+        <input id="dsTrialPerson" type="hidden">
+<label>What is the opportunity?</label><input id="dsTrialWhat" placeholder="e.g. Website design">
+        <label>Estimated value (optional)</label><input id="dsTrialValue" placeholder="e.g. ৳30,000">
+        <select id="dsTrialStage" style="display:none"><option selected>Follow-up</option><option>Interested</option><option>Discussion</option><option>Proposal sent</option><option>Won</option><option>Lost</option></select>
+        <label>Quick note / context</label><textarea id="dsTrialNote" placeholder="e.g. Met today. Interested in a restaurant website. I promised to send a quotation Friday."></textarea>
+        <label>Next action</label><input id="dsTrialAction" placeholder="e.g. Send quotation">
+        <label>Follow-up date</label><input id="dsTrialDate" type="date">
+        <div class="dsTrialActions">
+          <button id="dsTrialAssist">✨ AI Assist</button>
+          <button class="primary" id="dsTrialSave">Save Opportunity & Follow-Up</button>
+        </div>
+        <div id="dsTrialOutput" class="output" style="display:none"></div>
+        <div id="dsTrialSendRow" style="display:none">
+          <button data-send="copy">Copy</button><button data-send="sms">Messages</button><button data-send="wa">WhatsApp</button><button data-send="email">Email</button><button data-send="tg">Telegram</button><button data-send="more">More</button>
+        </div>
+      </div>`;
+    /* Place directly between the saved card and its Save to Contacts button. */
+    anchor.parentElement.insertBefore(wrap,anchor);
+
+    const person=document.getElementById('dsTrialPerson');
+    person.value=findConnectionName()||'Saved connection';
+
+    let saved=null;
+    try{saved=JSON.parse(localStorage.getItem(opportunityKey())||'null')}catch(e){}
+    if(saved){
+      ['What','Value','Stage','Note','Action','Date'].forEach(k=>{
+        const el=document.getElementById('dsTrial'+k);
+        if(el && saved[k.toLowerCase()]!=null) el.value=saved[k.toLowerCase()];
+      });
+      if(saved.person) person.value=saved.person;
+    }
+
+    const summaryBtn=document.getElementById('dsTrialSummaryBtn');
+    function refreshSavedState(){
+      let s=null;try{s=JSON.parse(localStorage.getItem(opportunityKey())||'null')}catch(e){}
+      const ok=!!(s && s.saved===true && (s.what||s.note||s.action||s.date));
+      summaryBtn.style.display=ok?'':'none';
+    }
+    refreshSavedState();
+
+    const panel=document.getElementById('dsTrialOppPanel');
+    const infoBtn=document.getElementById('dsTrialInfoBtn');
+    const explain=document.getElementById('dsTrialExplain');
+    if(infoBtn&&explain) infoBtn.onclick=()=>explain.classList.toggle('show');
+    document.getElementById('dsTrialOpen').onclick=()=>panel.classList.toggle('show');
+
+    function data(){
+      return {
+        person:person.value||'this contact',
+        what:document.getElementById('dsTrialWhat').value.trim(),
+        value:document.getElementById('dsTrialValue').value.trim(),
+        stage:document.getElementById('dsTrialStage').value,
+        note:document.getElementById('dsTrialNote').value.trim(),
+        action:document.getElementById('dsTrialAction').value.trim(),
+        date:document.getElementById('dsTrialDate').value,
+        relationshipId:relationshipId(),
+        saved:true
+      };
+    }
+    function show(s,send=false){
+      const out=document.getElementById('dsTrialOutput'); out.textContent=s; out.style.display='block';
+      const sr=document.getElementById('dsTrialSendRow'); sr.style.display=send?'flex':'none'; sr.dataset.msg=s;
+    }
+    function assist(){
+      const n=document.getElementById('dsTrialNote').value;
+      if(!document.getElementById('dsTrialWhat').value){
+        let m=n.match(/(?:need|needs|want|wants|interested in|about)\s+([^.!?]+)/i);
+        if(m) document.getElementById('dsTrialWhat').value=m[1].trim().replace(/\b(around|about)\s+[৳$£€]?\s?[\d,]+.*$/i,'').trim();
+      }
+      if(!document.getElementById('dsTrialValue').value){
+        let m=n.match(/([৳$£€]?\s?[\d,]{3,}(?:\.\d+)?(?:\s?(?:taka|tk|aud|usd))?)/i);
+        if(m) document.getElementById('dsTrialValue').value=m[1].trim();
+      }
+      if(!document.getElementById('dsTrialAction').value && /quotation|quote/i.test(n)) document.getElementById('dsTrialAction').value='Send quotation';
+      if(!document.getElementById('dsTrialAction').value){
+        const what=document.getElementById('dsTrialWhat').value.trim();
+        const note=document.getElementById('dsTrialNote').value.trim();
+        const clean=what.replace(/^discussion\s+about\s+/i,'').replace(/[.]+$/,'').trim();
+        if(/proposal|partnership|partner/i.test(note+" "+what)) document.getElementById('dsTrialAction').value='Prepare and discuss partnership proposal';
+        else if(/quotation|quote|estimate/i.test(note+" "+what)) document.getElementById('dsTrialAction').value='Send quotation';
+        else if(/application|visa|immigration|passport|permit/i.test(note+" "+what)) document.getElementById('dsTrialAction').value='Request an update';
+        else if(/meeting|appointment|catch up|catch-up/i.test(note+" "+what)) document.getElementById('dsTrialAction').value='Arrange the next discussion';
+        else document.getElementById('dsTrialAction').value=clean?`Continue with ${clean}`:'Continue the discussion';
+      }
+      show('AI Assist filled what it could from your note. Please review before saving.');
+    }
+    document.getElementById('dsTrialAssist').onclick=assist;
+    document.getElementById('dsTrialSave').onclick=()=>{
+      const d=data();
+      localStorage.setItem(opportunityKey(),JSON.stringify(d));
+      const QKEY='dshario-rc39-followups';
+      let q=[];try{q=JSON.parse(localStorage.getItem(QKEY)||'[]')}catch(e){}
+      const id='relationship|'+d.relationshipId;
+      const existing=q.find(x=>x.id===id);
+      const item={
+        id,
+        relationshipId:d.relationshipId,
+        person:d.person||'Saved connection',
+        what:d.what||'Opportunity',
+        value:d.value||'',
+        stage:'',
+        note:d.note||'',
+        action:d.action||'',
+        date:d.date||'',
+        time:'',
+        mode:'',
+        message:'',
+        done:false,
+        completedAt:'',
+        updatedAt:new Date().toISOString()
+      };
+      const i=q.findIndex(x=>x.id===id);
+      if(d.date){
+        if(i>=0) q[i]={...existing,...item}; else q.push(item);
+      }else if(i>=0){
+        q.splice(i,1);
+      }
+      localStorage.setItem(QKEY,JSON.stringify(q));
+      refreshSavedState();
+      panel.classList.remove('show');
+      const out=document.getElementById('dsTrialOutput');if(out){out.textContent='';out.style.display='none'}
+      try{window.dsRefreshFollowups&&window.dsRefreshFollowups();}catch(e){}
+      alert(d.date
+        ? 'Opportunity saved. Your scheduled follow-up is available under ⏰ AI Follow-Ups.'
+        : 'Opportunity saved. Connection Summary is now available.');
+    };
+    function summary(){
+      const d=data();
+      const topic=(d.what||'').trim()
+        .replace(/^discussion\s+about\s+/i,'')
+        .replace(/\bvisa apply\b/ig,'visa application')
+        .replace(/[.]+$/,'');
+      const note=(d.note||'').trim().replace(/[.]+$/,'');
+      const action=(d.action||'').trim().replace(/[.]+$/,'');
+      const parts=[];
+      if(topic){
+        let first=topic.charAt(0).toUpperCase()+topic.slice(1);
+        if(/partnership|partner/i.test(topic+" "+note)) first=`Partnership discussion${/dshario/i.test(topic+" "+note)?' about DShario':''}`;
+        else if(/visa|application|immigration|passport|permit/i.test(topic+" "+note)) first=`${first}`;
+        parts.push(first+(d.value?` (${d.value})`:'')+'.');
+      }
+      if(note){
+        let context=note;
+        context=context.replace(/^to\s+make\s+a\s+proposal\s+for\s+partnership\s+of\s+/i,'The goal is to prepare a partnership proposal for ');
+        if(context===note && /^to\s+/i.test(context)) context='The goal is '+context.replace(/^to\s+/i,'to ');
+        context=context.charAt(0).toUpperCase()+context.slice(1);
+        parts.push(context+'.');
+      }
+      if(action){
+        const cleanAction=action
+          .replace(/^follow\s*up\s+about\s+discussion\s+about\s+/i,'Follow up regarding ')
+          .replace(/^follow\s*up\s+about\s+/i,'Follow up regarding ');
+        parts.push(`Next: ${cleanAction.charAt(0).toLowerCase()+cleanAction.slice(1)}.`);
+      }
+      if(d.date){
+        const dt=new Date(d.date+'T09:00:00');
+        const label=Number.isNaN(dt.getTime())?d.date:dt.toLocaleDateString(undefined,{day:'numeric',month:'short',year:'numeric'});
+        parts.push(`Follow-up scheduled for ${label}.`);
+      }
+      const summaryText=parts.join(' ');
+      show(summaryText);
+      return summaryText;
+    }
+    function savedSummaryText(s){
+      const topic=(s.what||'').trim().replace(/^discussion\s+about\s+/i,'').replace(/\bvisa apply\b/ig,'visa application').replace(/[.]+$/,'');
+      const note=(s.note||'').trim().replace(/[.]+$/,'');
+      const action=(s.action||'').trim().replace(/[.]+$/,'');
+      const parts=[];
+      if(topic) parts.push(topic.charAt(0).toUpperCase()+topic.slice(1)+(s.value?` (${s.value})`:'')+'.');
+      if(note) parts.push(note.charAt(0).toUpperCase()+note.slice(1)+'.');
+      if(action){
+        const a=action.replace(/^follow\s*up\s+about\s+discussion\s+about\s+/i,'Follow up regarding ').replace(/^follow\s*up\s+about\s+/i,'Follow up regarding ');
+        parts.push(`Next: ${a.charAt(0).toLowerCase()+a.slice(1)}.`);
+      }
+      if(s.date){
+        const dt=new Date(s.date+'T09:00:00');
+        const label=Number.isNaN(dt.getTime())?s.date:dt.toLocaleDateString(undefined,{day:'numeric',month:'short',year:'numeric'});
+        parts.push(`Follow-up scheduled for ${label}.`);
+      }
+      return parts.join(' ');
+    }
+    document.getElementById('dsTrialSummaryBtn').onclick=()=>{
+      let s=null;try{s=JSON.parse(localStorage.getItem(opportunityKey())||'null')}catch(e){}
+      if(!s||s.saved!==true){return}
+      const m=document.getElementById('dsSummaryOnlyModal');
+      const txt=document.getElementById('dsSummaryOnlyText');
+      if(txt)txt.textContent=savedSummaryText(s);
+      if(m){m.classList.add('show');m.setAttribute('aria-hidden','false');}
+    };
+    const sm=document.getElementById('dsSummaryOnlyModal'), sc=document.getElementById('dsSummaryOnlyClose');
+    function closeSummaryOnly(){if(sm){sm.classList.remove('show');sm.setAttribute('aria-hidden','true');}}
+    if(sc)sc.onclick=closeSummaryOnly;
+    if(sm)sm.addEventListener('click',e=>{if(e.target===sm)closeSummaryOnly();});
+    document.getElementById('dsTrialSendRow').onclick=async(e)=>{
+      const b=e.target.closest('button[data-send]'); if(!b)return;
+      const msg=e.currentTarget.dataset.msg||'';
+      const enc=encodeURIComponent(msg);
+      const mode=b.dataset.send;
+      if(mode==='copy'){try{await navigator.clipboard.writeText(msg);alert('Copied');}catch{prompt('Copy message:',msg)}}
+      else if(mode==='sms') location.href='sms:?&body='+enc;
+      else if(mode==='wa') window.open('https://wa.me/?text='+enc,'_blank');
+      else if(mode==='email') location.href='mailto:?body='+enc;
+      else if(mode==='tg') window.open('https://t.me/share/url?url=&text='+enc,'_blank');
+      else if(mode==='more'){ if(navigator.share){navigator.share({text:msg}).catch(()=>{});} else {try{await navigator.clipboard.writeText(msg);alert('Copied');}catch{}}}
+    };
+  }
+  const obs=new MutationObserver(()=>ensureSection());
+  obs.observe(document.documentElement,{subtree:true,childList:true});
+  window.addEventListener('load',()=>setTimeout(ensureSection,500));
+  setInterval(ensureSection,1800);
+})();
+</script>
+
+
+
+<div id="dsSummaryOnlyModal" class="dsSummaryOnlyModal" aria-hidden="true">
+  <div class="dsSummaryOnlyBox">
+    <div class="dsSummaryOnlyHead">
+      <strong>✨ Connection Summary</strong>
+      <button id="dsSummaryOnlyClose" type="button">Close</button>
+    </div>
+    <div id="dsSummaryOnlyText" class="dsSummaryOnlyText"></div>
+  </div>
+</div>
+
+<div id="dsFollowupCentre" aria-hidden="true">
+  <div class="dsFuBox">
+    <div class="dsFuTop">
+      <h2>⏰ AI Follow-Ups</h2>
+      <button class="dsFuClose" id="dsFuClose" type="button">Close</button>
+    </div>
+    <div class="dsFuTabs">
+      <button type="button" data-fu-filter="due" class="on">Due / Overdue</button>
+      <button type="button" data-fu-filter="upcoming">Upcoming</button>
+      <button type="button" data-fu-filter="all">All</button>
+    </div>
+    <div id="dsFuList"></div>
+  </div>
+</div>
+
+
+<script id="dsRc42FollowupCentreScript">
+(function(){
+  const QKEY='dshario-rc39-followups';
+  let filter='due';
+
+  function loadQ(){try{return JSON.parse(localStorage.getItem(QKEY)||'[]')}catch(e){return[]}}
+
+  function saveQ(q){localStorage.setItem(QKEY,JSON.stringify(q))}
+  function parseDate(s,time){
+    if(!s)return null;
+    const d=new Date(s+'T'+(time||'09:00')+':00');
+    return Number.isNaN(d.getTime())?null:d;
+  }
+  function today0(){const d=new Date();d.setHours(0,0,0,0);return d}
+  function status(item){
+    if(item.done)return 'done';
+    const d=parseDate(item.date);
+    if(!d)return 'upcoming';
+    d.setHours(0,0,0,0);
+    return d<=today0()?'due':'upcoming';
+  }
+  function esc(s){return String(s||'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]))}
+  function digitsIntl(v){
+    let s=String(v||'').trim().replace(/[^\d+]/g,'');
+    if(s.startsWith('00'))s='+'+s.slice(2);
+    return s;
+  }
+  function displayedConnectionChannels(){
+    function visibleRow(id){
+      const el=document.getElementById(id);
+      if(!el)return null;
+      const st=getComputedStyle(el);
+      if(st.display==='none'||st.visibility==='hidden'||Number(st.opacity)===0)return null;
+      const r=el.getBoundingClientRect();
+      return (r.width>0&&r.height>0)?el:null;
+    }
+    const waRow=visibleRow('whatsappRow');
+    const phoneRow=visibleRow('phoneRow');
+    const emailRow=visibleRow('emailRow');
+    const fbRow=visibleRow('fbRow');
+    const liRow=visibleRow('liRow');
+
+    let whatsapp='';
+    if(waRow){
+      const h=waRow.getAttribute('href')||'';
+      const m=h.match(/(?:wa\.me\/|phone=)(\+?\d+)/i);
+      whatsapp=m?decodeURIComponent(m[1]):(document.getElementById('pWhatsapp')?.textContent||'').trim();
+    }
+    let phone='';
+    if(phoneRow) phone=decodeURIComponent((phoneRow.getAttribute('href')||'').replace(/^tel:/i,''));
+    let email='';
+    if(emailRow) email=decodeURIComponent((emailRow.getAttribute('href')||'').replace(/^mailto:/i,'').split('?')[0]);
+
+    return {
+      whatsapp,
+      phone,
+      email,
+      facebook:fbRow?(fbRow.getAttribute('href')||''):'',
+      linkedin:liRow?(liRow.getAttribute('href')||''):''
+    };
+  }
+  function waNumber(v){
+    let s=String(v||'').trim();
+    try{
+      if(typeof whatsappContactData==='function'){
+        const w=whatsappContactData(s);
+        if(w&&w.href){
+          const m=String(w.href).match(/wa\.me\/(\d+)/);if(m)return m[1];
+        }
+      }
+    }catch(e){}
+    s=digitsIntl(s).replace(/^\+/,'');
+    return s;
+  }
+  function cleanTopic(raw){
+    let s=String(raw||'').trim().replace(/\s+/g,' ').replace(/[.]+$/,'');
+    s=s.replace(/^discussion\s+about\s+/i,'').replace(/^follow[- ]?up\s+(?:about|regarding)\s+/i,'');
+    s=s.replace(/\bvisa apply\b/ig,'visa application');
+    return s || 'our recent discussion';
+  }
+  function friendlyDate(s){
+    const d=parseDate(s); if(!d)return '';
+    const day=new Date(d);day.setHours(0,0,0,0);
+    const diff=Math.round((day-today0())/86400000);
+    if(diff<0)return 'Overdue • '+d.toLocaleDateString(undefined,{day:'numeric',month:'short'});
+    if(diff===0)return 'Due today';
+    if(diff===1)return 'Tomorrow';
+    return d.toLocaleDateString(undefined,{day:'numeric',month:'short'});
+  }
+  function inferPurpose(item){
+    const topic=cleanTopic(item.what);
+    const context=String(item.note||'').trim();
+    const action=String(item.action||'').trim();
+    const all=(topic+' '+context+' '+action).toLowerCase();
+
+    if(/quotation|quote|proposal|estimate/.test(all)){
+      return {kind:'quotation', action: action && !/^follow up/i.test(action) ? action : 'check whether they have reviewed the quotation/proposal'};
+    }
+    if(/payment|invoice|due amount|outstanding/.test(all)){
+      return {kind:'payment', action: action && !/^follow up/i.test(action) ? action : 'ask for an update on the payment'};
+    }
+    if(/visa|application|immigration|passport|permit/.test(all)){
+      return {kind:'application', action: action && !/^follow up/i.test(action) ? action : `ask for an update on the ${topic}`};
+    }
+    if(/job|interview|recruit|position|role|resume|cv/.test(all)){
+      return {kind:'job', action: action && !/^follow up/i.test(action) ? action : `ask whether there is any update regarding the ${topic}`};
+    }
+    if(/meeting|meet|appointment|catch up|catch-up|schedule|arrange/.test(all)){
+      return {kind:'meeting', action: action && !/^follow up/i.test(action) ? action : 'arrange a suitable time to continue the discussion'};
+    }
+    if(/send|share|document|details|information/.test(all)){
+      return {kind:'send', action: action && !/^follow up/i.test(action) ? action : 'confirm what information or documents are needed next'};
+    }
+    return {kind:'general', action: action && !/^follow up/i.test(action) ? action : `ask whether there is any update regarding ${topic}`};
+  }
+  function makeDraft(item){
+    const topic=cleanTopic(item.what);
+    const purpose=inferPurpose(item);
+    const first=(item.person||'').trim().split(/\s+/)[0];
+    const greeting=first && first.toLowerCase()!=='saved' ? `Hi ${first}, ` : 'Hi, ';
+
+    if(purpose.kind==='application'){
+      return `${greeting}I’m following up regarding ${topic}. Could you please let me know if there has been any update, or if you need anything further from me? Thank you.`;
+    }
+    if(purpose.kind==='quotation'){
+      return `${greeting}I’m following up regarding ${topic}. I wanted to check whether you’ve had a chance to review it and whether you have any questions or would like to discuss the next steps. Thank you.`;
+    }
+    if(purpose.kind==='payment'){
+      return `${greeting}I’m following up regarding ${topic}. Could you please let me know the current status or whether anything further is needed from me? Thank you.`;
+    }
+    if(purpose.kind==='job'){
+      return `${greeting}I’m following up regarding ${topic}. I remain interested and wanted to ask whether there has been any update or whether you need any further information from me. Thank you.`;
+    }
+    if(purpose.kind==='meeting'){
+      return `${greeting}I’m following up regarding ${topic}. Would you be available to arrange a suitable time to continue our discussion? Please let me know what works for you.`;
+    }
+    if(purpose.kind==='send'){
+      return `${greeting}I’m following up regarding ${topic}. Please let me know if you need any additional information or documents from me, and I’ll be happy to send them. Thank you.`;
+    }
+    return `${greeting}I’m following up regarding ${topic}. Could you please let me know if there has been any update or what the next step should be? Thank you.`;
+  }
+  function dueCount(){return loadQ().filter(x=>status(x)==='due').length}
+  function refreshBadge(){
+    const n=dueCount();
+    const b=document.querySelector('#remindersBtn .followupBadge');
+    if(!b)return;
+    b.textContent=n>99?'99+':(n?String(n):'');
+    b.classList.toggle('show',n>0);
+  }
+  function render(){
+    const list=document.getElementById('dsFuList'); if(!list)return;
+    const items=loadQ().filter(x=>{
+      const s=status(x);
+      if(filter==='all')return !x.done;
+      return s===filter;
+    }).sort((a,b)=>(a.date||'9999-99-99').localeCompare(b.date||'9999-99-99'));
+
+    if(!items.length){
+      list.innerHTML='<div class="dsFuEmpty">No follow-ups in this section.</div>';
+      return;
+    }
+    list.innerHTML=items.map(x=>{
+      const topic=cleanTopic(x.what);
+      const when=friendlyDate(x.date);
+      return `<div class="dsFuItem" data-id="${esc(x.id)}">
+        <div class="dsFuName">${esc(topic)}</div>
+        <div class="dsFuMeta">${esc(when || 'Follow-up scheduled')}</div>
+        <div class="dsFuActions">
+          <button class="primary" data-fu-act="prepare">✨ Prepare Message</button>
+          <button data-fu-act="done">✓ Done</button>
+          <button data-fu-act="schedule">Edit date</button>
+        </div>
+        <div class="dsFuDraft" style="display:none;margin-top:10px"></div>
+      </div>`;
+    }).join('');
+  }
+  function openCentre(){
+    try{document.getElementById('notificationPanel')?.classList.remove('show')}catch(e){}
+    const c=document.getElementById('dsFollowupCentre'); if(!c)return;
+    c.classList.add('show');c.setAttribute('aria-hidden','false');render();refreshBadge();
+  }
+  function closeCentre(){
+    const c=document.getElementById('dsFollowupCentre'); if(!c)return;
+    c.classList.remove('show');c.setAttribute('aria-hidden','true');
+  }
+  window.dsOpenFollowups=openCentre;
+  window.dsRefreshFollowups=function(){render();refreshBadge()};
+
+  document.addEventListener('click', async function(e){
+    if(e.target?.id==='dsFuClose'){closeCentre();return}
+    const tab=e.target.closest?.('[data-fu-filter]');
+    if(tab){
+      filter=tab.dataset.fuFilter;
+      document.querySelectorAll('[data-fu-filter]').forEach(b=>b.classList.toggle('on',b===tab));
+      render();return;
+    }
+
+    const editMsg=e.target.closest?.('[data-fu-editmsg]');
+    if(editMsg){
+      const box=editMsg.closest('.dsFuDraft'); if(!box)return;
+      const ta=box.querySelector('textarea');
+      const editBtn=box.querySelector('[data-fu-editmsg="edit"]');
+      const saveBtn=box.querySelector('[data-fu-editmsg="save"]');
+      if(editMsg.dataset.fuEditmsg==='edit'){
+        ta.removeAttribute('readonly'); ta.style.background='#fff'; ta.focus();
+        editBtn.style.display='none'; saveBtn.style.display='';
+      }else{
+        ta.setAttribute('readonly',''); ta.style.background='#f8fafc';
+        editBtn.style.display=''; saveBtn.style.display='none';
+        const card=editMsg.closest('.dsFuItem');
+        const q=loadQ();const i=q.findIndex(x=>x.id===card?.dataset.id);
+        if(i>=0){q[i].message=ta.value.trim();q[i].updatedAt=new Date().toISOString();saveQ(q);}
+      }
+      return;
+    }
+
+    const send=e.target.closest?.('[data-fu-send]');
+    if(send){
+      const box=send.closest('.dsFuDraft'); if(!box)return;
+      const msg=box.querySelector('textarea').value;
+      const enc=encodeURIComponent(msg), k=send.dataset.fuSend;
+      const card=send.closest('.dsFuItem');
+      const q=loadQ(), item=q.find(x=>x.id===card?.dataset.id)||{};
+      const live=displayedConnectionChannels();
+      if(k==='wa'){
+        const n=waNumber(live.whatsapp);
+        if(!n){alert("WhatsApp isn't available for this connection.");return}
+        window.open('https://wa.me/'+n+'?text='+enc,'_blank');
+      }
+      else if(k==='sms'){
+        const n=digitsIntl(live.phone);
+        if(!n){alert("A mobile number isn't available for this connection.");return}
+        location.href='sms:'+encodeURIComponent(n)+'?body='+enc;
+      }
+      else if(k==='email'){
+        const a=String(live.email||'').trim();
+        if(!a){alert("An email address isn't available for this connection.");return}
+        location.href='mailto:'+encodeURIComponent(a)+'?body='+enc;
+      }
+      else if(k==='fb'){
+        const u=String(live.facebook||'').trim();
+        if(!u){alert("Facebook isn't available for this connection.");return}
+        try{await navigator.clipboard.writeText(msg)}catch(e){}
+        window.open(u,'_blank');
+      }
+      else if(k==='li'){
+        const u=String(live.linkedin||'').trim();
+        if(!u){alert("LinkedIn isn't available for this connection.");return}
+        try{await navigator.clipboard.writeText(msg)}catch(e){}
+        window.open(u,'_blank');
+      }
+      else if(k==='more'&&navigator.share)navigator.share({text:msg}).catch(()=>{});
+      else if(k==='copy'){
+        try{await navigator.clipboard.writeText(msg);alert('Copied')}catch{prompt('Copy message:',msg)}
+      }
+      return;
+    }
+
+    const btn=e.target.closest?.('[data-fu-act]'); if(!btn)return;
+    const card=btn.closest('.dsFuItem'); if(!card)return;
+    const q=loadQ(); const i=q.findIndex(x=>x.id===card.dataset.id); if(i<0)return;
+    const item=q[i];
+
+    if(btn.dataset.fuAct==='done'){
+      item.done=true;
+      item.completedAt=new Date().toISOString();
+      saveQ(q);
+      render();
+      refreshBadge();
+      return;
+    }
+    if(btn.dataset.fuAct==='schedule'){
+      const d=prompt('Follow-up date (YYYY-MM-DD)',item.date||'');
+      if(d!==null){item.date=d.trim();item.done=false;saveQ(q);render();refreshBadge();}
+      return;
+    }
+    if(btn.dataset.fuAct==='prepare'){
+      const box=card.querySelector('.dsFuDraft');
+      const draft=makeDraft(item);
+      const live=displayedConnectionChannels();
+      const waRaw=live.whatsapp||'';
+      const phoneRaw=live.phone||'';
+      const emailRaw=live.email||'';
+      const facebook=live.facebook||'';
+      const linkedin=live.linkedin||'';
+      const wa=waNumber(waRaw);
+      const phone=digitsIntl(phoneRaw);
+      const email=String(emailRaw||'').trim();
+      if((waRaw||phoneRaw||emailRaw||facebook||linkedin)){
+        const qq=loadQ(), ii=qq.findIndex(x=>x.id===item.id);
+        if(ii>=0){
+          qq[ii].whatsapp=waRaw||'';
+          qq[ii].phone=phoneRaw||'';
+          qq[ii].email=emailRaw||'';
+          qq[ii].facebook=facebook||'';
+          qq[ii].linkedin=linkedin||'';
+          saveQ(qq);
+        }
+      }
+      const channels=[];
+      if(wa)channels.push('<button data-fu-send="wa">WhatsApp</button>');
+      if(phone)channels.push('<button data-fu-send="sms">Messages</button>');
+      if(email)channels.push('<button data-fu-send="email">Email</button>');
+      if(facebook)channels.push('<button data-fu-send="fb">Messenger</button>');
+      if(linkedin)channels.push('<button data-fu-send="li">LinkedIn</button>');
+      channels.push('<button data-fu-send="copy">Copy</button>');
+      box.style.display='block';
+      box.innerHTML=`<textarea readonly style="width:100%;min-height:125px;padding:10px;border:1px solid #dbe5f2;border-radius:10px;background:#f8fafc">${esc(draft)}</textarea>
+        <div class="dsFuActions">
+          <button data-fu-editmsg="edit">✏️ Edit Message</button>
+          <button data-fu-editmsg="save" style="display:none">✓ Save Message</button>
+        </div>
+        <div class="dsFuActions">${channels.join('')}</div>`;
+    }
+  }, true);
+
+  window.addEventListener('load',()=>setTimeout(refreshBadge,400));
+  setInterval(refreshBadge,2500);
+})();
+</script>
+
+
+<div id="dsQuickShareModal" aria-hidden="true">
+  <div class="dsQsBox">
+    <div class="dsQsHead">
+      <h2>↗ Quick Share</h2>
+      <button id="dsQsClose" class="dsQsClose" type="button">Close</button>
+    </div>
+    <div class="dsQsHint">Share only your public DShario card or its QR code. Your signed-in account and private screens are never included.</div>
+    <div class="dsQsActions">
+      <button id="dsQsPublic" class="primary" type="button">🪪 Share Public Card</button>
+      <button id="dsQsQr" type="button">▦ Share QR Code</button>
+    </div>
+  </div>
+</div>
+
+
+<script id="dsRc47LateBindings">
+(function(){
+  const byId=id=>document.getElementById(id);
+  function closeQs(){
+    const m=byId('dsQuickShareModal');
+    if(m){m.classList.remove('show');m.setAttribute('aria-hidden','true');}
+  }
+  const close=byId('dsQsClose'); if(close) close.onclick=closeQs;
+  const modal=byId('dsQuickShareModal');
+  if(modal) modal.addEventListener('click',e=>{if(e.target===modal)closeQs();});
+
+  const pub=byId('dsQsPublic');
+  if(pub) pub.onclick=async()=>{try{await rc46PublicShare();}finally{closeQs();}};
+
+  const qr=byId('dsQsQr');
+  if(qr) qr.onclick=async()=>{try{await rc46QrShare();}finally{closeQs();}};
 })();
 </script>
 
