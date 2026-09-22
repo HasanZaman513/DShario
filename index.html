@@ -2122,8 +2122,8 @@ input,select,textarea{border-color:#cbdcf0!important;background:#fbfdff!importan
 <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
 <!-- RC96 V2: Reorganized Commercial Account Workspace; real feature panels moved into designated sections; RC95 frozen baseline preserved -->
 
-<!-- RC104 REMOVE FLOATING CARD: RC103 + obsolete bottom-right card shortcut hidden; isolated from live index.html -->
-<link rel="manifest" href="manifest-rc101.webmanifest">
+<!-- DShario production: RC104 application + production PWA wiring -->
+<link rel="manifest" href="manifest.webmanifest">
 <meta name="theme-color" content="#0b4f8a">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -7997,7 +7997,7 @@ document.getElementById("rc96SignOut")?.addEventListener("click",function(){
 
   if('serviceWorker' in navigator){
     window.addEventListener('load',function(){
-      navigator.serviceWorker.register('./pwa-sw-rc101.js').catch(function(err){
+      navigator.serviceWorker.register('./sw.js').catch(function(err){
         console.warn('DShario PWA service worker registration failed',err);
       });
       syncInstallUi();
