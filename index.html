@@ -605,6 +605,9 @@ body.personalProfileMode .floatingCardBtn,body.personalProfileMode .floatingCard
 #rc96ProfileBody #description{min-height:112px!important;height:112px!important}
 #rc96ProfileBody .profileShareSetting{margin-top:7px!important}
 #rc96ProfileBody .profileWriterLaunch{margin-top:7px!important}
+
+/* RC104 — remove obsolete floating card shortcut only. */
+.floatingCardBtn,.floatingCardPanel{display:none!important}
 </style>
 <script>
 /* Built-in QR generator: no external CDN request. */
@@ -2118,6 +2121,15 @@ input,select,textarea{border-color:#cbdcf0!important;background:#fbfdff!importan
 <script src="https://cdn.jsdelivr.net/npm/docx@8.5.0/build/index.umd.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
 <!-- RC96 V2: Reorganized Commercial Account Workspace; real feature panels moved into designated sections; RC95 frozen baseline preserved -->
+
+<!-- RC104 REMOVE FLOATING CARD: RC103 + obsolete bottom-right card shortcut hidden; isolated from live index.html -->
+<link rel="manifest" href="manifest-rc101.webmanifest">
+<meta name="theme-color" content="#0b4f8a">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="DShario">
+<link rel="apple-touch-icon" href="dshario-icon-192.png">
 </head>
 <body>
 <div class="app">
@@ -2612,10 +2624,10 @@ input,select,textarea{border-color:#cbdcf0!important;background:#fbfdff!importan
   </div>
 
   <div class="landingRoadmap">
-    <h2>What’s next</h2>
-    <p>Planned improvements are shown separately from features available in the current beta.</p>
+    <h2>App access & what’s next</h2>
+    <p>DShario works in your browser. Installation is optional for faster app-style access.</p>
     <div class="landingRoadmapGrid">
-      <div class="landingRoadmapItem"><b>COMING SOON</b><strong>📱 DShario PWA</strong><small>Faster home-screen access to My Card, My Connections and Quick Share while your signed-in session remains available.</small></div>
+      <div class="landingRoadmapItem" id="pwaLandingCard"><b>AVAILABLE</b><strong>📱 Install DShario</strong><small>Optionally install DShario on a supported device for quicker home-screen access and a standalone app experience. Shared cards and links still work without installation.</small><button id="installDSharioBtn" class="mini" type="button" style="margin-top:10px">Install DShario</button><div id="installDSharioHint" class="hint" style="margin-top:7px">You can also use your browser menu and choose Install app or Add to Home screen.</div></div>
       <div class="landingRoadmapItem"><b>ROADMAP</b><strong>🔎 My Interests / AI Watch</strong><small>Create focused watches for topics that matter to you and surface meaningful updates rather than a generic feed.</small></div>
     </div>
   </div>
@@ -2938,7 +2950,7 @@ input,select,textarea{border-color:#cbdcf0!important;background:#fbfdff!importan
       <div class="helpStep"><strong>9. Edit and keep meeting history</strong><span>Saved meetings open as professional read-only records. Choose Edit Meeting to update the transcript or minutes, regenerate AI minutes when needed and Save Changes. Meaningful saves can create revision/activity history.</span></div>
       <div class="helpStep"><strong>10. Share Meeting Minutes</strong><span>Share via DShario creates a recipient-side DShario copy for collaboration. Copy Link creates an external read-only meeting document that can be sent through messaging or email. The external document offers Word and PDF downloads.</span></div>
       <div class="helpStep"><strong>11. Recording and AI privacy</strong><span>Do not record people without appropriate consent or submit information to AI tools that you are not authorised to process. Avoid unnecessary sensitive information and check generated content before sharing it.</span></div>
-      <div class="helpStep"><strong>12. Coming next</strong><span>PWA quick access and My Interests / AI Watch are roadmap features and are not presented as currently available in this beta.</span></div>
+      <div class="helpStep"><strong>12. Install DShario (optional)</strong><span>DShario works normally in your browser without installation. On supported devices, choose Install DShario, Install app or Add to Home screen for quicker access from the DShario icon and a standalone app experience. Recipients do not need to install DShario to open shared cards or external links. My Interests / AI Watch remains a roadmap feature.</span></div>
     </div>
   </div>
 </div>
@@ -2951,7 +2963,7 @@ input,select,textarea{border-color:#cbdcf0!important;background:#fbfdff!importan
     <p>These Terms apply to the current DShario beta. By creating an account or using DShario, you agree to these Terms. DShario is still being tested and features may change before commercial release.</p>
 
     <h2>1. The service</h2>
-    <p>DShario combines digital identity sharing, saved connections, relationship follow-ups, profiles, supported content sharing and meeting-minutes tools. Some functions use artificial intelligence. Features marked Coming Soon or Roadmap, including the planned PWA and My Interests / AI Watch, are not part of the current service.</p>
+    <p>DShario combines digital identity sharing, saved connections, relationship follow-ups, profiles, supported content sharing and meeting-minutes tools. Some functions use artificial intelligence. DShario may also be optionally installed on supported devices as a Progressive Web App (PWA); installation is not required to use the browser service or open supported shared links. Features still marked Coming Soon or Roadmap, including My Interests / AI Watch, are not part of the current service.</p>
 
     <h2>2. Accounts and security</h2>
     <p>Provide accurate account information, keep your sign-in credentials secure and take reasonable care of activity through your account. DShario is intended for adult/professional use and is not designed for children.</p>
@@ -4413,6 +4425,7 @@ if($("saveNewPasswordBtn")) $("saveNewPasswordBtn").onclick=async()=>{
 $("signOutBtn").onclick=async()=>{await sb.auth.signOut();user=null;session=null;currentCard=null;render(null);setView("account");await refreshAuth();msg("Signed out.","info")};
 sb.auth.onAuthStateChange(async(event,s)=>{
   session=s; user=s?.user||null;
+  if(event==="INITIAL_SESSION" && document.documentElement.classList.contains("rc71-boot")) return;
   if(event==="PASSWORD_RECOVERY" && s?.user && $("resetPasswordBox")){
     passwordRecoveryVerified=true;
     try{localStorage.setItem("dshario-password-reset-pending","1")}catch(e){}
@@ -5841,17 +5854,20 @@ $("memberExchangeBtn").onclick=openMemberExchange; $("guestExchangeBtn").onclick
         $("authStatus").textContent="This password-reset link could not be verified. Please request a fresh reset email and open its link once.";
       }
     },2500);
+    window.DSharioRevealStartup?.();
     return;
   }
 
   // A secure share URL deliberately opens only the card/view represented by its token.
   if(shareToken){
     await loadSharedCard(shareToken);
+    window.DSharioRevealStartup?.();
     return;
   }
 
   if(slug){
     await loadPublicCard(slug);
+    window.DSharioRevealStartup?.();
     return;
   }
 
@@ -5867,12 +5883,16 @@ $("memberExchangeBtn").onclick=openMemberExchange; $("guestExchangeBtn").onclick
 
   if(createMode){
     if(user){await loadOwnerCard();await loadOwnerDocuments();setForm(currentCard||{});setView("edit")}else{setAuthMode("signup");setView("account")}
+    window.DSharioRevealStartup?.();
     return;
   }
 
   if(location.hash==="#account" && user){
-    await loadOwnerCard(); updateSignedInHandle();
+    /* Show authenticated account state immediately; load secondary account data afterwards. */
+    updateSignedInHandle();
     setView("account");
+    window.DSharioRevealStartup?.();
+    await loadOwnerCard();
     await loadMyConnections();
     await loadReceivedContacts();
     await loadOwnerDocuments(); renderAccountTempDocs(); updateAccountSendType(); await loadNotifications();
@@ -5885,6 +5905,7 @@ $("memberExchangeBtn").onclick=openMemberExchange; $("guestExchangeBtn").onclick
     if(currentCard) fillForm(currentCard);
     setView("edit");
     refreshAppNav();
+    window.DSharioRevealStartup?.();
     return;
   }
   if(location.hash==="#mycard" && user){
@@ -5892,9 +5913,20 @@ $("memberExchangeBtn").onclick=openMemberExchange; $("guestExchangeBtn").onclick
     await loadOwnerDocuments();
     setView(currentCard?"card":"edit");
     refreshAppNav();
+    window.DSharioRevealStartup?.();
     return;
   }
-  setView("home");
+
+  if(user){
+    /* RC103: a signed-in browser/PWA refresh opens the user's working area, not a landing-page/header mixture. */
+    await loadOwnerCard();
+    await loadOwnerDocuments();
+    setView(currentCard?"card":"edit");
+    refreshAppNav();
+  }else{
+    setView("home");
+  }
+  window.DSharioRevealStartup?.();
 })();
 </script>
 
@@ -7194,30 +7226,16 @@ body.connectionOnlyMode.rc70-saved-route #dsTrialOppSection{display:block!import
 })();
 </script>
 
-<!-- RC71: display stabilization only. Functional RC70 routing is unchanged. -->
-<script id="rc71-display-stabilization">
+<!-- RC103: startup display stabilization. Reveal only after auth/route resolution. -->
+<script id="rc103-display-stabilization">
 (function(){
-  let revealTimer=null, hardTimer=null;
-  function reveal(){
-    if(revealTimer) clearTimeout(revealTimer);
-    revealTimer=setTimeout(()=>{
-      requestAnimationFrame(()=>requestAnimationFrame(()=>{
-        document.documentElement.classList.remove('rc71-boot');
-      }));
-    },180);
-  }
-  function watch(){
-    reveal();
-    const body=document.body;
-    if(!body)return;
-    const mo=new MutationObserver(()=>{
-      if(!document.documentElement.classList.contains('rc71-boot')){mo.disconnect();return;}
-      reveal();
-    });
-    mo.observe(body,{attributes:true,attributeFilter:['class'],subtree:false});
-    hardTimer=setTimeout(()=>{document.documentElement.classList.remove('rc71-boot');mo.disconnect();},1800);
-  }
-  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',watch,{once:true}); else watch();
+  window.DSharioRevealStartup=function(){
+    requestAnimationFrame(()=>requestAnimationFrame(()=>{
+      document.documentElement.classList.remove('rc71-boot');
+    }));
+  };
+  /* Safety only: never leave the page permanently hidden if an unexpected startup error occurs. */
+  setTimeout(()=>window.DSharioRevealStartup?.(),8000);
 })();
 </script>
 
@@ -7917,5 +7935,77 @@ document.getElementById("rc96SignOut")?.addEventListener("click",function(){
 });
 </script>
 
+
+<script id="rc102-pwa-registration">
+(function(){
+  let deferredInstallPrompt=null;
+  const getBtn=()=>document.getElementById('installDSharioBtn');
+  const getHint=()=>document.getElementById('installDSharioHint');
+
+  function isStandalone(){
+    return window.matchMedia?.('(display-mode: standalone)').matches || window.navigator.standalone===true;
+  }
+
+  function syncInstallUi(){
+    const btn=getBtn(), hint=getHint();
+    if(!btn) return;
+    if(isStandalone()){
+      btn.textContent='DShario installed';
+      btn.disabled=true;
+      if(hint) hint.textContent='You are using DShario in installed app mode.';
+      return;
+    }
+    btn.disabled=false;
+    btn.textContent='Install DShario';
+  }
+
+  window.addEventListener('beforeinstallprompt',function(event){
+    event.preventDefault();
+    deferredInstallPrompt=event;
+    syncInstallUi();
+  });
+
+  window.addEventListener('appinstalled',function(){
+    deferredInstallPrompt=null;
+    syncInstallUi();
+  });
+
+  document.addEventListener('click',async function(event){
+    const btn=event.target.closest?.('#installDSharioBtn');
+    if(!btn) return;
+    if(isStandalone()){ syncInstallUi(); return; }
+
+    if(deferredInstallPrompt){
+      try{
+        deferredInstallPrompt.prompt();
+        await deferredInstallPrompt.userChoice;
+      }catch(err){
+        console.warn('DShario install prompt failed',err);
+      }finally{
+        deferredInstallPrompt=null;
+        syncInstallUi();
+      }
+      return;
+    }
+
+    const hint=getHint();
+    if(hint){
+      hint.textContent='Use your browser menu and choose “Install app”, “Install and create shortcut”, or “Add to Home screen”.';
+      hint.scrollIntoView({behavior:'smooth',block:'nearest'});
+    }
+  });
+
+  if('serviceWorker' in navigator){
+    window.addEventListener('load',function(){
+      navigator.serviceWorker.register('./pwa-sw-rc101.js').catch(function(err){
+        console.warn('DShario PWA service worker registration failed',err);
+      });
+      syncInstallUi();
+    });
+  }else{
+    window.addEventListener('load',syncInstallUi);
+  }
+})();
+</script>
 </body>
 </html>
