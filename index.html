@@ -1,25 +1,28 @@
 <!doctype html>
-<!-- DShario RC34 AI FOLLOW-UP TRIAL — based on current RC32.31/32E production baseline; isolated local-only prototype. -->
-<html lang="en">
+<!-- DShario RC84 CREATED/RECEIVED BASELINE — preserves received classification, multi-recipient sharing and concise history. -->
+<html lang="en" class="rc71-boot">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>DShario — Share. Connect. Remember. Follow Up.</title>
-<meta name="description" content="DShario is a digital identity, connection and productivity platform designed to help people share information securely, build meaningful connections, remember interactions and follow up on opportunities.">
+<title>DShario RC96 — Connect. Share. Remember. Follow Up. Collaborate.</title>
+<meta name="description" content="DShario is a connection and productivity platform for purposeful identity sharing, saved connections, follow-ups, secure content sharing and AI-assisted meeting minutes.">
 <meta name="robots" content="index,follow">
 <link rel="canonical" href="https://dshario.com/">
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://dshario.com/">
-<meta property="og:title" content="DShario — Share. Connect. Remember. Follow Up.">
-<meta property="og:description" content="DShario is a digital identity, connection and productivity platform designed to help people share information securely, build meaningful connections, remember interactions and follow up on opportunities.">
+<meta property="og:title" content="DShario — Connect. Share. Remember. Follow Up. Collaborate.">
+<meta property="og:description" content="DShario is a connection and productivity platform for purposeful identity sharing, saved connections, follow-ups, secure content sharing and AI-assisted meeting minutes.">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="DShario — Share. Connect. Remember. Follow Up.">
-<meta name="twitter:description" content="DShario is a digital identity, connection and productivity platform designed to help people share information securely, build meaningful connections, remember interactions and follow up on opportunities.">
+<meta name="twitter:title" content="DShario — Connect. Share. Remember. Follow Up. Collaborate.">
+<meta name="twitter:description" content="DShario is a connection and productivity platform for purposeful identity sharing, saved connections, follow-ups, secure content sharing and AI-assisted meeting minutes.">
 <meta name="theme-color" content="#ffffff">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2">// RC32.9: adds an Elegant printed-card-inspired template while preserving RC32.8 photo adjustment and share-type synchronization. Exact direct @DShario synchronization uses the companion one-time Supabase migration.
 // RC32.24: DShario username/address is routing identity only; hidden from shared/public/downloaded/saved card presentation.
 </script>
 <style>
+/* RC71: prevent intermediate owner/receiver/saved states from flashing during async startup. */
+html.rc71-boot body{visibility:hidden!important}
+
 :root{--navy:#123a78;--blue:#3478ee;--ink:#0f172a;--muted:#64748b;--line:#dbe5f2;--soft:#f8fbff;--green:#16a34a;--shadow:0 12px 32px rgba(15,23,42,.10)}
 *{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;font-family:Inter,"Noto Sans Bengali","Nirmala UI","Vrinda",system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;color:var(--ink);background:#fff}
 button,input,textarea{font:inherit}button{cursor:pointer}.app{max-width:980px;margin:0 auto;padding:0 16px 34px}
@@ -468,6 +471,140 @@ body.personalProfileMode .floatingCardBtn,body.personalProfileMode .floatingCard
 .dsSummaryOnlyHead strong{font-size:21px;color:#173d7d}
 .dsSummaryOnlyText{font-size:16px;line-height:1.55;color:#334155;white-space:pre-wrap}
 
+
+.meetingWorkspace.saved-detail .meetingTranscriptField textarea,.meetingWorkspace.saved-detail .meetingAiGrid textarea{background:#fff!important;border-color:transparent!important;box-shadow:none!important;resize:none;color:#172033;padding:4px 0!important;min-height:0!important;overflow:hidden}
+.meetingWorkspace.saved-detail .meetingTranscriptField .hint{display:none}
+.meetingWorkspace.saved-detail .meetingAiBox{border:0;background:transparent;padding:0;margin-top:18px}
+.meetingWorkspace.saved-detail .meetingAiHead{display:none}
+.meetingWorkspace.saved-detail .field label{font-size:17px;color:#0b315f;margin-bottom:8px}
+.meetingWorkspace.saved-detail.editing .meetingTranscriptField textarea,.meetingWorkspace.saved-detail.editing .meetingAiGrid textarea{background:#fff!important;border:1px solid #cbd8ea!important;padding:12px!important;resize:vertical;min-height:120px!important}
+.meetingWorkspace.saved-detail.editing #meetingTranscript{min-height:280px!important}
+.meetingWorkspace.saved-detail.editing .meetingAiHead{display:flex}
+.savedMeetingActions .mini{min-height:38px}.meetingShareDBtn,.meetingCopyLinkBtn{color:#1267d9}.meetingEditOnly{margin-top:16px}
+
+.meetingDocumentViewer{display:none;position:fixed;inset:0;z-index:100000;background:#f3f6fa;overflow:auto;padding:18px}
+.meetingDocumentViewer.show{display:block}
+.meetingDocumentPage{max-width:820px;margin:0 auto;background:#fff;border:1px solid #dce5ef;border-radius:18px;padding:28px;box-shadow:0 12px 34px rgba(15,23,42,.08)}
+.meetingDocumentKicker{font-weight:950;letter-spacing:.05em;color:#163a63;font-size:20px}
+.meetingDocumentPage h2{margin:8px 0 6px;color:#111827}.meetingDocumentPage h3{margin:26px 0 9px;color:#0b5fc6;font-size:17px}
+.meetingDocumentText{white-space:pre-wrap;line-height:1.65;color:#1f2937}.meetingDocumentDownloadRow{display:flex;gap:10px;margin-top:30px;flex-wrap:wrap}
+.meetingDocumentFooter{margin-top:30px;padding-top:14px;border-top:1px solid #dce5ef;text-align:right;color:#64748b;font-size:12px;font-style:italic}
+@media(max-width:560px){.meetingDocumentViewer{padding:0}.meetingDocumentPage{border-radius:0;border:0;min-height:100vh;padding:22px 18px}.meetingDocumentDownloadRow .btn{width:100%}}
+
+
+/* RC92 — product presentation refresh */
+.landingProductIntro{max-width:760px;margin:22px auto 8px;text-align:center;padding:0 18px}
+.landingProductIntro h2{margin:0 0 8px;font-size:29px;color:#102a4d}
+.landingProductIntro p{margin:0 auto;color:#5b6b83;line-height:1.55;max-width:680px}
+.landingFeatureGrid{max-width:960px;margin:22px auto;display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.landingFeatureCard{background:#fff;border:1px solid #dce8f5;border-radius:18px;padding:18px;box-shadow:0 8px 24px rgba(15,23,42,.05)}
+.landingFeatureCard span{font-size:25px;display:block;margin-bottom:8px}.landingFeatureCard strong{display:block;color:#17365d;font-size:16px;margin-bottom:5px}.landingFeatureCard small{display:block;color:#62748a;line-height:1.45;font-size:13px}
+.landingRoadmap{max-width:960px;margin:24px auto;padding:22px;border-radius:22px;background:linear-gradient(145deg,#f7fbff,#f5f3ff);border:1px solid #dce8f5}
+.landingRoadmap h2{margin:0 0 6px;text-align:center;color:#102a4d}.landingRoadmap>p{text-align:center;color:#64748b;margin:0 0 16px}
+.landingRoadmapGrid{display:grid;grid-template-columns:1fr 1fr;gap:12px}.landingRoadmapItem{background:#fff;border:1px solid #e0e9f3;border-radius:16px;padding:16px}.landingRoadmapItem b{display:inline-block;font-size:11px;letter-spacing:.5px;padding:4px 8px;border-radius:999px;background:#eaf3ff;color:#1555a7;margin-bottom:7px}.landingRoadmapItem strong{display:block;color:#17365d;margin-bottom:5px}.landingRoadmapItem small{color:#62748a;line-height:1.45}
+@media(max-width:720px){.landingFeatureGrid{grid-template-columns:1fr 1fr}.landingRoadmapGrid{grid-template-columns:1fr}}
+@media(max-width:480px){.landingFeatureGrid{grid-template-columns:1fr}.landingProductIntro h2{font-size:25px}}
+
+
+/* RC93 — landing-page mobile/commercial polish only */
+@media(max-width:560px){
+  .landingHeroNew{padding-top:28px!important;padding-bottom:24px!important}
+  .landingHeroCopy h1{font-size:42px!important;line-height:1.03!important}
+  .landingHeroCopy>p{font-size:17px!important;line-height:1.48!important}
+  .landingPurposes{gap:8px!important}
+  .landingPurpose{padding:11px 7px!important;min-height:96px!important}
+  .landingPurpose span{font-size:25px!important}
+  .landingPurpose strong{font-size:15px!important}
+  .landingPurpose small{font-size:12px!important}
+  .landingPhoneWrap{margin-top:22px!important}
+  .landingPhone{transform:scale(.9);transform-origin:top center;margin-bottom:-48px!important}
+  .landingProductIntro{margin-top:12px!important}
+  .landingProductIntro h2{font-size:27px!important}
+  .landingFeatureCard{padding:15px!important}
+  .landingHow,.landingRoadmap,.landingBenefits{margin-top:18px!important}
+  .landingRoadmap{padding:18px 14px!important}
+}
+
+/* RC97 CLEAN ACCORDION ACCOUNT */
+/* RC98 UI CONSISTENCY + AI WATCH FREEZE */
+#accountView .authBox{padding-top:14px}
+.rc96Workspace{margin-top:0}
+.rc96WorkspaceHero{display:none!important}
+.rc96WorkspaceGrid{gap:10px}
+.rc96Group{padding:0!important;overflow:hidden;transition:.2s ease}
+.rc96GroupHead{margin:0!important;padding:14px 14px;cursor:pointer;min-height:64px;position:relative}
+.rc96GroupHead small{display:none!important}
+.rc97Chevron{margin-left:auto;font-size:30px;line-height:1;color:#60778d;transition:transform .2s ease}
+.rc96Group.rc97Open>.rc96GroupHead .rc97Chevron{transform:rotate(90deg)}
+.rc96FeatureBody,.rc96GroupActions{display:none;margin:0!important;padding:0 10px 10px}
+.rc96Group.rc97Open>.rc96FeatureBody,.rc96Group.rc97Open>.rc96GroupActions{display:block}
+.rc96GroupActions .rc96Nav{margin-top:6px}
+.rc96FeatureBody .meetingMinutesHead h2{display:none!important}
+.rc96FeatureBody .meetingMinutesHead{margin-top:0!important}
+#rc96ProfileBody #myProfileSection>summary{display:flex!important;align-items:center;justify-content:space-between;cursor:pointer;font-size:17px;padding:10px 4px}
+#rc96ProfileBody #myProfileSection>summary:after{content:'›';font-size:25px;color:#60778d}
+#rc96ProfileBody #myProfileSection{display:block!important}
+#rc96ProfileBody #myProfileSection:not([open]) .editSectionBody{display:none!important}
+#rc96ProfileBody #myProfileSection[open] .editSectionBody{display:block!important}
+#rc96ProfileBody .hint{font-size:13px!important}
+.rc97Info{display:inline-block;margin-left:6px;vertical-align:middle}
+.rc97Info summary{list-style:none;cursor:pointer;color:#1670c5;font-weight:900;font-size:20px}
+.rc97Info summary::-webkit-details-marker{display:none}
+.rc97Info div{margin-top:8px;padding:9px 10px;border-radius:10px;background:#f6f9fc;color:#64748b;font-size:13px;line-height:1.45}
+.rc97AccountBottom{grid-column:1/-1;display:flex;align-items:center;justify-content:space-between;gap:12px;padding:14px 6px 4px;border-top:1px solid #e0e9f2;color:#60778d;font-size:13px}
+#rc97SignedIn{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.footer{margin-top:18px!important}.footer .privacyLinks{display:none!important}
+#editView .privacyNotice{display:none!important}
+@media(max-width:520px){.rc96GroupHead{padding:13px 12px}.rc96GroupHead strong{font-size:18px}.rc96GroupIcon{width:40px;height:40px;font-size:22px}}
+
+
+
+/* RC98 — compact, consistent controls + frozen AI Watch */
+.rc98LabelInfo{display:flex;align-items:center;gap:7px;flex-wrap:wrap}
+.rc98LabelInfo>label{margin:0!important}
+.publicCardSetting .rc97Info{margin:0;position:relative}
+.publicCardSetting .rc97Info summary{display:inline-flex;align-items:center;gap:3px;padding:2px 4px;border-radius:999px}
+.rc98InfoIcon{display:inline-flex;width:20px;height:20px;align-items:center;justify-content:center;border:2px solid #1670c5;border-radius:50%;font:900 14px/1 Arial,sans-serif;color:#1670c5}
+.rc98InfoArrow{font-size:17px;line-height:1;color:#60778d;transform:translateY(-1px)}
+.publicCardSetting .rc97Info[open] .rc98InfoArrow{transform:rotate(180deg)}
+.publicCardSetting .rc97Info div{position:relative;width:100%;margin:7px 0 0}
+/* Keep all top-level account accordions using the same chevron language. */
+.rc97Chevron{font-family:Arial,sans-serif}
+/* Connections search must stay inside its card on narrow phones. */
+#savedSearchRow{display:grid!important;grid-template-columns:minmax(0,1fr) 48px 48px!important;width:100%;max-width:100%;gap:7px!important}
+#savedSearchRow input{min-width:0!important;width:100%!important;max-width:100%!important}
+#savedSearchRow .mini{min-width:0!important;width:48px!important;padding-left:6px!important;padding-right:6px!important}
+/* Meeting list starts compact; tap My Meetings / Shared With Me to reveal, tap active tab again to close. */
+.savedMeetingsBox.rc98MeetingListClosed .meetingListTools,
+.savedMeetingsBox.rc98MeetingListClosed .meetingSearchWrap,
+.savedMeetingsBox.rc98MeetingListClosed #savedMeetingsList{display:none!important}
+.meetingListTab,.meetingListTab.active{background:#fff!important;color:#174a75!important;border-color:#cbdced!important;box-shadow:none!important}
+.meetingListTab.active{border-color:#8fbce9!important}
+/* Consistent meeting action button colour. */
+.savedMeetingActions .mini{background:#fff!important;color:#174a75!important;border:1px solid #cbdced!important}
+/* Consistent Edit My Card action colours. */
+#editView .actions #saveCloudBtn,#editView .actions #previewBtn,#editView .actions #deleteBtn{background:#edf6ff!important;color:#125fc7!important;border:1px solid #c7dcf5!important}
+/* Frozen roadmap feature: visible but clearly unavailable. */
+.rc98AiWatch .rc96GroupActions .rc96Nav:disabled{opacity:.62;cursor:not-allowed}
+@media(max-width:520px){
+  #savedSearchRow{grid-template-columns:minmax(0,1fr) 44px 44px!important;gap:6px!important}
+  #savedSearchRow .mini{width:44px!important}
+}
+
+
+/* RC99 — final functionality candidate cleanup */
+/* One clean information control for Public Card. */
+.publicCardSetting .rc97Info summary{gap:0!important;padding:2px!important}
+.publicCardSetting .rc98InfoArrow{display:none!important}
+/* Compact Profile: details stay available, but explanatory copy does not crowd the page. */
+#rc96ProfileBody #myProfileSection .editIntro{display:none!important}
+#rc96ProfileBody #myProfileSection>summary{padding:7px 2px!important}
+#rc96ProfileBody #myProfileSection .editSectionBody{padding-top:4px!important}
+#rc96ProfileBody #myProfileEditor{gap:7px!important}
+#rc96ProfileBody #myProfileEditor>label{margin-bottom:2px!important}
+#rc96ProfileBody #description{min-height:112px!important;height:112px!important}
+#rc96ProfileBody .profileShareSetting{margin-top:7px!important}
+#rc96ProfileBody .profileWriterLaunch{margin-top:7px!important}
 </style>
 <script>
 /* Built-in QR generator: no external CDN request. */
@@ -1977,6 +2114,10 @@ input,select,textarea{border-color:#cbdcf0!important;background:#fbfdff!importan
 @media(max-width:720px){.tabs .tab{font-size:14px!important;}}
 </style>
 
+<script src="https://cdn.jsdelivr.net/npm/lamejs@1.2.1/lame.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/docx@8.5.0/build/index.umd.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
+<!-- RC96 V2: Reorganized Commercial Account Workspace; real feature panels moved into designated sections; RC95 frozen baseline preserved -->
 </head>
 <body>
 <div class="app">
@@ -2039,6 +2180,10 @@ input,select,textarea{border-color:#cbdcf0!important;background:#fbfdff!importan
     <div class="cl">DS</div>
   </div>
   <button id="downloadPersonalQrBtn" type="button">▦ Download Public QR Code</button>
+  <div id="sharedProfileArea" class="sharedProfileArea" style="display:none">
+    <button id="viewSharedProfileBtn" class="btn secondary" type="button">👤 View Profile</button>
+    <div id="sharedProfilePanel" class="sharedProfilePanel" style="display:none"><div class="sharedProfileHead"><strong>Profile</strong><button id="closeSharedProfileBtn" class="mini" type="button">Close</button></div><p id="sharedProfileText"></p></div>
+  </div>
 
   <div id="savedBanner" class="saved" style="display:none"></div>
   <div id="updateNotifyBar" class="updateNotifyBar">
@@ -2323,12 +2468,11 @@ input,select,textarea{border-color:#cbdcf0!important;background:#fbfdff!importan
     <div class="editSectionBody">
       <div class="editIntro">Your full name is required. Add only the professional information you want to share.</div>
       <div class="grid">
-        <div class="field"><label>Personal DShario username *</label><input id="slug" placeholder="e.g. hasan-zaman" autocomplete="off"><span class="hint">Required. Letters, numbers and hyphens only. Your username creates your Personal DShario Address.</span><div class="personalAddressBox"><div class="hint">Your Personal DShario Address</div><div id="personalAddressPreview" class="personalAddressValue">dshario.com/@username</div><span id="usernameStatus" class="usernameStatus info">Choose a username to check availability.</span><label class="usernameConfirm"><input id="confirmUsername" type="checkbox"> <span>I confirm this username and understand it will be used in my Personal DShario Address.</span></label><div class="publicCardSetting"><label for="public_purpose">Public Card (optional)</label><select id="public_purpose"><option value="">🔒 Hidden — no public card</option><option value="business">💼 Business</option><option value="career">👔 Career</option><option value="networking">🤝 Networking</option><option value="social">👥 Social</option><option value="full">📇 Full</option></select><span class="hint">Optional. Your username can still be used to find you in DShario. Choose a card only if you want visitors to dshario.com/@username to see a public card.</span></div></div></div>
+        <div class="field"><label>Personal DShario username *</label><input id="slug" placeholder="e.g. hasan-zaman" autocomplete="off"><span class="hint">Required. Letters, numbers and hyphens only. Your username creates your Personal DShario Address.</span><div class="personalAddressBox"><div class="hint">Your Personal DShario Address</div><div id="personalAddressPreview" class="personalAddressValue">dshario.com/@username</div><span id="usernameStatus" class="usernameStatus info">Choose a username to check availability.</span><label class="usernameConfirm"><input id="confirmUsername" type="checkbox"> <span>I confirm this username and understand it will be used in my Personal DShario Address.</span></label><div class="publicCardSetting"><div class="rc98LabelInfo"><label for="public_purpose">Public Card (optional)</label><details class="rc97Info"><summary aria-label="About Public Card"><span class="rc98InfoIcon">i</span></summary><div>Optional. Your username can still be used to find you in DShario. Choose a card only if you want visitors to dshario.com/@username to see a public card.</div></details></div><select id="public_purpose"><option value="">🔒 Hidden — no public card</option><option value="business">💼 Business</option><option value="career">👔 Career</option><option value="networking">🤝 Networking</option><option value="social">👥 Social</option><option value="full">📇 Full</option></select></div></div></div>
         <div class="field"><label>Full name *</label><input id="full_name" placeholder="Your name"></div>
         <input id="full_name_bn" type="hidden" value="">
         <div class="field"><label>Profession / job title</label><input id="job_title" placeholder="e.g. Industrial Pharmacist"></div>
         <div class="field"><label>Company / organisation</label><input id="company" placeholder="Optional"></div>
-        <div class="field full"><label>Short introduction</label><textarea id="description" placeholder="A short professional introduction"></textarea></div>
         <div class="field"><label>Location</label><input id="location" placeholder="City, country"></div>
         <div class="field"><label>Card background colour</label><input id="card_color" type="color" value="#eff6ff"></div>
         <div class="field full"><label>Profile image (optional)</label><div class="photoRow"><div id="photoPreview" class="photoPreview">No photo</div><div><input id="photo" type="file" accept="image/*"><div style="margin-top:8px;display:flex;gap:7px;flex-wrap:wrap"><button id="photoAdjustToggle" class="mini" type="button" style="display:none">Adjust photo</button><button id="removePhoto" class="mini" type="button">Remove photo</button></div><div id="photoAdjuster" class="photoAdjuster"><strong style="font-size:12px">Adjust photo</strong><div class="hint">Move the image so your face and head fit comfortably.</div><div class="photoAdjustRow"><label for="photoPosition">Position</label><input id="photoPosition" type="range" min="-100" max="100" value="0"></div><div class="photoAdjustRow"><label for="photoZoom">Zoom</label><input id="photoZoom" type="range" min="100" max="160" value="100"></div></div></div></div></div>
@@ -2356,6 +2500,35 @@ input,select,textarea{border-color:#cbdcf0!important;background:#fbfdff!importan
     </div></div>
   </details>
 
+  <details class="editSection" id="myProfileSection">
+    <summary>4. My Profile (optional)</summary>
+    <div class="editSectionBody">
+      <div class="editIntro">Your Profile is separate from My Card. Create it here and decide whether people receiving your shared DShario can open it.</div>
+      <div class="field full" id="myProfileEditor">
+        <label>My Profile</label>
+        <textarea id="description" placeholder="Write a short professional profile about yourself"></textarea>
+        <div class="profileShareSetting"><label class="profileShareSwitch"><input id="profileSharingOn" type="checkbox"> <span><strong>Share Profile: <span id="profileShareState">Off</span></strong><small>Turn this On to show a separate “View Profile” button below the card you send.</small></span></label></div>
+        <div class="profileWriterLaunch"><button id="profileWriterOpen" class="mini" type="button">✨ Create / Improve Profile</button></div>
+      </div>
+  <div id="profileWriterPanel" class="profileWriterPanel" style="display:none">
+    <div class="profileWriterHead"><div><strong>✨ Professional Profile Writer</strong><div class="hint">Optional. Give DShario a few details; your Profile stays separate from My Card. Nothing is saved until you choose “Use This Profile” and save.</div></div><button id="profileWriterClose" class="mini" type="button">Close</button></div>
+    <div class="grid profileWriterGrid">
+      <div class="field"><label>Key skills</label><input id="pwSkills" placeholder="e.g. GMP, quality assurance, manufacturing"></div>
+      <div class="field"><label>Experience</label><input id="pwExperience" placeholder="e.g. 5 years in pharmaceutical industry"></div>
+      <div class="field full"><label>What do you do / specialise in?</label><textarea id="pwSpeciality" placeholder="A few words are enough"></textarea></div>
+      <div class="field full"><label>What are you looking for?</label><textarea id="pwLooking" placeholder="e.g. career opportunities, clients, partnerships, networking"></textarea></div>
+      <div class="field"><label>Style</label><select id="pwStyle"><option value="professional">Professional</option><option value="friendly">Friendly</option><option value="business">Business</option></select></div>
+      <div class="field"><label>Length</label><select id="pwLength"><option value="short">Short</option><option value="standard" selected>Standard</option></select></div>
+    </div>
+    <div class="actions profileWriterActions"><button id="profileWriterGenerate" class="btn" type="button">✨ Generate Profile</button></div>
+    <div id="profileWriterResultWrap" style="display:none">
+      <div class="field full"><label>Generated profile — edit if you want</label><textarea id="profileWriterResult" class="profileWriterResult"></textarea></div>
+      <div class="actions"><button id="profileWriterAgain" class="btn secondary" type="button">↻ Try Again</button><button id="profileWriterUse" class="btn" type="button">✓ Use This Profile</button></div>
+    </div>
+  </div>
+    </div>
+  </details>
+
   <select id="privacy_view" aria-hidden="true" tabindex="-1" style="display:none"><option value="professional">Professional</option><option value="business">Business</option><option value="social">Social</option><option value="full">Full</option></select>
 
   <details class="editSection" style="display:none">
@@ -2363,7 +2536,8 @@ input,select,textarea{border-color:#cbdcf0!important;background:#fbfdff!importan
     <div class="editSectionBody"><div class="docHint">Optional beta feature. Upload up to 10 documents, maximum 10 MB each. PDF, DOC, DOCX, JPG and PNG are supported. Document sharing is tested separately from the core card.</div><div style="margin-top:10px"><input id="documentUpload" type="file" accept="application/pdf,.pdf,application/msword,.doc,application/vnd.openxmlformats-officedocument.wordprocessingml.document,.docx,image/jpeg,.jpg,.jpeg,image/png,.png" multiple><button id="uploadDocumentBtn" class="mini" type="button" style="margin-left:6px">Add documents</button></div><div id="ownerDocumentList" class="docList"></div></div>
   </details>
 
-  <div class="privacyNotice"><strong>Privacy notice:</strong> Only add information you are comfortable sharing. When you share, choose Business, Career, Networking, Social or Full to control what the recipient receives. <button type="button" class="openPrivacy">Read Privacy Policy</button> • <button type="button" class="openTerms">Terms of Use</button></div>
+
+
   <div class="actions"><button id="saveCloudBtn" class="btn">Save My Card Online</button><button id="previewBtn" class="btn secondary">Preview</button><button id="deleteBtn" class="btn danger" style="display:none">Delete Card</button></div>
 </div>
 </section>
@@ -2377,9 +2551,9 @@ input,select,textarea{border-color:#cbdcf0!important;background:#fbfdff!importan
 
   <div class="landingHeroNew">
     <div class="landingHeroCopy">
-      <div class="landingEyebrow">YOUR DIGITAL IDENTITY. YOUR WAY.</div>
-      <h1>Share with purpose.<br><span>Connect better.</span></h1>
-      <p>Create one digital identity and choose what to share for Business, Career, Networking, Social or Full connections.</p>
+      <div class="landingEyebrow">CONNECT. SHARE. REMEMBER. FOLLOW UP. COLLABORATE.</div>
+      <h1>More than a digital card.<br><span>Manage the connection.</span></h1>
+      <p>Share the right identity for the moment, save meaningful connections, follow up on opportunities, share content securely and turn meetings into useful records.</p>
       <div class="landingPurposes" aria-label="DShario share types">
         <div class="landingPurpose"><span>💼</span><strong>Business</strong><small>For clients and work</small></div>
         <div class="landingPurpose"><span>👔</span><strong>Career</strong><small>For opportunities</small></div>
@@ -2411,33 +2585,57 @@ input,select,textarea{border-color:#cbdcf0!important;background:#fbfdff!importan
     </div>
   </div>
 
+  <div class="landingProductIntro">
+    <h2>From first contact to useful follow-up</h2>
+    <p>DShario brings identity sharing, relationship memory and practical collaboration into one simple workflow.</p>
+  </div>
+
+  <div class="landingFeatureGrid">
+    <div class="landingFeatureCard"><span>📇</span><strong>Purpose-Based Sharing</strong><small>Create one card and choose Business, Career, Networking, Social or Full depending on the situation.</small></div>
+    <div class="landingFeatureCard"><span>👥</span><strong>My Connections</strong><small>Save a DShario connection, keep the latest shared view and retain a useful connection trace.</small></div>
+    <div class="landingFeatureCard"><span>🔔</span><strong>Opportunities & Follow-Ups</strong><small>Add an opportunity to a saved connection, set a follow-up date and keep relationship actions organised.</small></div>
+    <div class="landingFeatureCard"><span>👤</span><strong>Profile + AI Writer</strong><small>Keep your broader profile separate from your card and use AI assistance to draft a professional profile from facts you provide.</small></div>
+    <div class="landingFeatureCard"><span>📄</span><strong>Secure Content Sharing</strong><small>Share supported documents through controlled DShario sharing flows while keeping identity and content sharing distinct.</small></div>
+    <div class="landingFeatureCard"><span>📝</span><strong>AI Meeting Minutes</strong><small>Record with consent, transcribe, review, edit and generate a summary, decisions and action items. Download Word/PDF or share a read-only document link.</small></div>
+  </div>
+
   <div class="landingHow">
     <h2>How DShario Works</h2>
-    <p>A simple way to create, share and connect.</p>
+    <p>A connected workflow instead of another contact list.</p>
     <div class="landingSteps">
-      <div><span>👤</span><strong>1. Create</strong><small>Add your professional and contact details.</small></div>
-      <div><span>☷</span><strong>2. Choose Purpose</strong><small>Select what fits the moment.</small></div>
-      <div><span>⌯</span><strong>3. Share</strong><small>Use a link or QR code.</small></div>
-      <div><span>👥</span><strong>4. Connect</strong><small>View, save and connect instantly.</small></div>
+      <div><span>👤</span><strong>1. Share</strong><small>Choose the information appropriate for the connection.</small></div>
+      <div><span>🤝</span><strong>2. Connect</strong><small>Save useful people and keep the relationship context.</small></div>
+      <div><span>🧠</span><strong>3. Remember</strong><small>Use connection history, notes and meeting records.</small></div>
+      <div><span>🔔</span><strong>4. Follow Up</strong><small>Track opportunities and the next action.</small></div>
+      <div><span>📝</span><strong>5. Collaborate</strong><small>Share useful content and turn meetings into records people can act on.</small></div>
+    </div>
+  </div>
+
+  <div class="landingRoadmap">
+    <h2>What’s next</h2>
+    <p>Planned improvements are shown separately from features available in the current beta.</p>
+    <div class="landingRoadmapGrid">
+      <div class="landingRoadmapItem"><b>COMING SOON</b><strong>📱 DShario PWA</strong><small>Faster home-screen access to My Card, My Connections and Quick Share while your signed-in session remains available.</small></div>
+      <div class="landingRoadmapItem"><b>ROADMAP</b><strong>🔎 My Interests / AI Watch</strong><small>Create focused watches for topics that matter to you and surface meaningful updates rather than a generic feed.</small></div>
     </div>
   </div>
 
   <div class="landingBenefits">
-    <div><span>✓</span><strong>You’re in Control</strong><small>Choose what to share for every occasion.</small></div>
-    <div><span>🔒</span><strong>Privacy Focused</strong><small>Share only the information you choose.</small></div>
-    <div><span>⚡</span><strong>Simple & Fast</strong><small>Create and share your card in minutes.</small></div>
+    <div><span>✓</span><strong>You’re in Control</strong><small>Choose what to share and which workflow to use.</small></div>
+    <div><span>🔒</span><strong>Privacy by Choice</strong><small>Share deliberately and use controlled links where available.</small></div>
+    <div><span>⚡</span><strong>Built for Continuity</strong><small>Move from meeting someone to remembering and following up.</small></div>
   </div>
 
   <div class="landingBottom">
     <div class="landingBottomBrand"><span class="landingDsMark">DS</span><span>DShario</span></div>
-    <div class="landingBottomTag">Share smarter. Connect better.</div>
+    <div class="landingBottomTag">Connect. Share. Remember. Follow Up.</div>
     <div class="landingBottomBeta">Currently in BETA. We’re continuing to improve DShario.</div>
   </div>
 </div>
 </section>
 <section id="accountView" class="view">
 <div class="panel authBox">
-  <div id="authBackRow" style="display:none"></div><h1>My Account</h1><div id="signedInHandle" class="hint" style="font-weight:850;margin:-4px 0 14px"></div>
+  <div id="authBackRow" style="display:none"></div><div id="signedInHandle" class="hint" style="display:none"></div>
   <button id="backToSharedCardBtn" class="mini" type="button" style="display:none">← Back to received card</button>
   <p id="accountLead" class="lead">Sign in to access your account.</p>
   <div id="signedOutBox">
@@ -2449,6 +2647,48 @@ input,select,textarea{border-color:#cbdcf0!important;background:#fbfdff!importan
     <div id="authStatus" class="authStatus">New users must confirm their email before first sign-in.</div>
   </div>
   <div id="signedInBox" style="display:none">
+    <div id="rc96AccountWorkspace" class="rc96Workspace">
+      <div class="rc96WorkspaceGrid">
+        <div class="rc96Group rc96Connections">
+          <div class="rc96GroupHead"><div class="rc96GroupIcon">👥</div><div><strong>My Connections</strong><small>Grow and manage your professional network</small></div><span class="rc97Chevron">›</span></div>
+          <div id="rc96ConnectionsBody" class="rc96FeatureBody"></div>
+        </div>
+        <div class="rc96Group rc96Meetings">
+          <div class="rc96GroupHead"><div class="rc96GroupIcon">📝</div><div><strong>Meeting Minutes</strong><small>Record, transcribe and manage meetings</small></div><span class="rc97Chevron">›</span></div>
+          <div id="rc96MeetingsBody" class="rc96FeatureBody"></div>
+        </div>
+        <div class="rc96Group rc96Content">
+          <div class="rc96GroupHead"><div class="rc96GroupIcon">📁</div><div><strong>Shared Content</strong><small>Manage documents and shared information</small></div><span class="rc97Chevron">›</span></div>
+          <div id="rc96ContentBody" class="rc96FeatureBody"></div>
+        </div>
+        <div class="rc96Group rc96Profile">
+          <div class="rc96GroupHead"><div class="rc96GroupIcon">👤</div><div><strong>My Profile</strong><small>Manage your professional profile</small></div><span class="rc97Chevron">›</span></div>
+          <div id="rc96ProfileBody" class="rc96FeatureBody"></div>
+        </div>
+        <div class="rc96Group rc98AiWatch">
+          <div class="rc96GroupHead"><div class="rc96GroupIcon">🔎</div><div><strong>My Interests / AI Watch</strong><small>Focused updates for topics that matter to you</small></div><span class="rc97Chevron">›</span></div>
+          <div class="rc96GroupActions"><button class="rc96Nav" type="button" disabled>AI Watch <span>Coming soon</span></button></div>
+        </div>
+        <div class="rc96Group rc96Subscription">
+          <div class="rc96GroupHead"><div class="rc96GroupIcon">♛</div><div><strong>Subscription</strong><small>Plans and additional features</small></div><span class="rc97Chevron">›</span></div>
+          <div class="rc96GroupActions"><button class="rc96Nav" type="button" disabled>My Subscription <span>Coming soon</span></button></div>
+        </div>
+        <div class="rc96Group rc96Security">
+          <div class="rc96GroupHead"><div class="rc96GroupIcon">🛡️</div><div><strong>Security & Privacy</strong><small>Account, sharing and data information</small></div><span class="rc97Chevron">›</span></div>
+          <div class="rc96GroupActions">
+            <button class="rc96Nav openPrivacy" type="button">Privacy & Sharing <span>Privacy Policy ›</span></button>
+            <button class="rc96Nav openTerms" type="button">Terms of Use <span>Read terms ›</span></button>
+          </div>
+        </div>
+        <div class="rc96Group rc96Account">
+          <div class="rc96GroupHead"><div class="rc96GroupIcon">⚙️</div><div><strong>Help & Support</strong></div><span class="rc97Chevron">›</span></div>
+          <div class="rc96GroupActions">
+            <button id="rc96Help" class="rc96Nav" type="button">User Guide / Help <span>Open guide ›</span></button>
+          </div>
+        </div>
+        <div class="rc97AccountBottom"><span id="rc97SignedIn">Signed in</span><button id="rc96SignOut" class="mini" type="button">Sign Out</button></div>
+      </div>
+    </div>
     <div id="signedInAs" style="display:none"><span id="userEmail"></span></div>
     
     <button id="signOutBtn" class="mini" style="display:none">Sign out</button>
@@ -2524,12 +2764,160 @@ input,select,textarea{border-color:#cbdcf0!important;background:#fbfdff!importan
       <div id="receivedContactsCount" class="receivedCount">0 / 10 contacts</div>
       <div id="receivedContactsList" class="receivedList"></div>
     </div>
-    <div id="bottomSignOut" style="margin-top:22px;padding-top:14px;border-top:1px solid #e5edf6;text-align:center"><button id="bottomSignOutBtn" class="mini" type="button">Sign out</button></div>
+    
+<!-- DShario RC83 MULTI-RECIPIENT MEETING SHARING + SHARED WITH ME — evolved from proven RC82. -->
+<!-- DShario RC79 PROFESSIONAL MEETING WORKSPACE — based on RC77; saved-meeting detail view, automatic timing/duration, professional orientation. -->
+<div id="meetingMinutesPanel" class="meetingMinutesPanel">
+  <div class="meetingMinutesHead">
+    <div>
+      <h2>📝 Meeting Minutes</h2>
+      <div class="hint">Record with consent, securely transcribe, review and manage professional meeting minutes.</div>
+    </div>
+  </div>
+
+  <div class="meetingHomeActions">
+    <button id="meetingCreateBtn" class="btn" type="button">＋ New Meeting</button>
+  </div>
+
+  <div id="meetingWorkspace" class="meetingWorkspace" style="display:none">
+    <div class="meetingWorkspaceNav">
+      <button id="meetingCloseBtn" class="btn ghost" type="button">← Back to Meetings</button>
+      <span id="meetingWorkspaceMode" class="hint" style="display:none"></span>
+    </div>
+
+  <div id="meetingSetupFields" class="meetingGrid">
+    <div class="field">
+      <label for="meetingTitle">Meeting title</label>
+      <input id="meetingTitle" maxlength="120" placeholder="e.g. Project discussion">
+    </div>
+    <div class="field">
+      <label>Meeting timing</label>
+      <div id="meetingTimingDisplay" class="meetingAutoTiming">Starts automatically when recording begins</div>
+      <input id="meetingDateTime" type="hidden">
+    </div>
+    <div class="field full">
+      <label for="meetingParticipants">Participants</label>
+      <input id="meetingParticipants" maxlength="300" placeholder="Names or teams (optional)">
+    </div>
+  </div>
+
+  <div id="meetingConsentBox" class="meetingConsent">
+    <label>
+      <input id="meetingConsentCheck" type="checkbox">
+      <span>I confirm everyone being recorded has been informed and has agreed to the recording.</span>
+    </label>
+    <div class="hint">Recording laws can vary. DShario requires you to obtain appropriate consent before recording.</div>
+  </div>
+
+  <div id="meetingRecorderBox" class="meetingRecorder">
+    <div class="meetingStatusRow">
+      <span id="meetingRecordDot" class="meetingRecordDot"></span>
+      <strong id="meetingRecordStatus">Ready to record</strong>
+      <span id="meetingTimer" class="meetingTimer">00:00</span>
+    </div>
+    <div class="meetingRecordActions">
+      <button id="meetingStartBtn" class="btn" type="button">🎙 Start Recording</button>
+      <button id="meetingStopBtn" class="btn danger" type="button" disabled>■ Stop Recording</button>
+    </div>
+    <div id="meetingSpeechSupport" class="hint">Audio is recorded first. After you stop, tap <strong>Transcribe Recording</strong> to create the transcript securely.</div>
+    <audio id="meetingAudioPlayback" controls style="display:none;width:100%;margin-top:12px"></audio>
+    <button id="meetingDownloadMp3Btn" class="btn ghost" type="button" disabled style="width:100%;margin-top:12px">⬇ Download Audio as MP3</button>
+    <div id="meetingMp3Status" class="hint" style="margin-top:7px">Audio is not permanently stored by DShario. Download a copy if you want to keep it.</div>
+    <button id="meetingTranscribeBtn" class="btn secondary" type="button" disabled style="width:100%;margin-top:12px">✨ Transcribe Recording</button>
+    <div id="meetingTranscribeStatus" class="hint" style="margin-top:8px"></div>
+  </div>
+
+  <div id="meetingSavedMeta" class="meetingSavedMeta" style="display:none"></div>
+
+  <div class="field meetingTranscriptField">
+    <label for="meetingTranscript">Transcript</label>
+    <textarea id="meetingTranscript" placeholder="Your transcription will appear here after you tap Transcribe Recording. You can edit it or type meeting notes manually."></textarea>
+    <div class="hint">Review and correct the AI-generated transcript before saving.</div>
+  </div>
+
+  <div class="meetingAiBox">
+    <div class="meetingAiHead">
+      <div><strong>✨ AI Meeting Minutes</strong><div class="hint">Create a concise summary, key decisions and action items from the reviewed transcript.</div></div>
+      <button id="meetingGenerateAiBtn" class="btn secondary" type="button">Generate Meeting Minutes</button>
+    </div>
+    <div id="meetingAiStatus" class="hint" style="margin-top:8px"></div>
+    <div class="meetingAiGrid">
+      <div class="field full"><label for="meetingSummary">Meeting Summary</label><textarea id="meetingSummary" placeholder="AI summary will appear here. You can edit it."></textarea></div>
+      <div class="field full"><label for="meetingDecisions">Key Decisions</label><textarea id="meetingDecisions" placeholder="Key decisions will appear here. You can edit them."></textarea></div>
+      <div class="field full"><label for="meetingActions">Action Items</label><textarea id="meetingActions" placeholder="Action items will appear here. You can edit them."></textarea></div>
+    </div>
+  </div>
+
+  <div id="meetingSavedShareActions" class="meetingSavedShareActions" style="display:none">
+    <button id="meetingEditBtn" class="btn secondary" type="button">✏️ Edit Meeting</button>
+  </div>
+
+  <details id="meetingHistoryBox" class="meetingHistoryBox" style="display:none">
+    <summary>🕘 Activity &amp; Revision History <span id="meetingHistoryCount" class="meetingHistoryCount"></span></summary>
+    <div id="meetingHistoryStatus" class="hint" style="margin:8px 0">Open this section to load the saved history.</div>
+    <div id="meetingHistoryList" class="meetingHistoryList"></div>
+  </details>
+
+  <div id="meetingSaveActions" class="meetingSaveActions">
+    <button id="meetingSaveBtn" class="btn" type="button">Save Meeting</button>
+  </div>
+  <div id="meetingMessage" class="meetingMessage"></div>
+  </div>
+
+  <div class="savedMeetingsBox">
+    <div class="savedMeetingsHead">
+      <strong>Meeting Minutes</strong>
+      <span class="hint">Saved securely to your signed-in DShario account.</span>
+    </div>
+    <div class="meetingListTabs" role="tablist" aria-label="Meeting lists">
+      <button id="meetingTabMine" class="meetingListTab active" type="button">My Meetings <span id="meetingMineCount"></span></button>
+      <button id="meetingTabShared" class="meetingListTab" type="button">Shared With Me <span id="meetingSharedCount"></span></button>
+    </div>
+    <div class="meetingListTools">
+      <button id="meetingSearchToggle" class="meetingToolBtn" type="button">🔍 Search</button>
+      <select id="meetingListSort" class="meetingToolBtn" aria-label="Sort meetings">
+        <option value="newest">⇅ Newest</option>
+        <option value="oldest">⇅ Oldest</option>
+        <option value="az">⇅ A → Z</option>
+        <option value="za">⇅ Z → A</option>
+      </select>
+    </div>
+    <div id="meetingSearchWrap" class="meetingSearchWrap" hidden>
+      <input id="meetingListSearch" type="search" placeholder="Search meeting or participant" aria-label="Search meetings">
+    </div>
+    <div id="savedMeetingsList"></div>
+  </div>
+
+  <div id="meetingShareModal" class="meetingShareModal" aria-hidden="true">
+    <div class="meetingShareDialog" role="dialog" aria-modal="true" aria-labelledby="meetingShareTitle">
+      <div class="meetingShareHead"><div><strong id="meetingShareTitle">Share Meeting Minutes</strong><div class="hint">Add one or more DShario @usernames. Each recipient receives an independent editable copy.</div></div><button id="meetingShareClose" class="mini" type="button">Close</button></div>
+      <div class="meetingRecipientRow"><input id="meetingRecipientInput" placeholder="e.g. @wasi"><button id="meetingRecipientAdd" class="btn secondary" type="button">Add</button></div>
+      <div id="meetingRecipientChips" class="meetingRecipientChips"></div>
+      <div id="meetingShareStatus" class="hint meetingShareStatus"></div>
+      <button id="meetingShareConfirm" class="btn" type="button" disabled>Share Meeting</button>
+    </div>
+  </div>
+  <div id="meetingDownloadModal" class="meetingShareModal" aria-hidden="true">
+    <div class="meetingShareDialog meetingDownloadDialog" role="dialog" aria-modal="true" aria-labelledby="meetingDownloadTitle">
+      <div class="meetingShareHead">
+        <div><strong id="meetingDownloadTitle">Download Meeting Minutes</strong><div class="hint">Download a clean professional copy of the current saved meeting.</div></div>
+        <button id="meetingDownloadClose" class="mini" type="button">Close</button>
+      </div>
+      <div class="meetingDownloadBrand"><div><strong>Meeting Minutes</strong><div class="hint">Choose Word or PDF.</div></div></div>
+      <div class="meetingDownloadChoices">
+        <button id="meetingDownloadWordBtn" class="btn secondary" type="button">Word (.docx)</button>
+        <button id="meetingDownloadPdfBtn" class="btn secondary" type="button">PDF (.pdf)</button>
+      </div>
+      <div id="meetingDownloadStatus" class="hint meetingShareStatus"></div>
+    </div>
+  </div>
+</div>
+
   </div>
 </div>
 </section>
 
-<div class="footer">DShario • Keep in touch.<div class="privacyLinks"><button type="button" class="openPrivacy">Privacy Policy</button><button type="button" class="openTerms">Terms of Use</button></div></div>
+<div class="footer">DShario • Connect. Share. Grow.</div>
 </div>
 
 
@@ -2539,16 +2927,18 @@ input,select,textarea{border-color:#cbdcf0!important;background:#fbfdff!importan
     <h1 id="helpTitle">DShario User Guide</h1>
     <p id="helpIntro">A simple guide to creating, sharing and managing your DShario.</p>
     <div class="helpSteps">
-      <div class="helpStep"><strong id="hs1">1. Create your card</strong><span id="hb1">Add the professional and contact information you want to use. Keep optional details blank when you do not need them.</span></div>
-      <div class="helpStep"><strong id="hs2">2. Choose a share type</strong><span id="hb2">Choose Business, Career, Networking, Social or Full. The selected share type determines what information the card will carry.</span></div>
-      <div class="helpStep"><strong id="hs3">3. Choose how to share</strong><span id="hb3">My DShario Link is your permanent card address. Temporary Share lasts 24 hours, 7 days or 30 days and can be revoked early.</span></div>
-      <div class="helpStep"><strong id="hs4">4. Add documents to Temporary Share</strong><span id="hb4">Add an optional message and upload up to 10 documents, maximum 10 MB each. PDF, DOC, DOCX, JPG and PNG are supported. The message and documents stay available only while the Temporary Share is valid. Expiry or revocation stops future DShario access, but cannot remove a copy already downloaded by the recipient.</span></div>
-      <div class="helpStep"><strong id="hs5">5. Share, QR and download</strong><span id="hb5">Send a link or QR. You can also download a digital-card image, choose a card template, and use its QR to return to the live DShario card.</span></div>
-      <div class="helpStep"><strong id="hs6">6. Save a received DShario</strong><span id="hb6">From a permanent or valid Temporary Share, choose Save to My Connections. If sign-in is required, DShario returns to the received card and completes the save. Once saved, View in My Connections becomes the single navigation action and opens your saved connections directly.</span></div>
-      <div class="helpStep"><strong id="hs7">7. Exchange with my DShario</strong><span id="hb7">A DShario member signs in and is taken to My Card → Share Card, where the same five Share Types are used. People who do not use DShario can use the separate contact-return option when it is available.</span></div>
-      <div class="helpStep"><strong id="hs8">8. My Connections and history</strong><span id="hb8">One sender appears as one active connection. Saving a newer view from the same sender makes it the current saved card. Earlier cards remain only as a lightweight history trace, without keeping the old card details. Received and Saved date/time help you track when the connection happened.</span></div>
-      <div class="helpStep"><strong id="hs9">9. Temporary Share expiry and revocation</strong><span id="hb9">When a Temporary Share expires or is revoked, its live card actions and temporary details are no longer available. A searchable history trace may remain. If the same sender is later saved through a permanent link, that permanent card becomes the active connection.</span></div>
-      <div class="helpStep"><strong id="hs10">10. Organise professional connections</strong><span id="hb10">In My Connections, use ☆ Favourite directly. Open a saved card to add an Opportunity and follow-up date. Due follow-ups appear under the top ⏰ AI Follow-Ups. Use More only for connection history or removing the connection.</span></div>
+      <div class="helpStep"><strong>1. Create My Card</strong><span>Add only the professional and contact information you want to share. Your Profile is separate from My Card.</span></div>
+      <div class="helpStep"><strong>2. Share with a purpose</strong><span>Choose Business, Career, Networking, Social or Full. Use your permanent link/QR for ongoing sharing or Temporary Share when you want time-limited access.</span></div>
+      <div class="helpStep"><strong>3. Save a connection</strong><span>A recipient can save a received DShario to My Connections. DShario keeps the latest saved view as the active connection while retaining a lightweight history trace.</span></div>
+      <div class="helpStep"><strong>4. Manage My Connections</strong><span>Favourite and search connections, review history and add relationship context. Add Opportunity becomes available after a person is saved as a connection.</span></div>
+      <div class="helpStep"><strong>5. Opportunities and follow-ups</strong><span>Open a saved connection to record an opportunity, its stage or notes, set a follow-up date and prepare an editable follow-up message. Due items appear through the reminder/follow-up controls.</span></div>
+      <div class="helpStep"><strong>6. My Profile and AI Profile Writer</strong><span>Your Profile is separate from My Card. Turn Profile Sharing on if you want recipients to see a separate View Profile option. The AI writer drafts from facts you provide; review and edit the result before using it.</span></div>
+      <div class="helpStep"><strong>7. Share documents/content</strong><span>Use DShario’s supported document-sharing flow for files you are authorised to share. Time-limited or revoked access cannot recall a file that a recipient already downloaded or copied.</span></div>
+      <div class="helpStep"><strong>8. Create Meeting Minutes</strong><span>Get the participants’ consent before recording. Record the meeting, transcribe it, review the transcript and use AI to prepare a summary, key decisions and action items. Always review AI-generated minutes for accuracy.</span></div>
+      <div class="helpStep"><strong>9. Edit and keep meeting history</strong><span>Saved meetings open as professional read-only records. Choose Edit Meeting to update the transcript or minutes, regenerate AI minutes when needed and Save Changes. Meaningful saves can create revision/activity history.</span></div>
+      <div class="helpStep"><strong>10. Share Meeting Minutes</strong><span>Share via DShario creates a recipient-side DShario copy for collaboration. Copy Link creates an external read-only meeting document that can be sent through messaging or email. The external document offers Word and PDF downloads.</span></div>
+      <div class="helpStep"><strong>11. Recording and AI privacy</strong><span>Do not record people without appropriate consent or submit information to AI tools that you are not authorised to process. Avoid unnecessary sensitive information and check generated content before sharing it.</span></div>
+      <div class="helpStep"><strong>12. Coming next</strong><span>PWA quick access and My Interests / AI Watch are roadmap features and are not presented as currently available in this beta.</span></div>
     </div>
   </div>
 </div>
@@ -2557,58 +2947,55 @@ input,select,textarea{border-color:#cbdcf0!important;background:#fbfdff!importan
   <div class="modalBox">
     <button id="termsClose" class="modalClose" type="button">Close</button>
     <h1 id="termsTitle">DShario Terms of Use</h1>
-    <p><strong>Last updated: 1 September 2026</strong></p>
-    <p>These Terms apply when you access or use the DShario prototype. By creating an account or using DShario, you agree to these Terms. If you do not agree, please do not use the service.</p>
+    <p><strong>Last updated: 21 September 2026</strong></p>
+    <p>These Terms apply to the current DShario beta. By creating an account or using DShario, you agree to these Terms. DShario is still being tested and features may change before commercial release.</p>
 
-    <h2>1. About DShario</h2>
-    <p>DShario is an early-stage digital identity and contact-sharing prototype. It lets users create a card, choose what to share, create permanent or temporary links, exchange contact details, download a digital-card image and, for Temporary Share, optionally share limited PDF documents. Features and limits may change during testing.</p>
+    <h2>1. The service</h2>
+    <p>DShario combines digital identity sharing, saved connections, relationship follow-ups, profiles, supported content sharing and meeting-minutes tools. Some functions use artificial intelligence. Features marked Coming Soon or Roadmap, including the planned PWA and My Interests / AI Watch, are not part of the current service.</p>
 
     <h2>2. Accounts and security</h2>
-    <p>You must provide accurate account information, keep your credentials secure and take responsibility for activity through your account. DShario is intended for professional and adult networking and is not designed for children.</p>
+    <p>Provide accurate account information, keep your sign-in credentials secure and take reasonable care of activity through your account. DShario is intended for adult/professional use and is not designed for children.</p>
 
-    <h2>3. Your card, privacy views and sharing choices</h2>
-    <p>You control the information you add and the privacy view you choose. My DShario Link is intended as a permanent personal card address. Temporary Share can expire after the selected period and can be revoked early. Anyone who receives accessible information may still copy, save, screenshot or forward it, so only share information appropriate for the recipient.</p>
+    <h2>3. Your information and sharing choices</h2>
+    <p>You decide what information to add to My Card and My Profile and which available sharing option to use. A recipient may copy, save, screenshot, forward or download information you make accessible. Expiry or revocation can stop future access through DShario but cannot recall a copy already obtained by a recipient.</p>
 
-    <h2>4. Contact exchange</h2>
-    <p>A recipient may voluntarily send selected contact details back to a card owner. The owner may save those details to their phone. Received Contacts is intended as a temporary DShario inbox and is subject to prototype limits. Users must use received contact information lawfully and respectfully and must not use it for unsolicited or unlawful communications.</p>
+    <h2>4. Connections, opportunities and follow-ups</h2>
+    <p>My Connections, opportunity notes, reminders and AI-assisted follow-up tools are organisational aids. You remain responsible for deciding whether, when and how to contact another person and for ensuring communications are lawful and appropriate.</p>
 
-    <h2>5. PDF document sharing</h2>
-    <p>PDF documents are available only with Temporary Share and are subject to displayed file-number and file-size limits. You must have the right to upload and share every document. Do not upload malware, unlawful material, confidential material you are not authorised to disclose, or highly sensitive information. Revoking or expiring a Temporary Share stops future access through DShario, but cannot delete a copy that a recipient already downloaded, copied or stored.</p>
+    <h2>5. Documents and shared content</h2>
+    <p>You must have the right and authority to upload or share every file. Do not upload malware, unlawful material, confidential information you are not authorised to disclose, or unnecessary highly sensitive information. File types, sizes and other beta limits may change.</p>
 
-    <h2>6. Your responsibility for content</h2>
-    <p>You must only upload or publish information, photographs, logos, documents, links and other material that you own or have permission to use. You must not impersonate another person, misrepresent an affiliation, infringe intellectual-property or privacy rights, or publish another person's personal information without appropriate authority or permission.</p>
+    <h2>6. Meeting Minutes, recording and consent</h2>
+    <p>You are responsible for obtaining any consent or permission required before recording a meeting or processing another person's voice or information. DShario may transcribe recorded audio and use AI to help generate summaries, decisions and action items. AI and transcription can be inaccurate, so review and correct the record before relying on or sharing it.</p>
 
-    <h2>7. Acceptable use</h2>
-    <p>You must not use DShario for unlawful, fraudulent, deceptive, abusive, harassing or harmful purposes; distribute malware or malicious links/files; attempt unauthorised access; interfere with the service; scrape or misuse personal information; or use DShario in a way that infringes another person's rights.</p>
+    <h2>7. Meeting sharing and downloads</h2>
+    <p>Share via DShario can create a recipient-side copy. External Copy Link sharing provides a read-only meeting document and may allow Word/PDF downloads. A person who receives or downloads meeting content may retain a copy outside DShario. Only share meeting information with appropriate recipients.</p>
 
-    <h2>8. Prototype availability and limits</h2>
-    <p>DShario is a developing prototype. Features, storage limits and availability may change. We do not promise uninterrupted or error-free operation. Users should keep their own copies of important information and documents.</p>
+    <h2>8. AI-assisted features</h2>
+    <p>AI-generated profiles, meeting minutes and follow-up text are drafts or assistance, not guaranteed facts or professional advice. Review outputs before use. Do not intentionally submit content you lack authority to process or disclose.</p>
 
-    <h2>9. Third-party services and links</h2>
-    <p>DShario relies on third-party infrastructure, including Supabase and website-hosting services, and may link to external social networks and websites. Third parties operate under their own terms and privacy practices. DShario does not control external websites or what recipients do with information after they lawfully receive or download it.</p>
+    <h2>9. Your content and acceptable use</h2>
+    <p>You retain ownership of content you provide and give DShario permission to process, store and display it as reasonably necessary to provide the features you request. Do not impersonate others, infringe privacy or intellectual-property rights, misuse personal information, harass people, distribute malicious material, attempt unauthorised access or use DShario for unlawful, fraudulent or harmful activity.</p>
 
-    <h2>10. Intellectual property</h2>
-    <p>You retain ownership of content you provide. You give DShario permission to process, store and display that content only as reasonably necessary to provide the features you request. DShario branding, interface and original service materials remain the property of their respective owner(s).</p>
+    <h2>10. Third-party services</h2>
+    <p>DShario relies on third-party infrastructure and AI/service providers. Those services may have their own terms and privacy practices. Availability can also depend on external providers, networks and quotas.</p>
 
-    <h2>11. Deletion and account-related information</h2>
-    <p>The prototype allows users to edit their card and provides a Delete Card function. Received contacts can also be deleted from the owner's temporary inbox. Deleting or revoking information in DShario cannot recall copies already saved by recipients. Contact DShario through its official LinkedIn Page for account-related assistance until a dedicated support address is established.</p>
+    <h2>11. Beta availability, data and backups</h2>
+    <p>DShario does not promise uninterrupted or error-free beta operation. Features, limits and storage arrangements may change. Keep independent copies of information or documents that are important to you.</p>
 
-    <h2>12. Legal rights and liability</h2>
-    <p>Nothing in these Terms excludes rights or remedies that cannot lawfully be excluded, including applicable Australian Consumer Law protections. To the extent permitted by law, DShario is not responsible for loss caused solely by information a user chooses to share, a recipient's independent handling of received information, or an external service outside DShario's control.</p>
+    <h2>12. Deletion, revocation and retained copies</h2>
+    <p>Where DShario provides deletion or revocation controls, they affect DShario's available copy or future access as described in the interface. They cannot erase copies another person has already downloaded, copied, exported or stored elsewhere. Some operational, security or legal records may need to be retained.</p>
 
-    <h2>13. Suspension and misuse</h2>
-    <p>Access may be restricted where reasonably necessary to protect users or the service, investigate misuse, comply with law, or respond to a serious breach of these Terms.</p>
+    <h2>13. Legal rights and liability</h2>
+    <p>Nothing in these Terms excludes rights or remedies that cannot lawfully be excluded, including applicable Australian Consumer Law protections. To the extent permitted by law, users remain responsible for their sharing decisions, content and independent use of information obtained from DShario.</p>
 
-    <h2>14. Changes</h2>
-    <p>These Terms may be updated as DShario develops. Material changes will be reflected by updating the date and publishing the revised Terms, with reasonable notice where practicable.</p>
+    <h2>14. Suspension and changes</h2>
+    <p>Access may be restricted where reasonably necessary to protect users or the service, investigate misuse or comply with law. These Terms may be updated as DShario changes; the update date will be shown here.</p>
 
-    <h2>15. Governing law</h2>
-    <p>These Terms are governed by the laws applicable in South Australia, Australia, subject to mandatory rights or laws that apply to a user in another jurisdiction.</p>
+    <h2>15. Governing law and contact</h2>
+    <p>These Terms are governed by laws applicable in South Australia, Australia, subject to mandatory laws that apply elsewhere. Until a dedicated support address is established, contact DShario through its official LinkedIn Page. A dedicated legal/support contact should be added before commercial launch.</p>
 
-    <h2>16. Contact</h2>
-    <p>For questions about these Terms, contact DShario through the official DShario LinkedIn Page. A dedicated support/contact address should be added before full commercial launch.</p>
-
-    <p><strong>Prototype notice:</strong> DShario is being tested and developed and is not presented as a finished commercial service.</p>
+    <p><strong>Beta notice:</strong> These Terms describe the current beta and should receive professional legal review before full commercial launch.</p>
   </div>
 </div>
 
@@ -2616,58 +3003,58 @@ input,select,textarea{border-color:#cbdcf0!important;background:#fbfdff!importan
   <div class="modalBox">
     <button id="privacyClose" class="modalClose" type="button">Close</button>
     <h1 id="privacyTitle">DShario Privacy Policy</h1>
-    <p><strong>Last updated: 1 September 2026</strong></p>
-    <p>DShario is currently a prototype digital identity and contact-sharing service. This policy describes the information handled by the current prototype and how it is used.</p>
+    <p><strong>Last updated: 21 September 2026</strong></p>
+    <p>This policy describes the personal information handled by the current DShario beta and how that information is used. DShario is being developed in Australia and may be used by people in other countries.</p>
 
-    <h2>1. Information we handle</h2>
-    <p>Depending on the features you use, DShario may handle account and authentication information; card information such as name, title, organisation, introduction, location, website, phone, email, WhatsApp, social links, profile image and card appearance; privacy-view and share-link settings; temporary-share tokens, expiry, revocation and optional message information; PDF documents you choose to upload for Temporary Share; DShario connections you choose to save; connection-view status used to show a simple “DShario updated” indicator; and contact details voluntarily submitted through Contact Exchange.</p>
+    <h2>1. Information DShario may handle</h2>
+    <p>Depending on the features you use, DShario may handle account/authentication details; My Card and My Profile information; profile images and links; sharing choices and tokens; saved connections and connection history; notes, opportunities and follow-up information; documents you choose to share; meeting titles, participants, dates, duration, audio submitted for transcription, transcripts, summaries, decisions, action items, revision/activity history and meeting-share links; and technical/service information needed to operate and secure the beta.</p>
 
-    <h2>2. Why we use information</h2>
-    <p>We use this information to authenticate users, create and store cards, apply selected privacy views, generate permanent and temporary sharing experiences, provide QR and digital-card downloads, provide Temporary Share messages and documents, save user-requested DShario connections, show a simple update indicator when a saved user changes their card, deliver contact exchanges to the intended card owner, maintain basic service security and operate and improve the prototype.</p>
+    <h2>2. Why information is used</h2>
+    <p>DShario uses information to authenticate users; create and share cards/profiles; save and manage connections; support opportunities and follow-ups; process user-requested documents; transcribe meetings; generate AI-assisted profiles, follow-up text and meeting minutes; create downloads and sharing links; maintain revision/activity records; provide security and troubleshooting; and operate and improve the beta.</p>
 
-    <h2>3. Sharing and recipient access</h2>
-    <p>DShario is designed for user-directed sharing. A card owner chooses what information to enter, which privacy view to use and whether to create a permanent or temporary share. Recipients may be able to view, copy, save, screenshot or forward information that has been shared with them. A temporary link's expiry or revocation prevents future access through DShario but cannot recall information or documents already downloaded or copied by a recipient.</p>
+    <h2>3. User-directed sharing</h2>
+    <p>DShario is built around deliberate sharing. You choose the information and available sharing method. Recipients may be able to copy, download, screenshot, save or forward information you share. Expiry, deletion or revocation can stop future DShario access where supported, but cannot recall a copy already obtained outside DShario.</p>
 
-    <h2>4. My Connections</h2>
-    <p>Signed-in DShario users may choose to save another DShario user in My Connections. A saved permanent connection can point to the sender’s current DShario information for the saved privacy view. DShario may indicate that the card has been updated since it was last viewed, without providing a full change history. A Temporary Share connection may remain identifiable after expiry or revocation, but the temporary message, documents and temporary-share access are no longer available through DShario.</p>
+    <h2>4. My Card, My Profile and My Connections</h2>
+    <p>My Card and My Profile are separate. Profile information is not intended to become part of My Card automatically. If Profile Sharing is enabled, a recipient may be offered a separate View Profile action. When a recipient saves a DShario connection, DShario can keep the latest saved view as the active connection and retain limited history information needed for the connection experience.</p>
 
-    <h2>5. Contact Exchange and Received Contacts</h2>
-    <p>When a recipient chooses to send contact details back, those details are provided to the relevant card owner and stored in the owner's Received Contacts area subject to prototype limits. The owner can save a contact to their phone and delete it from DShario. DShario does not currently treat Received Contacts as a permanent address book.</p>
+    <h2>5. Opportunities, notes and follow-ups</h2>
+    <p>Information you add about a saved connection, opportunity or follow-up is stored to provide those organisational features. AI-assisted follow-up text should be reviewed by you before it is used or sent.</p>
 
-    <h2>6. Temporary messages and documents</h2>
-    <p>An optional sender message and PDF documents are available only through Temporary Share. The message may appear as an initial popup and remains readable on the receiver interface while that Temporary Share is valid. PDF documents are optional and are available only through Temporary Share. Current prototype limits are displayed in the interface. Access through DShario follows the associated temporary link's validity. Users should avoid uploading highly sensitive documents and should understand that a recipient may retain a downloaded copy.</p>
+    <h2>6. Documents and shared content</h2>
+    <p>DShario may store or process documents you intentionally upload for supported sharing features. Access may be controlled by the sharing method you choose. A recipient may retain a downloaded copy even after DShario access expires or is revoked.</p>
 
-    <h2>6. Service providers and storage</h2>
-    <p>DShario currently uses Supabase for authentication and backend database/storage functions and uses website-hosting infrastructure to deliver the application. These providers may process technical and account/service information as necessary to provide their services. QR generation in the current DShario build is performed within the application rather than by sending the card URL to a separate QR-code service.</p>
+    <h2>7. Meeting recordings, transcription and AI minutes</h2>
+    <p>When you use Meeting Minutes, recorded audio may be sent for transcription and the resulting transcript may be processed to generate AI-assisted summaries, decisions and action items. DShario also stores meeting information you save, including relevant revisions/activity. You are responsible for obtaining appropriate consent or authority before recording or submitting other people's information.</p>
 
-    <h2>7. Overseas processing</h2>
-    <p>Service providers may process or store information outside Australia or the user's country. Because DShario remains a prototype and its production infrastructure is not final, we do not currently promise a particular data-residency location. This section should be updated when production hosting and data locations are finalised.</p>
+    <h2>8. AI-assisted processing</h2>
+    <p>DShario currently uses external AI/service providers for selected beta functions, including profile writing and meeting transcription/minutes. Information submitted to an AI feature may be sent to the relevant provider to produce the requested result. AI output can be inaccurate and should be reviewed. DShario should update this policy with final provider, retention and data-location details before commercial launch.</p>
 
-    <h2>8. Security</h2>
-    <p>DShario uses access controls appropriate to the current prototype, including authenticated ownership controls and database access policies. No internet service can guarantee absolute security. Use a strong unique password, choose privacy views carefully and avoid sharing highly sensitive information through a digital card.</p>
+    <h2>9. Service providers and storage</h2>
+    <p>DShario uses Supabase for authentication and backend database/storage functions and uses web-hosting infrastructure to deliver the application. It also uses external AI/API services for selected AI and transcription functions. Providers process information as needed to provide those services, subject to their applicable arrangements.</p>
 
-    <h2>9. Access, correction and deletion</h2>
-    <p>Users can sign in to review and update their card, delete their card, and delete received contacts from the DShario inbox. Some account or backend information may require assistance to access or delete. Contact DShario through its official LinkedIn Page until a dedicated privacy contact is established. Deletion from DShario does not delete copies previously saved by another person.</p>
+    <h2>10. Overseas processing</h2>
+    <p>Some service providers may process or store information outside Australia or outside the user's country. The production provider configuration and relevant countries should be confirmed and stated more specifically before commercial launch.</p>
 
-    <h2>10. Retention</h2>
-    <p>Card and account-related information is retained while needed to provide the service or until deleted where the prototype provides deletion controls, subject to legitimate operational, security or legal needs. Temporary-share access follows its expiry or revocation status. Received Contacts is intended to be temporary rather than a permanent contact archive. Retention rules should be made more specific before commercial launch.</p>
+    <h2>11. Security</h2>
+    <p>DShario uses access controls appropriate to the current beta, including authenticated ownership controls and database access policies. No online service can guarantee absolute security. Use a strong unique password, share deliberately and avoid submitting unnecessary sensitive information.</p>
 
-    <h2>11. Language</h2>
-    <p>DShario currently provides its interface and card labels in English. User-entered names, titles, companies, links and other content are displayed as entered.</p>
+    <h2>12. Access, correction and deletion</h2>
+    <p>Users can review and edit information through available DShario controls. Some account/backend access, correction or deletion requests may require assistance. Until a dedicated privacy address is established, contact DShario through its official LinkedIn Page. Deleting information from DShario does not delete copies another person has already stored independently.</p>
 
-    <h2>12. Children and sensitive information</h2>
-    <p>DShario is intended for professional and adult networking and is not designed for children. Do not use card fields or document sharing for passwords, payment credentials, government identifiers, health information or other highly sensitive information unless a future DShario feature expressly supports that category with appropriate safeguards.</p>
+    <h2>13. Retention</h2>
+    <p>DShario retains information while needed to provide the selected beta features and for legitimate operational, security or legal purposes. Temporary/revocable access follows the status of the relevant sharing mechanism. More specific production retention periods should be documented before commercial launch.</p>
 
-    <h2>13. Privacy questions and complaints</h2>
-    <p>For a privacy question, correction/deletion request or complaint, contact DShario through its official LinkedIn Page. A dedicated privacy email and formal request process should be established before commercial launch.</p>
+    <h2>14. Children and sensitive information</h2>
+    <p>DShario is intended for adult/professional use and is not designed for children. Do not submit passwords, payment credentials, government identifiers, health information or other highly sensitive material unless a future feature expressly supports that information with appropriate safeguards.</p>
 
-    <h2>14. Applicable privacy requirements</h2>
-    <p>DShario is being developed in Australia and may be used in other countries. Privacy obligations can depend on where DShario operates and where users are located. The policy and operational practices must be reviewed against applicable law before commercial launch in each target market.</p>
+    <h2>15. Privacy questions and complaints</h2>
+    <p>For privacy questions, access/correction/deletion requests or complaints, contact DShario through its official LinkedIn Page. DShario should establish a dedicated privacy contact and formal complaint process before commercial launch.</p>
 
-    <h2>15. Changes to this policy</h2>
-    <p>This policy may be updated as DShario's features, providers and information-handling practices change. The current version and update date will be published here.</p>
+    <h2>16. Changes</h2>
+    <p>This policy will be updated when DShario's features, providers or information-handling practices materially change. The latest update date will be displayed here.</p>
 
-    <p><strong>Important:</strong> This is a prototype privacy policy, not a substitute for jurisdiction-specific legal advice. It should be reviewed again before commercial launch and whenever DShario materially changes data collection, retention, analytics, advertising, payments, verification, opportunity matching or third-party integrations.</p>
+    <p><strong>Beta/legal review notice:</strong> This policy is intended to transparently describe the current beta. It should receive professional legal/privacy review, including confirmation of applicable Australian Privacy Act obligations and target-market requirements, before full commercial launch.</p>
   </div>
 </div>
 
@@ -3409,7 +3796,7 @@ function applyPrivacyView(c){
   show("pPhoto", !!c.photo_url, "block");
   $("pRole").style.display = (view!=="social" && !!localizedCardText(c,"job_title")) ? "block" : "none";
   $("pCompany").style.display = (view!=="social" && !!localizedCardText(c,"company")) ? "block" : "none";
-  $("pTagline").style.display = (view!=="social" && !!localizedCardText(c,"description")) ? "block" : "none";
+  $("pTagline").style.display = "none"; // RC62: Profile is separate from My Card
   show("locRow", !!c.location && (view==="business"||view==="full"));
   const purposeNow=normalisePurpose(currentPublicPurpose||new URLSearchParams(location.search).get("sharetype")||new URLSearchParams(location.search).get("purpose"));
   const purposeBased=!!purposeNow;
@@ -3446,11 +3833,11 @@ function render(card){
   const nameText=localizedCardText(c,"full_name");
   const roleText=localizedCardText(c,"job_title");
   const companyText=localizedCardText(c,"company");
-  const introText=localizedCardText(c,"description");
+  const introText=localizedCardText(c,"description").replace('[[DS_PROFILE_SHARE_ON]]','').trim();
   $("pName").textContent=nameText||t("Your name"); if($("pHandle")) $("pHandle").style.display="none"; if($("pPersonalAddress")){ $("pPersonalAddress").textContent=(!publicMode&&c.slug)?(location.host||"dshario.com")+"/@"+c.slug:""; $("pPersonalAddress").style.display=(!publicMode&&c.slug)?"block":"none"; } if($("pPublicCardSetting")){const pp=normalisePurpose(c.public_card_type);$("pPublicCardSetting").textContent=publicMode?"":(pp?"Public Card: "+purposeLabel(pp):"Public Card: Not shared");}
   $("pRole").textContent=roleText; $("pRole").style.display=roleText?"block":"none";
   $("pCompany").textContent=companyText; $("pCompany").style.display=companyText?"block":"none";
-  $("pTagline").textContent=introText; $("pTagline").style.display=introText?"block":"none";
+  $("pTagline").textContent=""; $("pTagline").style.display="none"; // RC62: never show Profile inside My Card
   ["pRole","pTagline"].forEach(id=>$(id).style.color=muted(bg));
   $("pPhoto").src=c.photo_url||""; $("pPhoto").style.display=c.photo_url?"block":"none";
   $("pLocation").textContent=c.location||""; $("locRow").style.display=c.location?"flex":"none";
@@ -4266,7 +4653,7 @@ async function downloadCurrentCardAsImage(viewOverride,templateOverride){
     return lines.length*(fs+5)+7;
   }
   if(view!=="social"){
-    const lines=[[localizedCardText(d,"job_title"),28,mt,700,1],[localizedCardText(d,"company"),27,fg,800,2],[localizedCardText(d,"description"),21,mt,500,2]];
+    const lines=[[localizedCardText(d,"job_title"),28,mt,700,1],[localizedCardText(d,"company"),27,fg,800,2],["",21,mt,500,2]];
     for(const [v,fs,col,w,ml] of lines){if(v){y+=drawWrappedHeader(v,fs,col,w,ml)}}
   }
 
@@ -4420,6 +4807,21 @@ async function loadNotifications(){
     const contacts=Array.isArray(cr.data)?cr.data:[];
     contacts.forEach(x=>notes.push({type:"contact",title:"Contact received",text:"Contact received from "+(x.sender_name||"a non-DShario user")+".",exchange_id:x.id}));
   }catch(e){}
+  try{
+    const mr=await sb.from("meeting_minutes")
+      .select("id,title,created_at")
+      .eq("owner_id",user.id)
+      .eq("record_type","received")
+      .eq("received_notice_seen",false)
+      .order("shared_at",{ascending:false});
+    const meetings=Array.isArray(mr.data)?mr.data:[];
+    meetings.forEach(x=>notes.push({
+      type:"meeting",
+      title:"Meeting Minutes received",
+      text:"New Meeting Minutes received — "+(x.title||"Untitled meeting"),
+      meeting_id:x.id
+    }));
+  }catch(e){console.warn("Meeting notification load skipped",e)}
   dsharioNotifications=notes;setBellCount(notes.length);renderNotifications();
 }
 function renderNotifications(){
@@ -4432,6 +4834,19 @@ function renderNotifications(){
     el.onclick=async()=>{
       el.style.pointerEvents="none";
       if(n.type==="contact"&&n.exchange_id){try{await sb.rpc("mark_contact_exchange_notice_seen",{exchange_id:n.exchange_id})}catch(e){};await loadNotifications();location.href=location.origin+location.pathname+"#account";return}
+      if(n.type==="meeting"&&n.meeting_id){
+        try{
+          await sb.from("meeting_minutes").update({received_notice_seen:true}).eq("id",n.meeting_id).eq("owner_id",user.id);
+        }catch(e){}
+        await loadNotifications();
+        $("notificationPanel")?.classList.remove("show");
+        if(typeof window.openDSharioMeetingNotification==="function"){
+          await window.openDSharioMeetingNotification(n.meeting_id);
+        }else{
+          location.href=location.origin+location.pathname+"#account";
+        }
+        return
+      }
       if(n.type==="message"&&n.c.source_share_token){try{localStorage.setItem("dshario-msg-read-"+n.c.source_share_token,"1")}catch(e){};await loadNotifications();location.href=location.origin+location.pathname+"?share="+encodeURIComponent(n.c.source_share_token)+"&connection=1";return}
       if(n.type==="received"&&n.c.card_slug){try{await sb.rpc("mark_incoming_notice_seen",{target_user_id:n.c.connected_user_id})}catch(e){};await loadNotifications();const u=n.c.source_type==="temporary"&&n.c.source_share_token?location.origin+location.pathname+"?share="+encodeURIComponent(n.c.source_share_token)+"&connection=1":location.origin+location.pathname+"?card="+encodeURIComponent(n.c.card_slug)+"&view="+encodeURIComponent(n.c.saved_privacy_view||"professional")+"&connection=1";location.href=u;return}
       if(n.c?.card_slug){try{if(n.c.connection_update_at)await sb.rpc("mark_connection_update_seen",{target_user_id:n.c.connected_user_id,update_at:n.c.connection_update_at})}catch(e){};await loadNotifications();location.href=location.origin+location.pathname+"?card="+encodeURIComponent(n.c.card_slug)+"&view="+encodeURIComponent(n.c.saved_privacy_view||"professional")+"&connection=1";}
@@ -4536,7 +4951,7 @@ async function recordShare({share_type,recipient_user_id=null,recipient_handle=n
       if(share_token) latest=latest.eq("share_token",share_token);
       else if(recipient_handle) latest=latest.eq("recipient_handle",recipient_handle);
       else latest=latest.is("recipient_handle",null);
-      const z=await latest.order("created_at",{ascending:false}).limit(1).maybeSingle();
+      const z=await latest.order("shared_at",{ascending:false}).limit(1).maybeSingle();
       recordId=z?.data?.id||null;
     }
     if(recordId&&purposeNow) localStorage.setItem("dshario-share-purpose:"+user.id+":"+recordId,purposeNow);
@@ -5069,7 +5484,7 @@ function connectionItem(c,isNew){
 
   const acts=item.querySelector(".connectionActions");
   if(!expired&&c.card_slug){
-    const view=document.createElement("button");view.className="mini";view.textContent=t("View Card");view.onclick=async()=>{if(c.connection_update_at)await sb.rpc("mark_connection_update_seen",{target_user_id:c.connected_user_id,update_at:c.connection_update_at});const savedP=readConnectionPurpose(c.connected_user_id);const purposeQ=savedP?"&sharetype="+encodeURIComponent(savedP):"";const u=c.source_type==="temporary"&&c.source_share_token?location.origin+location.pathname+"?share="+encodeURIComponent(c.source_share_token)+"&connection=1"+purposeQ:location.origin+location.pathname+"?card="+encodeURIComponent(c.card_slug)+"&view="+encodeURIComponent(c.saved_privacy_view||"professional")+"&connection=1"+purposeQ;location.href=u;};acts.appendChild(view);
+    const view=document.createElement("button");view.className="mini";view.textContent=t("View Card");view.onclick=async()=>{if(c.connection_update_at)await sb.rpc("mark_connection_update_seen",{target_user_id:c.connected_user_id,update_at:c.connection_update_at});const savedP=readConnectionPurpose(c.connected_user_id);const purposeQ=savedP?"&sharetype="+encodeURIComponent(savedP):"";const u=c.source_type==="temporary"&&c.source_share_token?location.origin+location.pathname+"?share="+encodeURIComponent(c.source_share_token)+"&connection=1&fromconnections=1"+purposeQ:location.origin+location.pathname+"?card="+encodeURIComponent(c.card_slug)+"&view="+encodeURIComponent(c.saved_privacy_view||"professional")+"&connection=1&fromconnections=1"+purposeQ;location.href=u;};acts.appendChild(view);
   }
   if(!expired){
     // RC45 simplified everyday flow: favourite is direct; follow-ups are handled by the top AI Follow-Ups centre.
@@ -6219,7 +6634,8 @@ body.personalProfileMode .cardWrap{margin-top:0!important;}
     const topic=cleanTopic(item.what);
     const purpose=inferPurpose(item);
     const first=(item.person||'').trim().split(/\s+/)[0];
-    const greeting=first && first.toLowerCase()!=='saved' ? `Hi ${first}, ` : 'Hi, ';
+    const invalidGreeting=/^(saved|message|messages|whatsapp|messenger|email|telegram|sms|contact|this)$/i;
+    const greeting=first && !invalidGreeting.test(first) ? `Hi ${first}, ` : 'Hi, ';
 
     if(purpose.kind==='application'){
       return `${greeting}I’m following up regarding ${topic}. Could you please let me know if there has been any update, or if you need anything further from me? Thank you.`;
@@ -6466,6 +6882,1040 @@ body.personalProfileMode .cardWrap{margin-top:0!important;}
   font-size:15px !important;
 }
 </style>
+
+
+<style id="rc61-profile-writer-style">
+.profileWriterLaunch{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-top:8px}
+.profileWriterPanel{margin:14px 0;padding:16px;border:1px solid #d6e4f5;border-radius:16px;background:#f8fbff}
+.profileWriterHead{display:flex;justify-content:space-between;gap:12px;align-items:flex-start;margin-bottom:12px}
+.profileWriterGrid{margin-top:8px}
+.profileWriterResult{min-height:125px}
+.profileWriterActions{margin-top:10px}
+</style>
+
+<script id="rc61-profile-writer-v1">
+(function(){
+  const $r=id=>document.getElementById(id);
+  const val=id=>($r(id)?.value||'').trim();
+  const clean=s=>String(s||'').trim().replace(/\s+/g,' ');
+  const sentence=s=>{
+    s=clean(s);
+    if(!s)return '';
+    s=s.charAt(0).toUpperCase()+s.slice(1);
+    return /[.!?]$/.test(s)?s:s+'.';
+  };
+  const listText=s=>{
+    const a=clean(s).split(/[,;\n]+/).map(x=>x.trim()).filter(Boolean);
+    if(a.length<2)return a[0]||'';
+    if(a.length===2)return a[0]+' and '+a[1];
+    return a.slice(0,-1).join(', ')+', and '+a[a.length-1];
+  };
+  function openWriter(){
+    const p=$r('profileWriterPanel'); if(!p)return;
+    p.style.display='block';
+    const current=val('description');
+    if(current && !$r('profileWriterResult').value) $r('profileWriterResult').value=current;
+    p.scrollIntoView({behavior:'smooth',block:'nearest'});
+  }
+  function generate(){
+    const role=clean(val('job_title'));
+    const company=clean(val('company'));
+    const skills=clean(val('pwSkills')).split(/[,;\n]+/).map(x=>x.trim()).filter(Boolean);
+    const exp=clean(val('pwExperience'));
+    const speciality=clean(val('pwSpeciality'));
+    const looking=clean(val('pwLooking'));
+    const style=val('pwStyle')||'professional';
+    const length=val('pwLength')||'standard';
+
+    if(!role && !skills.length && !exp && !speciality && !looking){
+      if(typeof msg==='function') msg('Add a few Profile Writer details first.','info');
+      return;
+    }
+
+    // Build a polished profile from the meaning of the inputs rather than repeating field labels.
+    const roleText=role ? role.replace(/^(ex\.?|former)\s+/i,'').trim() : '';
+    const expText=exp.replace(/^(with|over|about|approximately)\s+/i,'').replace(/[.!?]+$/,'').trim();
+    const specText=speciality.replace(/^(specialising|specializing|expert|expertise)\s+(in\s+)?/i,'').replace(/[.!?]+$/,'').trim();
+    const topSkills=skills.slice(0,4);
+    const skillPhrase=listText(topSkills.join(', '));
+    let sentences=[];
+
+    if(style==='business'){
+      if(roleText || specText) sentences.push(sentence('Experienced '+(roleText||'professional')+(specText?' with a strong focus on '+specText:'')));
+      if(expText) sentences.push(sentence('Brings '+expText+' of practical experience, with an emphasis on reliable delivery, sound judgement, and professional standards'));
+      if(skillPhrase) sentences.push(sentence('Core strengths include '+skillPhrase));
+      if(looking) sentences.push(sentence('Currently interested in '+looking.replace(/[.!?]+$/,'')));
+    }else if(style==='friendly'){
+      if(roleText || specText) sentences.push(sentence('I am an experienced '+(roleText||'professional')+(specText?' focused on '+specText:'')));
+      if(expText) sentences.push(sentence('Over '+expText+', I have built a practical, quality-focused approach to my work'));
+      if(skillPhrase) sentences.push(sentence('I particularly enjoy applying my experience in '+skillPhrase));
+      if(looking) sentences.push(sentence('I am keen to connect around '+looking.replace(/[.!?]+$/,'')));
+    }else{
+      if(roleText || specText) sentences.push(sentence('Experienced '+(roleText||'professional')+(specText?' specialising in '+specText:'')));
+      if(expText) sentences.push(sentence('Offers '+expText+' of hands-on experience and a strong commitment to quality, consistency, and continuous improvement'));
+      if(skillPhrase) sentences.push(sentence('Key strengths include '+skillPhrase));
+      if(looking) sentences.push(sentence('Open to '+looking.replace(/[.!?]+$/,'')+' where this experience can add value'));
+    }
+
+    // Company is context, not the opening line; avoid merely copying My Card.
+    if(company && length!=='short' && sentences.length<4) sentences.push(sentence('Professional background includes experience with '+company));
+    if(length==='short') sentences=sentences.slice(0,2);
+    if(length==='standard') sentences=sentences.slice(0,4);
+    const result=sentences.filter(Boolean).join(' ');
+    $r('profileWriterResult').value=result;
+    $r('profileWriterResultWrap').style.display='block';
+  }
+
+  $r('profileWriterOpen')?.addEventListener('click',openWriter);
+  $r('profileWriterClose')?.addEventListener('click',()=>{$r('profileWriterPanel').style.display='none';});
+  $r('profileWriterGenerate')?.addEventListener('click',generate);
+  $r('profileWriterAgain')?.addEventListener('click',generate);
+  $r('profileWriterUse')?.addEventListener('click',()=>{
+    const result=val('profileWriterResult');
+    if(!result){ if(typeof msg==='function') msg('Generate or write a profile first.','info'); return; }
+    $r('description').value=result;
+    $r('profileWriterPanel').style.display='none';
+    if(typeof msg==='function') msg('✓ Profile updated. It stays separate from My Card.','ok');
+    $r('description').scrollIntoView({behavior:'smooth',block:'center'});
+  });
+})();
+</script>
+
+
+<style id="rc64-profile-separation-style">
+#pTagline{display:none!important}
+#myProfileSection .editSectionBody{display:block}
+#myProfileEditor{margin-top:8px}
+.profileShareSetting{margin-top:12px;padding:12px;border:1px solid #d6e4f5;border-radius:12px;background:#f8fbff}
+.profileShareSwitch{display:flex!important;gap:10px;align-items:flex-start;cursor:pointer}
+.profileShareSwitch input{width:20px;height:20px;margin-top:1px;flex:0 0 auto}
+.profileShareSwitch span{display:flex;flex-direction:column;gap:3px}.profileShareSwitch small{color:#64748b;font-weight:500;line-height:1.4}
+.profileWriterLaunch{margin-top:12px}
+.profileWriterPanel{margin-top:14px}
+.sharedProfileArea{margin:12px auto 0;max-width:560px;text-align:center}
+.sharedProfileArea>button{width:100%}
+.sharedProfilePanel{margin-top:10px;padding:16px;border:1px solid #d6e4f5;border-radius:14px;background:#fff;text-align:left}
+.sharedProfileHead{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:10px}
+.sharedProfilePanel p{white-space:pre-wrap;line-height:1.6;margin:0;color:#334155}
+</style>
+<script id="rc64-profile-separation-v3">
+(function(){
+  const byId=id=>document.getElementById(id);
+  const MARK='[[DS_PROFILE_SHARE_ON]]';
+  const rawDesc=c=>String(c?.description||'');
+  const isShared=c=>rawDesc(c).startsWith(MARK);
+  const cleanProfile=v=>String(v||'').replace(MARK,'').trim();
+  const setToggle=v=>{const cb=byId('profileSharingOn'),state=byId('profileShareState');if(cb)cb.checked=!!v;if(state)state.textContent=v?'On':'Off';};
+
+  // Keep the sharing choice with the saved DShario so it also works when sending directly to another DShario user.
+  const oldSetForm=setForm;
+  setForm=function(card={}){
+    oldSetForm(card);
+    if(byId('description')) byId('description').value=cleanProfile(card.description);
+    setToggle(isShared(card));
+  };
+  const oldGetForm=getForm;
+  getForm=function(){
+    const o=oldGetForm();
+    const text=cleanProfile(o.description);
+    o.description=(byId('profileSharingOn')?.checked && text)?MARK+text:text;
+    return o;
+  };
+
+  function renderReceivedProfile(card){
+    const area=byId('sharedProfileArea'),panel=byId('sharedProfilePanel'),text=byId('sharedProfileText');
+    if(!area)return;
+    const receiver=!!(publicMode || connectionOnlyMode || new URLSearchParams(location.search).get('card') || new URLSearchParams(location.search).get('share'));
+    const profile=cleanProfile(card?.description);
+    const show=receiver && isShared(card) && !!profile;
+    area.style.display=show?'block':'none';
+    if(text)text.textContent=show?profile:'';
+    if(panel)panel.style.display='none';
+  }
+  const oldRender=render;
+  render=function(card){oldRender(card);renderReceivedProfile(card);};
+
+  byId('profileSharingOn')?.addEventListener('change',e=>{
+    setToggle(e.target.checked);
+    if(typeof msg==='function') msg(e.target.checked?'Profile sharing is On. Save My Card Online to apply this choice.':'Profile sharing is Off. Save My Card Online to apply this choice.','ok');
+  });
+  byId('viewSharedProfileBtn')?.addEventListener('click',()=>{const p=byId('sharedProfilePanel');if(p)p.style.display='block';});
+  byId('closeSharedProfileBtn')?.addEventListener('click',()=>{const p=byId('sharedProfilePanel');if(p)p.style.display='none';});
+  const hide=()=>{const t=byId('pTagline');if(t){t.textContent='';t.style.setProperty('display','none','important');}};
+  hide(); setTimeout(hide,0); setTimeout(hide,250);
+})();
+</script>
+
+<style id="rc64-flow-fixes">
+/* Receiver profile action always belongs immediately below the card. */
+#cardWrap > #sharedProfileArea{margin-top:12px!important}
+</style>
+<script id="rc64-flow-fixes-script">
+(function(){
+  const $=id=>document.getElementById(id);
+  function placeProfileBelowCard(){
+    const card=$('card'), area=$('sharedProfileArea');
+    if(card && area && card.parentElement && card.nextElementSibling!==area){
+      card.insertAdjacentElement('afterend',area);
+    }
+  }
+  function cardIsSaved(){
+    const candidates=[$('saveConnectionBtn'),$('publicSaveConnectionBtn'),$('afterExchangeSaveReceived')].filter(Boolean);
+    if(candidates.some(b=>/view in my connections/i.test((b.textContent||'').trim()))) return true;
+    // When viewing from My Connections, the dedicated connection-only navigation is also a saved context.
+    return !!document.body.classList.contains('connectionOnlyMode');
+  }
+  function gateOpportunity(){
+    const sec=$('dsTrialOppSection');
+    if(sec && !cardIsSaved()) sec.remove();
+  }
+  function fix(){ placeProfileBelowCard(); gateOpportunity(); }
+  fix(); setTimeout(fix,0); setTimeout(fix,250); setTimeout(fix,900);
+  const mo=new MutationObserver(()=>{ clearTimeout(window.__rc64fix); window.__rc64fix=setTimeout(fix,30); });
+  mo.observe(document.body,{subtree:true,childList:true,attributes:true,attributeFilter:['class','style']});
+})();
+</script>
+
+
+<style id="rc65-hard-fixes">
+/* RC65: Profile text is never part of the card itself. */
+#card #pTagline{display:none!important;height:0!important;margin:0!important;padding:0!important;overflow:hidden!important}
+/* Opportunity belongs only to a card opened from Saved Connections. */
+body.publicMode:not(.connectionOnlyMode) #dsTrialOppSection{display:none!important}
+/* Keep the separate profile action immediately after the visual card. */
+.cardWrap #sharedProfileArea{display:none;margin:12px auto 0;max-width:560px;order:2}
+.cardWrap #sharedProfileArea.rc65-show{display:block!important}
+</style>
+<script id="rc65-hard-fixes-script">
+(function(){
+  const $=id=>document.getElementById(id);
+  const MARK='[[DS_PROFILE_SHARE_ON]]';
+  const raw=c=>String(c?.description||'');
+  const clean=v=>String(v||'').replace(MARK,'').trim();
+  const enabled=c=>raw(c).startsWith(MARK) && !!clean(raw(c));
+
+  function forceProfilePlacement(){
+    const card=$('card'), area=$('sharedProfileArea');
+    if(!card||!area||!card.parentElement)return;
+    if(card.nextElementSibling!==area) card.parentElement.insertBefore(area,card.nextSibling);
+    const c=window.currentCard||currentCard||null;
+    const qs=new URLSearchParams(location.search);
+    const receiver=!!(document.body.classList.contains('publicMode') || qs.get('card') || qs.get('share') || document.body.classList.contains('connectionOnlyMode'));
+    const show=receiver && c && enabled(c);
+    area.classList.toggle('rc65-show',!!show);
+    area.style.setProperty('display',show?'block':'none','important');
+    const txt=$('sharedProfileText'); if(txt) txt.textContent=show?clean(raw(c)):'';
+    const panel=$('sharedProfilePanel'); if(panel && !show) panel.style.display='none';
+    const tagline=$('pTagline'); if(tagline){tagline.textContent='';tagline.style.setProperty('display','none','important');}
+  }
+
+  function savedContext(){
+    const qs=new URLSearchParams(location.search);
+    if(qs.get('connection')==='1') return true; // opened from My Connections
+    const save=$('saveConnectionBtn')||$('publicSaveConnectionBtn');
+    return !!(save && save.dataset && save.dataset.saved==='1');
+  }
+  function gateOpportunity(){
+    const sec=$('dsTrialOppSection');
+    if(sec) sec.style.setProperty('display',savedContext()?'':'none','important');
+  }
+  function fix(){forceProfilePlacement();gateOpportunity();}
+  fix();
+  [0,100,300,800,1500].forEach(ms=>setTimeout(fix,ms));
+  const mo=new MutationObserver(()=>{clearTimeout(window.__rc65t);window.__rc65t=setTimeout(fix,20)});
+  mo.observe(document.body,{subtree:true,childList:true,attributes:true,attributeFilter:['class','style','data-saved']});
+})();
+</script>
+
+<!-- RC67: state correction after direct RC66 inspection -->
+<style id="rc67-state-fix">
+/* Profile content never belongs inside the visual card. */
+#card #pTagline{display:none!important;visibility:hidden!important;height:0!important;min-height:0!important;margin:0!important;padding:0!important;overflow:hidden!important}
+/* RC66's blanket public-mode rule was too broad; JS below owns Opportunity visibility. */
+body.publicMode.connectionOnlyMode #dsTrialOppSection{display:block!important}
+</style>
+<script id="rc67-state-fix-script">
+(function(){
+  const $=id=>document.getElementById(id);
+  const MARK='[[DS_PROFILE_SHARE_ON]]';
+  const clean=v=>String(v||'').split(MARK).join('').trim();
+
+  function isOwnerCard(){
+    try{return !!(window.user && window.currentCard && currentCard.user_id && user.id===currentCard.user_id && !document.body.classList.contains('publicMode') && !document.body.classList.contains('connectionOnlyMode'));}catch(e){return false;}
+  }
+  function receiverContext(){
+    if(isOwnerCard()) return false;
+    return document.body.classList.contains('publicMode') || document.body.classList.contains('connectionOnlyMode');
+  }
+  function fixProfile(){
+    const tagline=$('pTagline');
+    if(tagline){tagline.textContent='';tagline.style.setProperty('display','none','important');}
+    const area=$('sharedProfileArea'); if(!area)return;
+    if(isOwnerCard() || !receiverContext()){
+      area.classList.remove('rc65-show'); area.style.setProperty('display','none','important');
+      const panel=$('sharedProfilePanel'); if(panel)panel.style.display='none';
+      return;
+    }
+    const raw=String((window.currentCard||currentCard||{}).description||'');
+    const on=raw.indexOf(MARK)>=0 && !!clean(raw);
+    area.style.setProperty('display',on?'block':'none','important');
+    area.classList.toggle('rc65-show',on);
+    const text=$('sharedProfileText'); if(text)text.textContent=on?clean(raw):'';
+  }
+  function scrubEditor(){
+    const d=$('description'); if(d && d.value.includes(MARK)) d.value=clean(d.value);
+  }
+  function apply(){fixProfile();scrubEditor();}
+  apply();
+  const mo=new MutationObserver(()=>{clearTimeout(window.__rc67);window.__rc67=setTimeout(apply,25)});
+  mo.observe(document.body,{subtree:true,childList:true,attributes:true,attributeFilter:['class','style','data-saved']});
+})();
+</script>
+
+
+<!-- RC68: Opportunity visibility uses verified saved state only. -->
+<!-- RC69: Opportunity is a My Connections action, never an incoming-card action. -->
+<!-- RC70: New received cards and Saved Connections now have distinct routes. -->
+<style id="rc70-new-vs-saved-fix">
+body.connectionOnlyMode:not(.rc70-saved-route) #dsTrialOppSection{display:none!important}
+body.connectionOnlyMode.rc70-saved-route #dsTrialOppSection{display:block!important}
+</style>
+<script id="rc70-new-vs-saved-fix-script">
+(function(){
+  function apply(){
+    const saved=new URLSearchParams(location.search).get('fromconnections')==='1';
+    document.body.classList.toggle('rc70-saved-route',saved);
+    const sec=document.getElementById('dsTrialOppSection');
+    if(sec) sec.style.setProperty('display',saved && document.body.classList.contains('connectionOnlyMode')?'block':'none','important');
+  }
+  apply();
+  const mo=new MutationObserver(()=>{clearTimeout(window.__rc70);window.__rc70=setTimeout(apply,15)});
+  mo.observe(document.body,{subtree:true,childList:true,attributes:true,attributeFilter:['class','style']});
+})();
+</script>
+
+<!-- RC71: display stabilization only. Functional RC70 routing is unchanged. -->
+<script id="rc71-display-stabilization">
+(function(){
+  let revealTimer=null, hardTimer=null;
+  function reveal(){
+    if(revealTimer) clearTimeout(revealTimer);
+    revealTimer=setTimeout(()=>{
+      requestAnimationFrame(()=>requestAnimationFrame(()=>{
+        document.documentElement.classList.remove('rc71-boot');
+      }));
+    },180);
+  }
+  function watch(){
+    reveal();
+    const body=document.body;
+    if(!body)return;
+    const mo=new MutationObserver(()=>{
+      if(!document.documentElement.classList.contains('rc71-boot')){mo.disconnect();return;}
+      reveal();
+    });
+    mo.observe(body,{attributes:true,attributeFilter:['class'],subtree:false});
+    hardTimer=setTimeout(()=>{document.documentElement.classList.remove('rc71-boot');mo.disconnect();},1800);
+  }
+  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',watch,{once:true}); else watch();
+})();
+</script>
+
+
+<style id="rc74-meeting-minutes-style">
+.meetingMinutesPanel{margin-top:24px;padding:18px;border:1px solid #cfe0f3;border-radius:18px;background:linear-gradient(145deg,#f8fcff,#eef6ff)}
+.meetingMinutesHead{display:flex;justify-content:space-between;gap:12px;align-items:flex-start;margin-bottom:16px}
+.meetingMinutesHead h2{margin:0 0 5px!important;font-size:21px!important;color:#0b315f}
+.meetingBeta{display:inline-flex;vertical-align:middle;margin-left:6px;padding:3px 7px;border-radius:999px;background:#dbeafe;color:#1d4ed8;font-size:10px;font-weight:900;letter-spacing:.05em}
+.meetingGrid{display:grid;grid-template-columns:1fr 1fr;gap:12px}.meetingGrid .full{grid-column:1/-1}
+.meetingConsent{margin-top:15px;padding:13px;border:1px solid #f2cf75;border-radius:14px;background:#fffaf0}
+.meetingConsent label{display:flex;align-items:flex-start;gap:10px;font-weight:800;line-height:1.45;color:#5c4511}
+.meetingConsent input{width:19px;height:19px;flex:0 0 auto;margin-top:2px;accent-color:#1267d9}
+.meetingConsent .hint{margin:7px 0 0 29px}
+.meetingRecorder{margin-top:14px;padding:14px;border:1px solid #dbe5f2;border-radius:14px;background:#fff}
+.meetingStatusRow{display:flex;align-items:center;gap:9px;flex-wrap:wrap}
+.meetingRecordDot{width:11px;height:11px;border-radius:50%;background:#94a3b8;box-shadow:0 0 0 4px #f1f5f9}
+.meetingRecordDot.live{background:#dc2626;box-shadow:0 0 0 4px #fee2e2}
+.meetingTimer{margin-left:auto;font-variant-numeric:tabular-nums;font-weight:900;color:#475569}
+.meetingRecordActions{display:flex;gap:9px;flex-wrap:wrap;margin-top:13px}
+.meetingRecordActions .btn{flex:1;min-width:150px}
+.meetingRecordActions button:disabled{opacity:.5;cursor:not-allowed}
+.meetingTranscriptField{margin-top:15px}
+#meetingTranscript{min-height:280px!important;line-height:1.55;background:#fff!important}
+.meetingSaveActions{display:flex;gap:9px;flex-wrap:wrap;margin-top:14px}
+.meetingSaveActions .btn{flex:1;min-width:150px}
+.meetingMessage{display:none;margin-top:11px;padding:10px 12px;border-radius:11px;font-weight:800}
+.meetingMessage.show{display:block}.meetingMessage.ok{background:#ecfdf5;color:#166534}.meetingMessage.err{background:#fef2f2;color:#991b1b}.meetingMessage.info{background:#eff6ff;color:#1e40af}
+.savedMeetingsBox{margin-top:20px;padding-top:16px;border-top:1px solid #dbe5f2}
+.savedMeetingsHead{display:flex;justify-content:space-between;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:10px}
+.savedMeetingItem{padding:12px;border:1px solid #dbe5f2;border-radius:13px;background:#fff;margin-top:9px}
+.savedMeetingTop{display:flex;justify-content:space-between;gap:10px;align-items:flex-start}
+.savedMeetingTitle{font-weight:900;color:#0b315f}.savedMeetingMeta{font-size:12px;color:#64748b;margin-top:4px;line-height:1.4}
+.savedMeetingPreview{margin-top:7px;color:#475569;font-size:13px;line-height:1.45;white-space:pre-wrap;overflow-wrap:anywhere}
+.savedMeetingActions{display:flex;gap:7px;flex-wrap:wrap;margin-top:10px}
+.savedMeetingEmpty{padding:16px 4px;text-align:center;color:#64748b}
+.meetingAiBox{margin-top:16px;padding:14px;border:1px solid #cfe0f3;border-radius:14px;background:#fff}
+.meetingAiHead{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;flex-wrap:wrap}.meetingAiHead strong{font-size:17px;color:#0b315f}.meetingAiGrid{display:grid;grid-template-columns:1fr;gap:11px;margin-top:12px}.meetingAiGrid textarea{min-height:120px!important;line-height:1.5;background:#fbfdff!important}
+.meetingHomeActions{display:flex;justify-content:center;margin:14px 0 18px}.meetingHomeActions .btn{width:min(100%,360px);min-height:52px}.meetingWorkspace{margin-top:14px;padding:14px;border:1px solid #dbe5f2;border-radius:16px;background:#f8fbff}.meetingWorkspaceNav{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:14px}.meetingAutoTiming{min-height:46px;display:flex;align-items:center;padding:11px 13px;border:1px solid #cbd8ea;border-radius:12px;background:#f8fbff;color:#475569;font-weight:750}.savedMeetingPreview{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}.savedMeetingMeta{font-weight:700}.meetingDurationBadge{display:inline-flex;margin-left:6px;padding:3px 7px;border-radius:999px;background:#eef6ff;color:#175fc0;font-size:11px;font-weight:850}
+.meetingSavedMeta{margin:4px 0 16px;padding:15px;border:1px solid #dbe5f2;border-radius:14px;background:#fff}.meetingSavedMetaTitle{font-size:20px;font-weight:900;color:#0b315f}.meetingSavedMetaLine{margin-top:5px;color:#64748b;font-size:13px;font-weight:750;line-height:1.45}.meetingSavedShareActions{display:flex;gap:9px;flex-wrap:wrap;margin-top:14px}.meetingSavedShareActions .btn{flex:1;min-width:150px}.meetingWorkspace.saved-detail #meetingTranscript{min-height:260px!important}.meetingWorkspace.saved-detail .meetingAiGrid textarea{min-height:150px!important}.meetingWorkspace.saved-detail .meetingAiHead .hint{max-width:520px}.meetingWorkspace.saved-detail{background:#f7fbff}.meetingWorkspace.saved-detail .meetingTranscriptField,.meetingWorkspace.saved-detail .meetingAiBox{background:#fff;border-radius:14px}.meetingWorkspace.saved-detail .meetingTranscriptField{padding:14px;border:1px solid #dbe5f2}.meetingWorkspace.saved-detail #meetingGenerateAiBtn::before{content:"↻ ";}.savedMeetingsBox.workspace-open{display:none}.meetingHomeActions.workspace-open{display:none}
+.meetingHistoryBox{margin-top:14px;border:1px solid #dbe5f2;border-radius:14px;background:#fff;overflow:hidden}.meetingHistoryBox summary{cursor:pointer;padding:13px 14px;font-weight:900;color:#0b315f;list-style:none;display:flex;justify-content:space-between;gap:10px;align-items:center}.meetingHistoryBox summary::-webkit-details-marker{display:none}.meetingHistoryBox summary:after{content:"＋";color:#2563eb}.meetingHistoryBox[open] summary:after{content:"−"}.meetingHistoryBox[open] summary{border-bottom:1px solid #e5edf6}.meetingHistoryBox #meetingHistoryStatus,.meetingHistoryList{margin-left:14px;margin-right:14px}.meetingHistoryList{padding-bottom:14px}.meetingHistoryItem{padding:11px 0;border-bottom:1px solid #edf2f7}.meetingHistoryItem:last-child{border-bottom:0}.meetingHistoryTop{display:flex;justify-content:space-between;gap:10px;align-items:flex-start}.meetingHistoryTitle{font-weight:850;color:#183e70}.meetingHistoryTime{font-size:12px;color:#64748b;text-align:right}.meetingHistoryDetail{margin-top:4px;font-size:12px;color:#64748b;line-height:1.45}.meetingHistoryCount{margin-left:auto;margin-right:8px;padding:3px 7px;border-radius:999px;background:#eef6ff;color:#175fc0;font-size:11px;font-weight:850}
+/* RC85: long meeting content must remain naturally scrollable on mobile */
+.meetingWorkspace,.meetingWorkspace.saved-detail,.meetingTranscriptField,.meetingAiBox{max-height:none!important;height:auto!important;overflow:visible!important}
+.meetingWorkspace.saved-detail textarea[readonly]{overflow:visible!important;resize:none!important}
+.meetingWorkspace.saved-detail #meetingTranscript,.meetingWorkspace.saved-detail .meetingAiGrid textarea{max-height:none!important}
+body:has(#meetingWorkspace.saved-detail[style*="display: block"]){overflow-y:auto!important;height:auto!important}
+.meetingListTabs{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:12px 0 14px}.meetingListTools{display:flex;align-items:center;gap:8px;margin:0 0 10px}.meetingToolBtn{min-height:38px;border:1px solid #cbdced;border-radius:999px;background:#fff;padding:7px 13px;color:#174a75;font:inherit;font-weight:800;box-shadow:0 2px 7px rgba(31,83,128,.06)}.meetingListTools select.meetingToolBtn{margin-left:auto;max-width:150px}.meetingSearchWrap{margin:0 0 12px}.meetingSearchWrap[hidden]{display:none}.meetingSearchWrap input{width:100%;min-height:42px;border:1px solid #cbdced;border-radius:12px;background:#fff;padding:9px 12px;color:#183b5b;font:inherit}.meetingTransferTime{font-size:12px;color:#526b82;margin-top:5px;font-weight:800}.meetingListTab{border:1px solid #cbdced;background:#fff;color:#31516f;border-radius:12px;padding:10px 8px;font-weight:850}.meetingListTab.active{background:#eaf4ff;color:#0b5fc6;border-color:#8fc0f5}.meetingReceivedBadge{display:inline-block;margin-left:7px;padding:3px 7px;border-radius:999px;background:#eef6ff;color:#175fc0;font-size:11px;font-weight:850}.meetingShareModal{display:none;position:fixed;inset:0;z-index:10050;background:rgba(15,23,42,.52);padding:18px;align-items:center;justify-content:center}.meetingShareModal.show{display:flex}.meetingShareDialog{width:min(560px,100%);max-height:85vh;overflow:auto;background:#fff;border-radius:18px;padding:18px;box-shadow:0 24px 70px rgba(0,0,0,.25)}.meetingShareHead{display:flex;justify-content:space-between;gap:12px;align-items:flex-start}.meetingShareHead strong{font-size:21px;color:#0b315f}.meetingRecipientRow{display:grid;grid-template-columns:1fr auto;gap:8px;margin-top:16px}.meetingRecipientChips{display:flex;flex-wrap:wrap;gap:8px;margin:12px 0;min-height:12px}.meetingRecipientChip{display:inline-flex;align-items:center;gap:6px;background:#eef6ff;color:#174d84;border:1px solid #c9e1fa;border-radius:999px;padding:7px 10px;font-weight:800}.meetingRecipientChip button{border:0;background:transparent;color:#64748b;font-size:17px;line-height:1}.meetingShareStatus{min-height:20px;margin:8px 0 12px}.meetingShareStatus.err{color:#a32020}.meetingShareStatus.ok{color:#08783d}
+.meetingDownloadBrand{display:flex;align-items:center;gap:12px;margin:18px 0;padding:14px;border:1px solid #dbe5f2;border-radius:14px;background:#f8fbff}
+.meetingDownloadLogo{width:44px;height:44px;border-radius:12px;display:grid;place-items:center;background:#0b5fc6;color:#fff;font-weight:950;font-size:18px;letter-spacing:.5px}
+.meetingDownloadChoices{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+@media(max-width:520px){.meetingDownloadChoices{grid-template-columns:1fr}}
+
+@media(max-width:560px){.meetingGrid{grid-template-columns:1fr}.meetingGrid .full{grid-column:auto}.meetingMinutesPanel{padding:14px}.meetingRecordActions,.meetingSaveActions{display:grid;grid-template-columns:1fr}.meetingTimer{margin-left:0;width:100%}#meetingTranscript{min-height:330px!important}}
+
+/* RC86: mobile long-content + clean shared-folder presentation */
+html,body{min-height:100%;height:auto!important}
+.meetingWorkspace.saved-detail{overflow:visible!important;contain:none!important}
+.meetingWorkspace.saved-detail .meetingTranscriptField,
+.meetingWorkspace.saved-detail .meetingAiBox,
+.meetingWorkspace.saved-detail .meetingAiGrid,
+.meetingWorkspace.saved-detail .field{overflow:visible!important;max-height:none!important}
+.meetingWorkspace.saved-detail textarea[readonly]{
+  overflow:hidden!important;
+  max-height:none!important;
+  height:auto;
+}
+.meetingReceivedBadge{display:none!important}
+
+
+/* RC96 COMMERCIAL ACCOUNT WORKSPACE */
+.rc96Workspace{margin:4px 0 22px}
+.rc96WorkspaceHero{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:4px 0 14px;padding:14px 15px;border:1px solid #d8e7f5;border-radius:18px;background:linear-gradient(135deg,#f8fbff,#eef7ff)}
+.rc96WorkspaceHero strong{display:block;font-size:20px;color:#123f70}.rc96WorkspaceHero small{display:block;margin-top:3px;color:#60778d}
+.rc96Beta{font-size:11px;font-weight:900;letter-spacing:.04em;color:#1267b8;background:#e7f3ff;border:1px solid #badcff;border-radius:999px;padding:5px 9px;white-space:nowrap}
+.rc96WorkspaceGrid{display:grid;gap:10px}
+.rc96Group{border:1px solid #dce8f3;border-radius:17px;padding:12px;background:#fff}
+.rc96GroupHead{display:flex;align-items:center;gap:9px;margin-bottom:8px}.rc96GroupIcon{width:35px;height:35px;border-radius:11px;display:grid;place-items:center;font-size:20px;background:#edf6ff}
+.rc96GroupHead strong{display:block;color:#123f70;font-size:16px}.rc96GroupHead small{display:block;color:#6b7f91;margin-top:1px}
+.rc96GroupActions{display:grid;gap:6px}.rc96Nav{width:100%;display:flex;align-items:center;justify-content:space-between;gap:10px;text-align:left;border:1px solid #e3ebf3;border-radius:11px;background:#fbfdff;color:#173e63;padding:10px 11px;font:inherit;font-weight:800}
+.rc96Nav span{font-size:13px;font-weight:600;color:#6c8093}.rc96Nav:hover,.rc96Nav:focus{background:#f1f7fd}.rc96Nav[disabled]{opacity:.62;cursor:default}
+.rc96Connections{background:#f2f8ff}.rc96Meetings{background:#f1fbf5}.rc96Content{background:#fff7ed}.rc96Profile{background:#f7f2ff}.rc96Subscription{background:#fff1f8}.rc96Security{background:#eefbfc}.rc96Account{background:#f4f7fb}
+@media(min-width:760px){.rc96WorkspaceGrid{grid-template-columns:1fr 1fr}.rc96Account{grid-column:1/-1}}
+
+/* RC96 V2: real feature placement, not shortcut cards */
+.rc96FeatureBody{margin-top:8px}
+.rc96FeatureBody>.connectionsPanel,
+.rc96FeatureBody>#receivedContactsPanel,
+.rc96FeatureBody>.meetingMinutesPanel,
+.rc96FeatureBody>.editSection{margin:8px 0 0!important;background:rgba(255,255,255,.72);border:1px solid #dfe9f2;border-radius:13px;padding:12px}
+.rc96FeatureBody .meetingMinutesPanel{box-shadow:none}
+.rc96FeatureBody .meetingMinutesHead h2{font-size:19px;margin-top:0}
+.rc96FeatureBody .connectionsHead h2,
+.rc96FeatureBody #receivedContactsPanel h2{font-size:18px!important}
+.rc96FeatureBody details.editSection>summary{font-size:17px;padding:4px 0;cursor:pointer}
+#rc96ProfileBody #myProfileSection>summary{display:none}
+#rc96ProfileBody #myProfileSection{display:block!important}
+#rc96ProfileBody #myProfileSection .editSectionBody{display:block!important}
+#rc96ContentBody .editSection{display:block!important}
+#rc96ContentBody .editSection>summary{display:none}
+#rc96ConnectionsBody #myConnectionsPanel,
+#rc96ConnectionsBody #receivedContactsPanel{display:block!important}
+#rc96MeetingsBody #meetingMinutesPanel{display:block!important}
+#rc96ConnectionsBody #receivedContactsPanel{padding-top:12px;border-top:1px solid #d9e6f0}
+#rc96AccountWorkspace .rc96Group{overflow:hidden}
+#rc96AccountWorkspace .btn,#rc96AccountWorkspace .mini{max-width:100%}
+@media(max-width:520px){
+  .rc96WorkspaceHero{align-items:flex-start}
+  .rc96Group{padding:10px}
+  .rc96FeatureBody>.connectionsPanel,.rc96FeatureBody>#receivedContactsPanel,.rc96FeatureBody>.meetingMinutesPanel,.rc96FeatureBody>.editSection{padding:10px}
+}
+</style>
+
+<!-- RC95 FINAL FREEZE CANDIDATE: notification + dedup + sent/received timestamps + simple meeting search/sort -->
+<script id="rc76-meeting-minutes-script">
+(function(){
+  const $m=(id)=>document.getElementById(id);
+  const STORAGE_KEY="dshario_rc74_meeting_minutes_v1"; // legacy local meetings retained for one-time cloud migration
+  let cloudMeetings=[];
+  const TRANSCRIBE_URL=SUPABASE_URL+"/functions/v1/meeting-minutes";
+  let mediaRecorder=null, mediaStream=null, audioChunks=[], audioUrl=null, currentAudioBlob=null;
+  let timerId=null, startedAt=0, recordingStartIso="", recordingEndIso="", recordedDurationSeconds=0, editingId=null, transcribing=false, generatingAi=false, mp3Busy=false;
+  let meetingListMode="mine", meetingListOpen=false, shareMeetingId=null, shareRecipients=[], meetingSentAt={}, meetingReceivedAt={};
+
+  function meetingMsg(text,type="info"){
+    const el=$m("meetingMessage"); if(!el)return;
+    el.textContent=text; el.className="meetingMessage show "+type;
+    clearTimeout(el._hide); el._hide=setTimeout(()=>{el.className="meetingMessage"},5000);
+  }
+  function transcribeStatus(text){const el=$m("meetingTranscribeStatus");if(el)el.textContent=text||""}
+  function pad(n){return String(n).padStart(2,"0")}
+  function localDateTimeValue(d=new Date()){const z=new Date(d.getTime()-d.getTimezoneOffset()*60000);return z.toISOString().slice(0,16)}
+  function formatDuration(sec){sec=Math.max(0,Number(sec)||0);const h=Math.floor(sec/3600),m=Math.floor((sec%3600)/60),ss=sec%60;if(h)return h+" hr "+m+" min";if(m)return m+" min"+(ss?" "+ss+" sec":"");return ss+" sec"}
+  function updateTimingDisplay(){const el=$m("meetingTimingDisplay");if(!el)return;if(!recordingStartIso){el.textContent="Starts automatically when recording begins";return}const start=new Date(recordingStartIso);let text=start.toLocaleString();if(recordedDurationSeconds)text+=" • Duration: "+formatDuration(recordedDurationSeconds);else if(startedAt)text+=" • Recording now";el.textContent=text}
+  function showWorkspace(mode="new"){
+    const ws=$m("meetingWorkspace"), isEdit=mode==="edit";
+    ws.style.display="block"; ws.classList.toggle("saved-detail",isEdit);
+    $m("meetingWorkspaceMode").textContent=isEdit?"":"New meeting";
+    $m("meetingGenerateAiBtn").textContent=isEdit?"Regenerate AI Minutes":"Generate Meeting Minutes";
+    $m("meetingSetupFields").style.display=isEdit?"none":"grid";
+    $m("meetingConsentBox").style.display=isEdit?"none":"block";
+    $m("meetingRecorderBox").style.display=isEdit?"none":"block";
+    $m("meetingSavedMeta").style.display=isEdit?"block":"none";
+    $m("meetingSavedShareActions").style.display=isEdit?"flex":"none";
+    const historyBox=$m("meetingHistoryBox");if(historyBox){historyBox.style.display=isEdit?"block":"none";if(!isEdit){historyBox.open=false;$m("meetingHistoryList").innerHTML="";$m("meetingHistoryCount").textContent=""}}
+    $m("meetingSaveActions").style.display=isEdit?"none":"flex";
+    if(isEdit){ws.classList.remove("editing");setMeetingReadOnly(true)}else{setMeetingReadOnly(false)}
+    document.querySelector(".savedMeetingsBox")?.classList.add("workspace-open");
+    document.querySelector(".meetingHomeActions")?.classList.add("workspace-open");
+    ws.scrollIntoView({behavior:"smooth",block:"start"});
+  }
+  function autoSizeMeetingTextareas(){
+    ["meetingTranscript","meetingSummary","meetingDecisions","meetingActions"].forEach(id=>{
+      const el=$m(id); if(!el)return;
+      el.style.height="auto";
+      el.style.height=Math.max(el.scrollHeight, 90)+"px";
+    });
+  }
+  function setMeetingReadOnly(readOnly){
+    ["meetingTranscript","meetingSummary","meetingDecisions","meetingActions"].forEach(id=>{
+      const el=$m(id);if(!el)return;
+      el.readOnly=!!readOnly;
+      if(readOnly){el.style.overflow="hidden";}else{el.style.height="";el.style.overflow="auto";}
+    });
+    if(readOnly) requestAnimationFrame(autoSizeMeetingTextareas);
+  }
+  function editOpenedMeeting(){
+    const ws=$m("meetingWorkspace");if(!editingId)return;ws.classList.add("editing");setMeetingReadOnly(false);$m("meetingSavedShareActions").style.display="none";$m("meetingSaveActions").style.display="flex";$m("meetingSaveBtn").textContent="✓ Save Changes";$m("meetingGenerateAiBtn").textContent="Regenerate AI Minutes";meetingMsg("Editing enabled. Save Changes will save and return to Saved Meetings.","info");
+  }
+  function hideWorkspace(){
+    $m("meetingWorkspace").style.display="none";$m("meetingWorkspace").classList.remove("saved-detail");
+    const historyBox=$m("meetingHistoryBox");if(historyBox){historyBox.style.display="none";historyBox.open=false;$m("meetingHistoryList").innerHTML="";$m("meetingHistoryCount").textContent=""}
+    document.querySelector(".savedMeetingsBox")?.classList.remove("workspace-open");
+    document.querySelector(".meetingHomeActions")?.classList.remove("workspace-open");
+    window.setTimeout(()=>{$m("savedMeetingsList")?.scrollIntoView({behavior:"smooth",block:"start"})},50)
+  }
+  function updateTimer(){if(!startedAt)return;const sec=Math.floor((Date.now()-startedAt)/1000);$m("meetingTimer").textContent=pad(Math.floor(sec/60))+":"+pad(sec%60)}
+  function setRecordingUI(live){$m("meetingStartBtn").disabled=live;$m("meetingStopBtn").disabled=!live;$m("meetingRecordDot").classList.toggle("live",live);$m("meetingRecordStatus").textContent=live?"Recording in progress":"Ready to record";if(live)$m("meetingTranscribeBtn").disabled=true}
+  function loadLegacyMeetings(){try{return JSON.parse(localStorage.getItem(STORAGE_KEY)||"[]")}catch(e){return []}}
+  function escapeHtml(v){return String(v||"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]))}
+  function meetingDisplayDate(v){if(!v)return "No date";try{return new Date(v).toLocaleString([], {day:"2-digit",month:"short",year:"numeric",hour:"numeric",minute:"2-digit",hour12:true})}catch(e){return new Date(v).toLocaleString()}}
+  function fromDbMeeting(x){return {id:x.id,title:x.title||"Untitled meeting",participants:x.participants||"",dateTime:x.meeting_started_at?localDateTimeValue(new Date(x.meeting_started_at)):"",startAt:x.meeting_started_at||"",endAt:"",durationSeconds:Number(x.duration_seconds)||0,transcript:x.transcript||"",summary:x.summary||"",decisions:x.key_decisions||"",actionItems:x.action_items||"",consentConfirmed:false,updatedAt:x.updated_at||"",createdAt:x.created_at||"",recordType:x.record_type||"owner",parentMeetingId:x.parent_meeting_id||null,rootMeetingId:x.root_meeting_id||null}}
+  async function requireMeetingUser(){const {data:{user:liveUser},error}=await sb.auth.getUser();if(error||!liveUser)throw new Error("Please sign in again to use cloud Meeting Minutes.");return liveUser}
+  async function loadCloudMeetings(){
+    const liveUser=await requireMeetingUser();
+    const {data,error}=await sb.from("meeting_minutes").select("*").eq("owner_id",liveUser.id).order("updated_at",{ascending:false});
+    if(error)throw error;cloudMeetings=(data||[]).map(fromDbMeeting);return cloudMeetings
+  }
+  async function migrateLegacyMeetingsOnce(){
+    const liveUser=await requireMeetingUser(), marker="dshario_rc80_meeting_migrated_"+liveUser.id;
+    if(localStorage.getItem(marker)==="1")return;
+    const legacy=loadLegacyMeetings();
+    if(!legacy.length){localStorage.setItem(marker,"1");return}
+    const rows=legacy.map(x=>({owner_id:liveUser.id,title:x.title||"Untitled Meeting",participants:x.participants||null,meeting_started_at:x.startAt||x.dateTime||null,duration_seconds:Number(x.durationSeconds)||0,transcript:x.transcript||null,summary:x.summary||null,key_decisions:x.decisions||null,action_items:x.actionItems||null,record_type:"owner",source_owner_id:liveUser.id}));
+    const {error}=await sb.from("meeting_minutes").insert(rows);if(error)throw error;localStorage.setItem(marker,"1");meetingMsg("Existing saved meetings copied securely to your DShario account.","ok")
+  }
+  async function loadMeetingTransferTimes(items){
+    meetingSentAt={};meetingReceivedAt={};
+    try{
+      const liveUser=await requireMeetingUser();
+      const ids=new Set((items||[]).map(x=>x.id).filter(Boolean));
+      if(!ids.size)return;
+      const [sentRes,receivedRes]=await Promise.all([
+        sb.from("meeting_minute_shares").select("meeting_id,shared_at").eq("sender_id",liveUser.id).order("shared_at",{ascending:false}),
+        sb.from("meeting_minute_shares").select("recipient_meeting_id,shared_at").eq("recipient_id",liveUser.id).order("shared_at",{ascending:false})
+      ]);
+      if(sentRes.error)console.warn("Sent meeting timestamps unavailable",sentRes.error);
+      if(receivedRes.error)console.warn("Received meeting timestamps unavailable",receivedRes.error);
+      (sentRes.data||[]).forEach(r=>{if(ids.has(r.meeting_id)&&!meetingSentAt[r.meeting_id])meetingSentAt[r.meeting_id]=r.shared_at});
+      (receivedRes.data||[]).forEach(r=>{if(ids.has(r.recipient_meeting_id)&&!meetingReceivedAt[r.recipient_meeting_id])meetingReceivedAt[r.recipient_meeting_id]=r.shared_at});
+    }catch(e){console.warn("Meeting sent/received time load skipped",e)}
+  }
+  function meetingTransferDisplay(value){
+    if(!value)return "";
+    try{return new Date(value).toLocaleString([], {day:"2-digit",month:"short",year:"numeric",hour:"numeric",minute:"2-digit",hour12:true})}
+    catch(e){return new Date(value).toLocaleString()}
+  }
+  async function renderMeetings(){
+    const list=$m("savedMeetingsList");if(!list)return;list.innerHTML='<div class="savedMeetingEmpty">Loading saved meetings…</div>';
+    try{
+      await migrateLegacyMeetingsOnce();
+      const items=await loadCloudMeetings();
+      await loadMeetingTransferTimes(items);
+      const mine=items.filter(x=>x.recordType!=="received"), shared=items.filter(x=>x.recordType==="received");
+      $m("meetingMineCount").textContent=mine.length?"("+mine.length+")":"";
+      $m("meetingSharedCount").textContent=shared.length?"("+shared.length+")":"";
+      $m("meetingTabMine").classList.toggle("active",meetingListOpen&&meetingListMode==="mine");
+      $m("meetingTabShared").classList.toggle("active",meetingListOpen&&meetingListMode==="shared");
+      const savedBox=$m("savedMeetingsList")?.closest(".savedMeetingsBox");
+      if(savedBox) savedBox.classList.toggle("rc98MeetingListClosed",!meetingListOpen);
+
+      const q=String($m("meetingListSearch")?.value||"").trim().toLowerCase();
+      const sort=String($m("meetingListSort")?.value||"newest");
+      let visible=(meetingListMode==="shared"?shared:mine).filter(x=>{
+        if(!q)return true;
+        return String(x.title||"").toLowerCase().includes(q)||String(x.participants||"").toLowerCase().includes(q);
+      });
+      const eventTime=x=>meetingListMode==="shared"?(meetingReceivedAt[x.id]||x.createdAt||x.startAt||""):(meetingSentAt[x.id]||x.startAt||x.createdAt||"");
+      visible.sort((a,b)=>{
+        if(sort==="az")return String(a.title||"").localeCompare(String(b.title||""),undefined,{sensitivity:"base"});
+        if(sort==="za")return String(b.title||"").localeCompare(String(a.title||""),undefined,{sensitivity:"base"});
+        const av=new Date(eventTime(a)||0).getTime()||0,bv=new Date(eventTime(b)||0).getTime()||0;
+        return sort==="oldest"?av-bv:bv-av;
+      });
+
+      if(!visible.length){
+        list.innerHTML='<div class="savedMeetingEmpty">'+(q?'No matching meetings found.':(meetingListMode==="shared"?'No meetings have been shared with you yet.':'No meetings saved yet. Tap + New Meeting to begin.'))+'</div>';
+        return;
+      }
+
+      list.innerHTML=visible.map(x=>{
+        const preview=(x.summary||x.transcript||"").trim().slice(0,180),
+              when=x.startAt||x.dateTime,
+              dur=Number(x.durationSeconds)||0,
+              received=x.recordType==="received",
+              transferAt=received?meetingReceivedAt[x.id]:meetingSentAt[x.id],
+              transferLabel=received?"Received":"Sent",
+              transferLine=transferAt?'<div class="meetingTransferTime">'+transferLabel+': '+escapeHtml(meetingTransferDisplay(transferAt))+'</div>':'';
+        return '<div class="savedMeetingItem" data-meeting-id="'+escapeHtml(x.id)+'"><div class="savedMeetingTop"><div><div class="savedMeetingTitle">'+escapeHtml(x.title||"Untitled meeting")+'</div><div class="savedMeetingMeta">'+escapeHtml(meetingDisplayDate(when))+(dur?'<span class="meetingDurationBadge">'+escapeHtml(formatDuration(dur))+'</span>':'')+(x.participants?' • '+escapeHtml(x.participants):'')+'</div>'+transferLine+'</div></div>'+(preview?'<div class="savedMeetingPreview">'+escapeHtml(preview)+(preview.length>=180?'…':'')+'</div>':'')+'<div class="savedMeetingActions"><button class="mini meetingOpenBtn" type="button">Open</button><button class="mini meetingShareDBtn" type="button">Share via DShario</button><button class="mini meetingCopyLinkBtn" type="button">Copy Link</button><button class="mini meetingDownloadBtn" type="button">Download</button><button class="mini meetingDeleteBtn" type="button">Delete</button></div></div>';
+      }).join("");
+    }catch(e){
+      console.error("Cloud meeting load error",e);
+      list.innerHTML='<div class="savedMeetingEmpty">Could not load cloud meetings. Please check your sign-in and try again.</div>';
+      meetingMsg(e?.message||"Could not load cloud meetings.","err")
+    }
+  }
+  function clearAudio(){if(audioUrl){URL.revokeObjectURL(audioUrl);audioUrl=null}currentAudioBlob=null;$m("meetingAudioPlayback").removeAttribute("src");$m("meetingAudioPlayback").style.display="none";$m("meetingTranscribeBtn").disabled=true;$m("meetingDownloadMp3Btn").disabled=true;transcribeStatus("");const st=$m("meetingMp3Status");if(st)st.textContent="Audio is not permanently stored by DShario. Download a copy if you want to keep it."}
+  function clearForm(){editingId=null;recordingStartIso="";recordingEndIso="";recordedDurationSeconds=0;startedAt=0;$m("meetingTitle").value="";$m("meetingParticipants").value="";$m("meetingDateTime").value="";$m("meetingTranscript").value="";$m("meetingSummary").value="";$m("meetingDecisions").value="";$m("meetingActions").value="";$m("meetingConsentCheck").checked=false;clearAudio();$m("meetingSaveBtn").textContent="Save Meeting";$m("meetingTimer").textContent="00:00";$m("meetingAiStatus").textContent="";updateTimingDisplay()}
+  function openMeeting(id){
+    const x=cloudMeetings.find(v=>v.id===id);if(!x)return;editingId=x.id;recordingStartIso=x.startAt||x.dateTime||"";recordingEndIso=x.endAt||"";recordedDurationSeconds=Number(x.durationSeconds)||0;
+    $m("meetingTitle").value=x.title||"";$m("meetingParticipants").value=x.participants||"";$m("meetingDateTime").value=x.dateTime||"";$m("meetingTranscript").value=x.transcript||"";$m("meetingSummary").value=x.summary||"";$m("meetingDecisions").value=x.decisions||"";$m("meetingActions").value=x.actionItems||"";$m("meetingConsentCheck").checked=!!x.consentConfirmed;$m("meetingSaveBtn").textContent="✓ Save Changes";
+    const when=recordingStartIso?meetingDisplayDate(recordingStartIso):(x.dateTime?meetingDisplayDate(x.dateTime):"Date unavailable");
+    $m("meetingSavedMeta").innerHTML='<div class="meetingSavedMetaTitle">'+escapeHtml(x.title||"Untitled meeting")+'</div><div class="meetingSavedMetaLine">'+escapeHtml(when)+(recordedDurationSeconds?' • '+escapeHtml(formatDuration(recordedDurationSeconds)):'')+(x.participants?' • '+escapeHtml(x.participants):'')+'</div>';
+    clearAudio();updateTimingDisplay();showWorkspace("edit");requestAnimationFrame(autoSizeMeetingTextareas);meetingMsg("Cloud meeting opened.","info")
+  }
+  window.openDSharioMeetingNotification=async function(id){
+    try{
+      meetingListMode="shared";
+      await renderMeetings();
+      openMeeting(id);
+      $m("meetingMinutesPanel")?.scrollIntoView({behavior:"smooth",block:"start"});
+    }catch(e){
+      console.error("Meeting notification open error",e);
+      meetingMsg("Could not open the received meeting. Open Shared With Me and try again.","err");
+    }
+  };
+  function formatHistoryTime(value){if(!value)return "";try{return new Date(value).toLocaleString([], {day:"2-digit",month:"short",year:"numeric",hour:"numeric",minute:"2-digit",hour12:true})}catch(e){return new Date(value).toLocaleString()}}
+  function historyActivityLabel(type){const labels={created:"Meeting created",edited:"Meeting updated",ai_regenerated:"AI Minutes regenerated",shared:"Meeting shared",opened:"Meeting opened",revoked:"Sharing revoked",deleted:"Meeting deleted"};return labels[type]||String(type||"Activity").replace(/_/g," ").replace(/\b\w/g,c=>c.toUpperCase())}
+  async function loadMeetingHistory(){
+    if(!editingId)return;const status=$m("meetingHistoryStatus"),list=$m("meetingHistoryList"),count=$m("meetingHistoryCount");status.textContent="Loading history…";list.innerHTML="";
+    try{await requireMeetingUser();const [revRes,actRes]=await Promise.all([sb.from("meeting_minute_revisions").select("id,revision_number,created_at").eq("meeting_id",editingId).order("revision_number",{ascending:false}),sb.from("meeting_minute_activity").select("id,activity_type,details,created_at").eq("meeting_id",editingId).order("created_at",{ascending:false})]);if(revRes.error)throw revRes.error;if(actRes.error)throw actRes.error;const revisions=revRes.data||[],activities=actRes.data||[];count.textContent=revisions.length?revisions.length+(revisions.length===1?" revision":" revisions"):"";const rows=revisions.map(r=>({time:r.created_at,title:"Revision "+r.revision_number,detail:r.revision_number===1?"Original saved":"Meeting updated"}));activities.filter(a=>!["created","edited"].includes(a.activity_type)).slice(0,5).forEach(a=>rows.push({time:a.created_at,title:historyActivityLabel(a.activity_type),detail:""}));rows.sort((a,b)=>String(b.time||"").localeCompare(String(a.time||"")));if(!rows.length){status.textContent="No history recorded yet.";return}status.textContent="Saved revisions and important sharing activity.";list.innerHTML=rows.map(r=>'<div class="meetingHistoryItem"><div class="meetingHistoryTop"><div class="meetingHistoryTitle">'+escapeHtml(r.title)+'</div><div class="meetingHistoryTime">'+escapeHtml(formatHistoryTime(r.time))+'</div></div>'+(r.detail?'<div class="meetingHistoryDetail">'+escapeHtml(r.detail)+'</div>':'')+'</div>').join("");
+    }catch(e){console.error("Meeting history load error",e);status.textContent=e?.message||"Could not load meeting history."}
+  }
+
+  function currentMeetingText(){
+    const title=$m("meetingTitle").value.trim()||"Untitled meeting", participants=$m("meetingParticipants").value.trim();
+    const when=recordingStartIso?new Date(recordingStartIso).toLocaleString():"";
+    const parts=["DShario Meeting Minutes",title,when+(recordedDurationSeconds?" • "+formatDuration(recordedDurationSeconds):"")+(participants?" • "+participants:"")];
+    const summary=$m("meetingSummary").value.trim(), decisions=$m("meetingDecisions").value.trim(), actions=$m("meetingActions").value.trim(), transcript=$m("meetingTranscript").value.trim();
+    if(summary)parts.push("MEETING SUMMARY\n"+summary);if(decisions)parts.push("KEY DECISIONS\n"+decisions);if(actions)parts.push("ACTION ITEMS\n"+actions);if(transcript)parts.push("TRANSCRIPT\n"+transcript);return parts.filter(Boolean).join("\n\n");
+  }
+  async function copyMeetingMinutes(){try{await navigator.clipboard.writeText(currentMeetingText());meetingMsg("Meeting minutes copied.","ok")}catch(e){meetingMsg("Could not copy meeting minutes on this browser.","err")}}
+  async function shareMeetingMinutes(){const text=currentMeetingText(),title=$m("meetingTitle").value.trim()||"DShario Meeting Minutes";try{if(navigator.share){await navigator.share({title,text});meetingMsg("Meeting minutes shared.","ok")}else{await navigator.clipboard.writeText(text);meetingMsg("Sharing is not available here, so the meeting minutes were copied instead.","info")}}catch(e){if(e?.name!=="AbortError")meetingMsg("Could not share meeting minutes.","err")}}
+  function normalizeMeetingHandle(raw){return String(raw||"").trim().replace(/^https?:\/\/[^/]+\/@?/i,"").replace(/^.*dshario\.com\/@?/i,"").replace(/^@/,"").toLowerCase().replace(/[^a-z0-9._-]/g,"")}
+  function renderRecipientChips(){const box=$m("meetingRecipientChips");box.innerHTML=shareRecipients.map(h=>'<span class="meetingRecipientChip">@'+escapeHtml(h)+' <button type="button" data-remove-recipient="'+escapeHtml(h)+'" aria-label="Remove @'+escapeHtml(h)+'">×</button></span>').join("");$m("meetingShareConfirm").disabled=!shareRecipients.length;$m("meetingShareConfirm").textContent=shareRecipients.length?'Share with '+shareRecipients.length+' recipient'+(shareRecipients.length===1?'':'s'):'Share Meeting'}
+  function openMeetingShare(id){shareMeetingId=id;shareRecipients=[];$m("meetingRecipientInput").value="";$m("meetingShareStatus").textContent="";$m("meetingShareStatus").className="hint meetingShareStatus";renderRecipientChips();$m("meetingShareModal").classList.add("show");$m("meetingShareModal").setAttribute("aria-hidden","false");setTimeout(()=>$m("meetingRecipientInput").focus(),50)}
+  function closeMeetingShare(){if($m("meetingShareConfirm").disabled&&$m("meetingShareConfirm").dataset.busy==="1")return;$m("meetingShareModal").classList.remove("show");$m("meetingShareModal").setAttribute("aria-hidden","true");shareMeetingId=null;shareRecipients=[]}
+  function addMeetingRecipient(){const h=normalizeMeetingHandle($m("meetingRecipientInput").value);if(!h){$m("meetingShareStatus").textContent="Enter a valid DShario @username.";$m("meetingShareStatus").className="hint meetingShareStatus err";return}if(!shareRecipients.includes(h))shareRecipients.push(h);$m("meetingRecipientInput").value="";$m("meetingShareStatus").textContent="";$m("meetingShareStatus").className="hint meetingShareStatus";renderRecipientChips()}
+  async function confirmMeetingShare(){if(!shareMeetingId||!shareRecipients.length)return;const btn=$m("meetingShareConfirm"),status=$m("meetingShareStatus");btn.disabled=true;btn.dataset.busy="1";status.className="hint meetingShareStatus";status.textContent="Sharing…";const ok=[],failed=[];try{await requireMeetingUser();for(const handle of shareRecipients){const {error}=await sb.rpc("share_meeting_with_dshario_user",{p_meeting_id:shareMeetingId,p_recipient_slug:handle});if(error)failed.push({handle,error:error.message||"Could not share"});else ok.push(handle)}if(ok.length&&failed.length===0){status.textContent="Meeting shared successfully with "+ok.length+" recipient"+(ok.length===1?"":"s")+". Existing copies are refreshed instead of duplicated.";status.className="hint meetingShareStatus ok";meetingMsg(status.textContent,"ok");setTimeout(closeMeetingShare,900)}else if(ok.length){status.textContent="Shared with "+ok.length+". Could not share with: "+failed.map(x=>"@"+x.handle).join(", ")+".";status.className="hint meetingShareStatus err";meetingMsg(status.textContent,"err")}else{status.textContent=failed[0]?.error||"Could not share this meeting.";status.className="hint meetingShareStatus err";meetingMsg(status.textContent,"err")}await renderMeetings()}catch(e){console.error("Meeting share error",e);status.textContent=e?.message||"Could not share this meeting.";status.className="hint meetingShareStatus err";meetingMsg(status.textContent,"err")}finally{btn.dataset.busy="0";btn.disabled=!shareRecipients.length;renderRecipientChips()}}
+  async function shareSavedViaDShario(id){openMeetingShare(id)}
+  async function copySavedMeetingLink(id){
+    try{await requireMeetingUser()}catch(e){meetingMsg(e?.message||"Please sign in first.","err");return}
+    const {data:{user}}=await sb.auth.getUser();
+    if(!user){meetingMsg("Please sign in first.","err");return}
+    meetingMsg("Creating external document link…","");
+    try{
+      const {data,error}=await sb.rpc("create_meeting_document_link",{p_meeting_id:id});
+      if(error)throw error;
+      const token=typeof data==="string"?data:(data?.share_token||data?.token||data);
+      if(!token)throw new Error("Secure document link could not be created.");
+
+      // Always point external links at the stable RC89 page itself.
+      const url=new URL(location.origin + location.pathname);
+      url.searchParams.set("meetingdoc",String(token));
+      const link=url.toString();
+
+      let copied=false;
+      try{
+        if(navigator.clipboard && window.isSecureContext){
+          await navigator.clipboard.writeText(link);
+          copied=true;
+        }
+      }catch(_){}
+
+      if(!copied){
+        const ta=document.createElement("textarea");
+        ta.value=link;ta.setAttribute("readonly","");ta.style.position="fixed";ta.style.opacity="0";
+        document.body.appendChild(ta);ta.select();ta.setSelectionRange(0,99999);
+        try{copied=document.execCommand("copy")}catch(_){}
+        ta.remove();
+      }
+
+      // On supported phones this also makes WhatsApp/Messenger/email sharing easy.
+      if(navigator.share){
+        try{
+          await navigator.share({title:"Meeting Minutes",text:"View the meeting minutes:",url:link});
+          meetingMsg("External meeting link shared. The recipient can view it without a DShario account.","ok");
+          return;
+        }catch(e){
+          if(e?.name!=="AbortError") console.warn("Native share unavailable",e);
+        }
+      }
+
+      if(copied){
+        meetingMsg("External meeting link copied. Paste it into WhatsApp, Messenger, email or SMS.","ok");
+      }else{
+        window.prompt("Copy this external meeting link:",link);
+        meetingMsg("External meeting link created.","ok");
+      }
+    }catch(e){
+      console.error("External meeting link error",e);
+      meetingMsg(e?.message||"Could not create external meeting link.","err");
+    }
+  }
+  async function redeemMeetingShareFromUrl(){
+    const token=new URL(location.href).searchParams.get("meeting_share");if(!token)return false;
+    try{await requireMeetingUser();const {data,error}=await sb.rpc("redeem_meeting_share_link",{p_share_token:token});if(error)throw error;history.replaceState({},"",location.pathname+"#account");await renderMeetings();meetingMsg("Shared Meeting Minutes added to your DShario account as an editable copy.","ok");return true}
+    catch(e){console.error("Meeting link redemption error",e);meetingMsg(e?.message||"This meeting link could not be opened.","err");return false}
+  }
+
+  let downloadMeetingId=null;
+  function meetingForDownload(id){return cloudMeetings.find(v=>v.id===id)||null}
+  function safeMeetingFilename(title,ext){
+    const base=String(title||"DShario Meeting Minutes").replace(/[\\/:*?"<>|]+/g," ").replace(/\s+/g," ").trim().slice(0,80)||"DShario Meeting Minutes";
+    return base+"."+ext;
+  }
+  function meetingExportData(x){
+    return {
+      title:x?.title||"Untitled meeting",
+      participants:x?.participants||"",
+      when:meetingDisplayDate(x?.startAt||x?.dateTime),
+      duration:formatDuration(Number(x?.durationSeconds)||0),
+      summary:x?.summary||"",
+      decisions:x?.decisions||"",
+      actions:x?.actionItems||"",
+      transcript:x?.transcript||""
+    };
+  }
+  function openMeetingDownload(id){
+    if(!meetingForDownload(id)){meetingMsg("Meeting could not be found.","err");return}
+    downloadMeetingId=id;
+    $m("meetingDownloadStatus").textContent="";
+    $m("meetingDownloadStatus").className="hint meetingShareStatus";
+    $m("meetingDownloadModal").classList.add("show");
+    $m("meetingDownloadModal").setAttribute("aria-hidden","false");
+  }
+  function closeMeetingDownload(){
+    $m("meetingDownloadModal").classList.remove("show");
+    $m("meetingDownloadModal").setAttribute("aria-hidden","true");
+    downloadMeetingId=null;
+  }
+  function downloadBlob(blob,name){
+    const url=URL.createObjectURL(blob),a=document.createElement("a");a.href=url;a.download=name;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),1500);
+  }
+  function cleanBulletLines(v){return String(v||"").split(/\n+/).map(s=>s.replace(/^[•\-\u2022]\s*/,"").trim()).filter(Boolean)}
+  async function downloadMeetingWord(){
+    const x=meetingForDownload(downloadMeetingId);if(!x)return;
+    const status=$m("meetingDownloadStatus");status.textContent="Preparing Word document…";
+    try{
+      if(!window.docx)throw new Error("Word export library could not load. Check your internet connection and try again.");
+      const d=meetingExportData(x),D=window.docx;
+      const children=[
+        new D.Paragraph({children:[new D.TextRun({text:"MEETING MINUTES",bold:true,size:34,color:"0B315F"})],spacing:{after:180}}),
+        new D.Paragraph({children:[new D.TextRun({text:d.title,bold:true,size:30})],spacing:{after:80}}),
+        new D.Paragraph({children:[new D.TextRun({text:d.when+(d.duration&&d.duration!=="0 sec"?"  •  "+d.duration:""),size:20,color:"64748B"})]}),
+        ...(d.participants?[new D.Paragraph({children:[new D.TextRun({text:"Participants: ",bold:true,size:20}),new D.TextRun({text:d.participants,size:20})],spacing:{after:220}})]:[new D.Paragraph({text:"",spacing:{after:160}})])
+      ];
+      const addSection=(heading,body)=>{
+        if(!String(body||"").trim())return;
+        children.push(new D.Paragraph({children:[new D.TextRun({text:heading,bold:true,size:24,color:"0B5FC6"})],spacing:{before:160,after:70}}));
+        if(heading==="KEY DECISIONS"||heading==="ACTION ITEMS"){
+          cleanBulletLines(body).forEach(line=>children.push(new D.Paragraph({text:line,bullet:{level:0},spacing:{after:55}})));
+        }else{
+          String(body).split(/\n+/).filter(Boolean).forEach(line=>children.push(new D.Paragraph({text:line,spacing:{after:70}})));
+        }
+      };
+      addSection("MEETING SUMMARY",d.summary);addSection("KEY DECISIONS",d.decisions);addSection("ACTION ITEMS",d.actions);addSection("TRANSCRIPT",d.transcript);
+      children.push(new D.Paragraph({children:[new D.TextRun({text:"Created with DShario • DS",italics:true,size:18,color:"64748B"})],spacing:{before:260}}));
+      const doc=new D.Document({sections:[{properties:{},children}]});
+      const blob=await D.Packer.toBlob(doc);downloadBlob(blob,safeMeetingFilename(d.title,"docx"));
+      status.textContent="Word document downloaded.";status.className="hint meetingShareStatus ok";
+    }catch(e){console.error("Meeting Word export error",e);status.textContent=e?.message||"Could not create Word document.";status.className="hint meetingShareStatus err"}
+  }
+  async function downloadMeetingPdf(){
+    const x=meetingForDownload(downloadMeetingId);if(!x)return;
+    const status=$m("meetingDownloadStatus");status.textContent="Preparing PDF…";
+    try{
+      const JsPDF=window.jspdf?.jsPDF;if(!JsPDF)throw new Error("PDF export library could not load. Check your internet connection and try again.");
+      const d=meetingExportData(x),pdf=new JsPDF({unit:"pt",format:"a4"}),pageW=pdf.internal.pageSize.getWidth(),pageH=pdf.internal.pageSize.getHeight(),left=52,right=52,maxW=pageW-left-right;let y=55;
+      const ensure=(need=40)=>{if(y+need>pageH-55){pdf.addPage();y=55}};
+      const write=(txt,size=10,bold=false,gap=6)=>{
+        if(!String(txt||"").trim())return;
+        pdf.setFont("helvetica",bold?"bold":"normal");pdf.setFontSize(size);const lines=pdf.splitTextToSize(String(txt),maxW);for(const line of lines){ensure(size+8);pdf.text(line,left,y);y+=size+4}y+=gap;
+      };
+      write("MEETING MINUTES",19,true,12);write(d.title,17,true,5);pdf.setTextColor(100,116,139);write(d.when+(d.duration&&d.duration!=="0 sec"?"  |  "+d.duration:""),10,false,3);if(d.participants)write("Participants: "+d.participants,10,false,12);pdf.setTextColor(15,23,42);
+      const section=(heading,body)=>{if(!String(body||"").trim())return;ensure(55);pdf.setTextColor(11,95,198);write(heading,12,true,5);pdf.setTextColor(15,23,42);if(heading==="KEY DECISIONS"||heading==="ACTION ITEMS"){cleanBulletLines(body).forEach(line=>write("• "+line,10,false,2))}else write(body,10,false,6);y+=4};
+      section("MEETING SUMMARY",d.summary);section("KEY DECISIONS",d.decisions);section("ACTION ITEMS",d.actions);section("TRANSCRIPT",d.transcript);
+      ensure(35);pdf.setTextColor(100,116,139);write("Created with DShario • DS",9,false,0);
+      pdf.save(safeMeetingFilename(d.title,"pdf"));status.textContent="PDF downloaded.";status.className="hint meetingShareStatus ok";
+    }catch(e){console.error("Meeting PDF export error",e);status.textContent=e?.message||"Could not create PDF.";status.className="hint meetingShareStatus err"}
+  }
+  async function deleteMeeting(id){const x=cloudMeetings.find(v=>v.id===id);if(!x||!confirm('Delete "'+(x.title||"this meeting")+'" from your DShario account?'))return;try{const {error}=await sb.from("meeting_minutes").delete().eq("id",id);if(error)throw error;if(editingId===id)clearForm();await renderMeetings();meetingMsg("Meeting deleted from your DShario account.","ok")}catch(e){console.error("Cloud meeting delete error",e);meetingMsg(e?.message||"Could not delete this meeting.","err")}}
+
+  async function startRecording(){
+    if(!$m("meetingConsentCheck").checked){meetingMsg("Please confirm recording consent before starting.","err");return}
+    if(!navigator.mediaDevices?.getUserMedia){meetingMsg("Microphone recording is not supported by this browser.","err");return}
+    try{
+      clearAudio(); mediaStream=await navigator.mediaDevices.getUserMedia({audio:true});audioChunks=[];
+      const preferred=MediaRecorder.isTypeSupported?.("audio/webm;codecs=opus")?"audio/webm;codecs=opus":"";
+      mediaRecorder=preferred?new MediaRecorder(mediaStream,{mimeType:preferred}):new MediaRecorder(mediaStream);
+      mediaRecorder.ondataavailable=e=>{if(e.data&&e.data.size)audioChunks.push(e.data)};
+      mediaRecorder.onstop=()=>{if(audioChunks.length){currentAudioBlob=new Blob(audioChunks,{type:mediaRecorder.mimeType||"audio/webm"});audioUrl=URL.createObjectURL(currentAudioBlob);$m("meetingAudioPlayback").src=audioUrl;$m("meetingAudioPlayback").style.display="block";$m("meetingTranscribeBtn").disabled=false;$m("meetingDownloadMp3Btn").disabled=false;transcribeStatus("Recording ready for transcription.")}if(mediaStream){mediaStream.getTracks().forEach(t=>t.stop());mediaStream=null}};
+      mediaRecorder.start(1000);startedAt=Date.now();recordingStartIso=new Date(startedAt).toISOString();recordingEndIso="";recordedDurationSeconds=0;$m("meetingDateTime").value=localDateTimeValue(new Date(startedAt));updateTimingDisplay();timerId=setInterval(updateTimer,500);updateTimer();setRecordingUI(true);meetingMsg("Recording started. Keep this page open during the meeting.","ok");
+    }catch(e){meetingMsg("Microphone permission was not available. Please allow microphone access and try again.","err")}
+  }
+  function stopRecording(){if(mediaRecorder&&mediaRecorder.state!=="inactive"){try{mediaRecorder.stop()}catch(e){}}if(timerId){clearInterval(timerId);timerId=null}updateTimer();if(startedAt){recordingEndIso=new Date().toISOString();recordedDurationSeconds=Math.max(1,Math.round((Date.now()-startedAt)/1000))}startedAt=0;updateTimingDisplay();setRecordingUI(false);meetingMsg("Recording stopped. You can play it back, then tap Transcribe Recording.","ok")}
+
+  function safeFileName(v){return String(v||"DShario-meeting").trim().replace(/[^a-z0-9_-]+/gi,"-").replace(/^-+|-+$/g,"").slice(0,60)||"DShario-meeting"}
+  async function downloadMp3(){
+    if(mp3Busy||!currentAudioBlob)return;
+    mp3Busy=true;const btn=$m("meetingDownloadMp3Btn"),status=$m("meetingMp3Status");btn.disabled=true;btn.textContent="Preparing MP3…";status.textContent="Converting the current recording to MP3 on this device…";
+    try{
+      if(!window.lamejs)throw new Error("MP3 converter could not load. Please check your internet connection and try again.");
+      const raw=await currentAudioBlob.arrayBuffer();const AC=window.AudioContext||window.webkitAudioContext;const ctx=new AC();let decoded;
+      try{decoded=await ctx.decodeAudioData(raw.slice(0))}finally{try{await ctx.close()}catch(e){}}
+      const channels=Math.min(2,decoded.numberOfChannels), sampleRate=decoded.sampleRate, kbps=128;
+      const encoder=new lamejs.Mp3Encoder(channels,sampleRate,kbps), block=1152, mp3=[];
+      const left=decoded.getChannelData(0), right=channels>1?decoded.getChannelData(1):null;
+      const to16=(arr,start,end)=>{const out=new Int16Array(end-start);for(let i=start,j=0;i<end;i++,j++){const x=Math.max(-1,Math.min(1,arr[i]));out[j]=x<0?x*32768:x*32767}return out};
+      for(let i=0;i<left.length;i+=block){const end=Math.min(i+block,left.length),l=to16(left,i,end),buf=channels>1?encoder.encodeBuffer(l,to16(right,i,end)):encoder.encodeBuffer(l);if(buf.length)mp3.push(new Int8Array(buf))}
+      const endBuf=encoder.flush();if(endBuf.length)mp3.push(new Int8Array(endBuf));
+      const blob=new Blob(mp3,{type:"audio/mpeg"});const url=URL.createObjectURL(blob),a=document.createElement("a");a.href=url;a.download=safeFileName($m("meetingTitle").value)+".mp3";document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),3000);status.textContent="MP3 downloaded to your device. DShario does not permanently store this audio.";meetingMsg("MP3 audio downloaded.","ok");
+    }catch(e){console.error("MP3 conversion error",e);status.textContent=e?.message||"Could not create the MP3 file.";meetingMsg(status.textContent,"err")}
+    finally{mp3Busy=false;btn.disabled=!currentAudioBlob;btn.textContent="⬇ Download Audio as MP3"}
+  }
+  async function generateAiMinutes(){
+    if(generatingAi)return;const transcript=$m("meetingTranscript").value.trim();if(!transcript){meetingMsg("Please create or enter the transcript first.","err");return}
+    generatingAi=true;const btn=$m("meetingGenerateAiBtn"),status=$m("meetingAiStatus");btn.disabled=true;btn.textContent="Generating…";status.textContent="Creating summary, decisions and action items…";
+    try{
+      const {data:{session:liveSession}}=await sb.auth.getSession();if(!liveSession?.access_token)throw new Error("Please sign in again before generating meeting minutes.");
+      const response=await fetch(TRANSCRIBE_URL,{method:"POST",headers:{Authorization:"Bearer "+liveSession.access_token,apikey:SUPABASE_KEY,"Content-Type":"application/json"},body:JSON.stringify({action:"summarize",title:$m("meetingTitle").value.trim(),participants:$m("meetingParticipants").value.trim(),transcript})});
+      let result={};try{result=await response.json()}catch(e){}if(!response.ok)throw new Error(result?.error||("AI meeting minutes failed ("+response.status+")."));
+      $m("meetingSummary").value=String(result?.summary||"").trim();$m("meetingDecisions").value=Array.isArray(result?.decisions)?result.decisions.map(v=>"• "+String(v).trim()).join("\n"):String(result?.decisions||"").trim();$m("meetingActions").value=Array.isArray(result?.actionItems)?result.actionItems.map(v=>"• "+String(v).trim()).join("\n"):String(result?.actionItems||result?.actions||"").trim();
+      if(!$m("meetingSummary").value&&!$m("meetingDecisions").value&&!$m("meetingActions").value)throw new Error("No meeting minutes were returned.");
+      status.textContent="AI meeting minutes ready. Review and edit before saving.";meetingMsg("AI meeting minutes ready.","ok");
+    }catch(e){console.error("AI meeting minutes error",e);status.textContent=e?.message||"Could not generate meeting minutes.";meetingMsg(status.textContent,"err")}
+    finally{generatingAi=false;btn.disabled=false;btn.textContent="Generate Meeting Minutes"}
+  }
+  async function transcribeRecording(){
+    if(transcribing||!currentAudioBlob)return;
+    transcribing=true;$m("meetingTranscribeBtn").disabled=true;$m("meetingTranscribeBtn").textContent="Transcribing…";transcribeStatus("Secure transcription in progress. Please keep this page open.");
+    try{
+      const {data:{session:liveSession}}=await sb.auth.getSession();
+      if(!liveSession?.access_token)throw new Error("Please sign in again before transcribing.");
+      const ext=(currentAudioBlob.type||"").includes("mp4")?"m4a":"webm";
+      const form=new FormData();form.append("audio",currentAudioBlob,"meeting-recording."+ext);form.append("language",document.documentElement.lang||"en");form.append("title",$m("meetingTitle").value.trim());form.append("participants",$m("meetingParticipants").value.trim());form.append("context","DShario is the product/brand name. Preserve names and product terms when clearly spoken.");
+      const response=await fetch(TRANSCRIBE_URL,{method:"POST",headers:{Authorization:"Bearer "+liveSession.access_token,apikey:SUPABASE_KEY},body:form});
+      let result={};try{result=await response.json()}catch(e){}
+      if(!response.ok)throw new Error(result?.error||("Transcription failed ("+response.status+")."));
+      const transcript=String(result?.transcript||result?.text||"").trim();if(!transcript)throw new Error("No transcript was returned. Please try again.");
+      const existing=$m("meetingTranscript").value.trim();$m("meetingTranscript").value=existing?(existing+"\n\n"+transcript):transcript;
+      transcribeStatus("Transcription complete. Please review and correct it before saving.");meetingMsg("Transcription ready.","ok");$m("meetingTranscript").scrollIntoView({behavior:"smooth",block:"center"});
+    }catch(e){console.error("Meeting transcription error",e);transcribeStatus(e?.message||"Could not transcribe this recording.");meetingMsg(e?.message||"Could not transcribe this recording.","err")}
+    finally{transcribing=false;$m("meetingTranscribeBtn").disabled=!currentAudioBlob;$m("meetingTranscribeBtn").textContent="✨ Transcribe Recording"}
+  }
+  async function saveMeeting(){
+    const title=$m("meetingTitle").value.trim(),transcript=$m("meetingTranscript").value.trim();if(!title){meetingMsg("Please enter a meeting title.","err");$m("meetingTitle").focus();return}if(!transcript){meetingMsg("Please add a transcript or meeting notes before saving.","err");$m("meetingTranscript").focus();return}
+    const btn=$m("meetingSaveBtn");btn.disabled=true;const wasEditing=!!editingId;btn.textContent=wasEditing?"Saving Changes…":"Saving…";
+    try{const liveUser=await requireMeetingUser();const started=recordingStartIso||($m("meetingDateTime").value?new Date($m("meetingDateTime").value).toISOString():new Date().toISOString());const contentRow={title,participants:$m("meetingParticipants").value.trim()||null,meeting_started_at:started,duration_seconds:recordedDurationSeconds||0,transcript,summary:$m("meetingSummary").value.trim()||null,key_decisions:$m("meetingDecisions").value.trim()||null,action_items:$m("meetingActions").value.trim()||null};
+      if(wasEditing){
+        // RC84: update content only. Never overwrite record_type/source ownership on an existing meeting.
+        // A received editable copy must remain under Shared With Me after Edit/AI Regenerate/Save.
+        const {error}=await sb.from("meeting_minutes").update(contentRow).eq("id",editingId).eq("owner_id",liveUser.id);if(error)throw error;
+        const row=contentRow;
+        const {data:lastRev,error:revReadErr}=await sb.from("meeting_minute_revisions").select("revision_number").eq("meeting_id",editingId).order("revision_number",{ascending:false}).limit(1);if(revReadErr)throw revReadErr;const nextRev=(lastRev?.[0]?.revision_number||0)+1;
+        const {error:revErr}=await sb.from("meeting_minute_revisions").insert({meeting_id:editingId,edited_by:liveUser.id,revision_number:nextRev,transcript:row.transcript,summary:row.summary,key_decisions:row.key_decisions,action_items:row.action_items});if(revErr)throw revErr;
+        const {error:actErr}=await sb.from("meeting_minute_activity").insert({meeting_id:editingId,actor_id:liveUser.id,activity_type:"edited",details:{revision_number:nextRev}});if(actErr)throw actErr;meetingMsg("Changes saved to DShario cloud. Revision "+nextRev+" recorded.","ok");
+      }else{
+        const row={...contentRow,owner_id:liveUser.id,record_type:"owner",source_owner_id:liveUser.id};
+        const {data:created,error}=await sb.from("meeting_minutes").insert(row).select("id").single();if(error)throw error;
+        const {error:revErr}=await sb.from("meeting_minute_revisions").insert({meeting_id:created.id,edited_by:liveUser.id,revision_number:1,transcript:row.transcript,summary:row.summary,key_decisions:row.key_decisions,action_items:row.action_items});if(revErr)throw revErr;
+        const {error:actErr}=await sb.from("meeting_minute_activity").insert({meeting_id:created.id,actor_id:liveUser.id,activity_type:"created",details:{revision_number:1}});if(actErr)throw actErr;meetingMsg("Meeting saved securely to your DShario account.","ok");
+      }
+      clearForm();hideWorkspace();await renderMeetings();
+    }catch(e){console.error("Cloud meeting save error",e);meetingMsg(e?.message||"Could not save this meeting to DShario cloud.","err")}finally{btn.disabled=false;btn.textContent=editingId?"✓ Save Changes":"Save Meeting"}
+  }
+  function requestCloseWorkspace(){if(mediaRecorder&&mediaRecorder.state!=="inactive")stopRecording();if(currentAudioBlob&&!confirm("This audio is not permanently stored by DShario. If you want to keep it, download the MP3 before closing. Continue without keeping this audio?"))return;clearForm();hideWorkspace()}
+  let externalMeetingDocument=null;
+  async function openExternalMeetingDocument(token){
+    try{
+      const {data,error}=await sb.rpc("get_meeting_document_link",{p_share_token:token});if(error)throw error;
+      const r=Array.isArray(data)?data[0]:data;if(!r)throw new Error("This meeting document is unavailable or has been revoked.");
+      externalMeetingDocument={id:"external",title:r.title||"Untitled meeting",participants:r.participants||"",startAt:r.meeting_started_at,durationSeconds:Number(r.duration_seconds)||0,transcript:r.transcript||"",summary:r.summary||"",decisions:r.key_decisions||"",actionItems:r.action_items||""};
+      $m("meetingDocumentTitle").textContent=externalMeetingDocument.title;
+      $m("meetingDocumentMeta").textContent=meetingDisplayDate(externalMeetingDocument.startAt)+" • "+formatDuration(externalMeetingDocument.durationSeconds);
+      $m("meetingDocumentParticipants").textContent=externalMeetingDocument.participants?"Participants: "+externalMeetingDocument.participants:"";
+      $m("meetingDocumentSummary").textContent=externalMeetingDocument.summary;$m("meetingDocumentDecisions").textContent=externalMeetingDocument.decisions;$m("meetingDocumentActions").textContent=externalMeetingDocument.actionItems;$m("meetingDocumentTranscript").textContent=externalMeetingDocument.transcript;
+      [["Summary","summary"],["Decisions","decisions"],["Actions","actionItems"],["Transcript","transcript"]].forEach(([a,b])=>$m("meetingDocument"+a+"Wrap").style.display=externalMeetingDocument[b]?"":"none");
+      $m("meetingDocumentViewer").classList.add("show");
+    }catch(e){alert(e?.message||"This meeting document could not be opened.")}
+  }
+  async function externalDownload(kind){
+    if(!externalMeetingDocument)return;
+    const existing=cloudMeetings.findIndex(v=>v.id==="external");if(existing>=0)cloudMeetings.splice(existing,1);
+    cloudMeetings.push(externalMeetingDocument);downloadMeetingId="external";
+    if(kind==="word")await downloadMeetingWord();else await downloadMeetingPdf();
+    cloudMeetings=cloudMeetings.filter(v=>v.id!=="external");downloadMeetingId=null;
+  }
+  async function init(){if(!$m("meetingMinutesPanel"))return;const meetingDocToken=new URLSearchParams(location.search).get("meetingdoc");if(meetingDocToken){$m("meetingDocumentWord").addEventListener("click",()=>externalDownload("word"));$m("meetingDocumentPdf").addEventListener("click",()=>externalDownload("pdf"));await openExternalMeetingDocument(meetingDocToken);return;}clearForm();hideWorkspace();$m("meetingCreateBtn").addEventListener("click",()=>{clearForm();showWorkspace("new")});$m("meetingCloseBtn").addEventListener("click",requestCloseWorkspace);$m("meetingStartBtn").addEventListener("click",startRecording);$m("meetingStopBtn").addEventListener("click",stopRecording);$m("meetingDownloadMp3Btn").addEventListener("click",downloadMp3);$m("meetingTranscribeBtn").addEventListener("click",transcribeRecording);$m("meetingGenerateAiBtn").addEventListener("click",generateAiMinutes);$m("meetingEditBtn").addEventListener("click",editOpenedMeeting);$m("meetingDownloadClose").addEventListener("click",closeMeetingDownload);$m("meetingDownloadWordBtn").addEventListener("click",downloadMeetingWord);$m("meetingDownloadPdfBtn").addEventListener("click",downloadMeetingPdf);$m("meetingDownloadModal").addEventListener("click",e=>{if(e.target===$m("meetingDownloadModal"))closeMeetingDownload()});$m("meetingHistoryBox")?.addEventListener("toggle",()=>{if($m("meetingHistoryBox").open)loadMeetingHistory()});$m("meetingSaveBtn").addEventListener("click",saveMeeting);$m("meetingTabMine").addEventListener("click",()=>{meetingListOpen=!(meetingListOpen&&meetingListMode==="mine");meetingListMode="mine";renderMeetings()});$m("meetingTabShared").addEventListener("click",()=>{meetingListOpen=!(meetingListOpen&&meetingListMode==="shared");meetingListMode="shared";renderMeetings()});
+    $m("meetingSearchToggle")?.addEventListener("click",()=>{
+      const wrap=$m("meetingSearchWrap"),input=$m("meetingListSearch");if(!wrap)return;
+      wrap.hidden=!wrap.hidden;
+      if(!wrap.hidden)setTimeout(()=>input?.focus(),50);
+      else if(input&&input.value){input.value="";renderMeetings()}
+    });
+    $m("meetingListSearch")?.addEventListener("input",renderMeetings);
+    $m("meetingListSort")?.addEventListener("change",renderMeetings);$m("meetingShareClose").addEventListener("click",closeMeetingShare);$m("meetingRecipientAdd").addEventListener("click",addMeetingRecipient);$m("meetingRecipientInput").addEventListener("keydown",e=>{if(e.key==="Enter"){e.preventDefault();addMeetingRecipient()}});$m("meetingRecipientChips").addEventListener("click",e=>{const b=e.target.closest("[data-remove-recipient]");if(!b)return;shareRecipients=shareRecipients.filter(h=>h!==b.dataset.removeRecipient);renderRecipientChips()});$m("meetingShareConfirm").addEventListener("click",confirmMeetingShare);$m("meetingShareModal").addEventListener("click",e=>{if(e.target===$m("meetingShareModal"))closeMeetingShare()});$m("savedMeetingsList").addEventListener("click",e=>{const item=e.target.closest(".savedMeetingItem");if(!item)return;const id=item.dataset.meetingId;if(e.target.closest(".meetingOpenBtn"))openMeeting(id);if(e.target.closest(".meetingShareDBtn"))shareSavedViaDShario(id);if(e.target.closest(".meetingCopyLinkBtn"))copySavedMeetingLink(id);if(e.target.closest(".meetingDownloadBtn"))openMeetingDownload(id);if(e.target.closest(".meetingDeleteBtn"))deleteMeeting(id)});await renderMeetings();await redeemMeetingShareFromUrl();window.addEventListener("beforeunload",e=>{if(mediaStream)mediaStream.getTracks().forEach(t=>t.stop());if(currentAudioBlob){e.preventDefault();e.returnValue=""}})}
+  if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",init,{once:true});else init();
+})();
+</script>
+
+
+  <div id="meetingDocumentViewer" class="meetingDocumentViewer" aria-hidden="true">
+    <div class="meetingDocumentPage">
+      <div class="meetingDocumentKicker">MEETING MINUTES</div><div id="meetingDocumentLoadStatus" class="hint" style="margin:8px 0"></div>
+      <h2 id="meetingDocumentTitle"></h2><div id="meetingDocumentMeta" class="hint"></div><div id="meetingDocumentParticipants" class="hint"></div>
+      <div id="meetingDocumentSummaryWrap"><h3>Meeting Summary</h3><div id="meetingDocumentSummary" class="meetingDocumentText"></div></div>
+      <div id="meetingDocumentDecisionsWrap"><h3>Key Decisions</h3><div id="meetingDocumentDecisions" class="meetingDocumentText"></div></div>
+      <div id="meetingDocumentActionsWrap"><h3>Action Items</h3><div id="meetingDocumentActions" class="meetingDocumentText"></div></div>
+      <div id="meetingDocumentTranscriptWrap"><h3>Transcript</h3><div id="meetingDocumentTranscript" class="meetingDocumentText"></div></div>
+      <div class="meetingDocumentDownloadRow"><button id="meetingDocumentWord" class="btn secondary" type="button">Download Word</button><button id="meetingDocumentPdf" class="btn secondary" type="button">Download PDF</button></div>
+      <div class="meetingDocumentFooter">Created with DShario • DS</div>
+    </div>
+  </div>
+
+<script>
+document.addEventListener("DOMContentLoaded",()=>{
+  const token=new URLSearchParams(location.search).get("meetingdoc");
+  if(!token)return;
+  // Give the main script a moment to initialize Supabase/helpers, then open the public document.
+  let tries=0;
+  const timer=setInterval(async()=>{
+    tries++;
+    if(typeof openExternalMeetingDocument==="function"){
+      clearInterval(timer);
+      const v=document.getElementById("meetingDocumentViewer");
+      const title=document.getElementById("meetingDocumentTitle");
+      const st=document.getElementById("meetingDocumentLoadStatus");
+      // Main Meeting Minutes initializer may already have loaded the public document.
+      // If so, do not call the RPC a second time or show a false fallback error.
+      if(v && v.classList.contains("show") && title && title.textContent.trim()){
+        if(st){st.textContent="";st.style.display="none";}
+        return;
+      }
+      try{
+        if(v){v.classList.add("show");v.setAttribute("aria-hidden","false")}
+        if(st){st.style.display="";st.textContent="Opening shared meeting…";}
+        await openExternalMeetingDocument(token);
+        if(st){st.textContent="";st.style.display="none";}
+      }catch(e){
+        // openExternalMeetingDocument handles genuine access errors itself.
+        if(st){st.textContent="";st.style.display="none";}
+      }
+    }else if(tries>40){
+      clearInterval(timer);
+      const v=document.getElementById("meetingDocumentViewer");
+      const title=document.getElementById("meetingDocumentTitle");
+      const st=document.getElementById("meetingDocumentLoadStatus");
+      if(v && v.classList.contains("show") && title && title.textContent.trim()){
+        if(st){st.textContent="";st.style.display="none";}
+      }else if(st){
+        st.textContent="This shared meeting could not be opened.";
+      }
+    }
+  },100);
+});
+
+// RC96 V2 commercial workspace: place the REAL working features inside their designated sections.
+document.addEventListener("DOMContentLoaded",function(){
+  const byId=id=>document.getElementById(id);
+  const move=(id,target)=>{
+    const el=byId(id),dest=byId(target);
+    if(el&&dest){dest.appendChild(el);return el}
+    return null;
+  };
+
+  // Connections: move the complete working panels.
+  const connections=move("myConnectionsPanel","rc96ConnectionsBody");
+  const contacts=move("receivedContactsPanel","rc96ConnectionsBody");
+  if(connections) connections.style.display="block";
+  if(contacts) contacts.style.display="block";
+
+  // Meeting Minutes: move the complete proven RC95 meeting workspace.
+  const meetings=move("meetingMinutesPanel","rc96MeetingsBody");
+  if(meetings) meetings.style.display="block";
+
+  // My Profile: physically remove it from Edit My Card and place it here.
+  const profile=move("myProfileSection","rc96ProfileBody");
+  if(profile){
+    profile.open=false;
+    profile.style.display="block";
+    const summary=profile.querySelector("summary");
+    if(summary) summary.textContent="Professional Profile";
+  }
+
+  // Shared Content: move the existing working Documents editor out of Edit My Card.
+  const editSections=[...document.querySelectorAll("#editView details.editSection")];
+  const docs=editSections.find(d=>/documents/i.test(d.querySelector("summary")?.textContent||""));
+  if(docs&&byId("rc96ContentBody")){
+    docs.style.display="block";
+    docs.open=true;
+    byId("rc96ContentBody").appendChild(docs);
+  }
+
+  // Hide old empty containers/labels left after relocation.
+  const signedAs=byId("signedInAs");
+  if(signedAs) signedAs.style.display="none";
+
+  // Keep Edit My Card strictly card-related: renumbering is no longer needed after Profile/Documents move.
+  const cardSummaries=[...document.querySelectorAll("#editView details.editSection > summary")];
+  cardSummaries.forEach((s,i)=>{
+    const text=s.textContent.replace(/^\s*\d+\.\s*/,"").trim();
+    s.textContent=(i+1)+". "+text;
+  });
+});
+// RC97: all Account features start closed and open only when tapped.
+(function(){
+  const groups=[...document.querySelectorAll("#rc96AccountWorkspace .rc96Group")];
+  groups.forEach(group=>{
+    group.classList.remove("rc97Open");
+    const head=group.querySelector(":scope > .rc96GroupHead");
+    if(!head)return;
+    head.setAttribute("role","button"); head.setAttribute("tabindex","0"); head.setAttribute("aria-expanded","false");
+    const toggle=()=>{const opening=!group.classList.contains("rc97Open"); groups.forEach(g=>{g.classList.remove("rc97Open");g.querySelector(":scope > .rc96GroupHead")?.setAttribute("aria-expanded","false")}); if(opening){group.classList.add("rc97Open");head.setAttribute("aria-expanded","true")}};
+    head.addEventListener("click",toggle); head.addEventListener("keydown",e=>{if(e.key==="Enter"||e.key===" "){e.preventDefault();toggle()}});
+  });
+  const profile=document.getElementById("myProfileSection"); if(profile) profile.open=false;
+  const syncSignedIn=()=>{const src=document.getElementById("signedInHandle"),dst=document.getElementById("rc97SignedIn"); if(!dst)return; const t=(src?.textContent||"").trim(); dst.textContent=t||"Signed in"};
+  syncSignedIn(); setTimeout(syncSignedIn,700);
+})();
+
+document.getElementById("rc96Help")?.addEventListener("click",function(){
+  const modal=document.getElementById("helpModal");
+  if(modal)modal.classList.add("show");
+});
+document.getElementById("rc96SignOut")?.addEventListener("click",function(){
+  document.getElementById("signOutBtn")?.click();
+});
+</script>
 
 </body>
 </html>
