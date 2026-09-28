@@ -4,6 +4,9 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<script>
+
+</script>
 <title>DShario — Connect. Share. Remember. Follow Up. Collaborate.</title>
 <meta name="description" content="DShario is a connection and productivity platform for purposeful identity sharing, saved connections, follow-ups, secure content sharing and AI-assisted meeting minutes.">
 <meta name="robots" content="index,follow">
@@ -16,12 +19,10 @@
 <meta name="twitter:title" content="DShario — Connect. Share. Remember. Follow Up. Collaborate.">
 <meta name="twitter:description" content="DShario is a connection and productivity platform for purposeful identity sharing, saved connections, follow-ups, secure content sharing and AI-assisted meeting minutes.">
 <meta name="theme-color" content="#ffffff">
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2">// RC32.9: adds an Elegant printed-card-inspired template while preserving RC32.8 photo adjustment and share-type synchronization. Exact direct @DShario synchronization uses the companion one-time Supabase migration.
-// RC32.24: DShario username/address is routing identity only; hidden from shared/public/downloaded/saved card presentation.
-</script>
+
 <style>
 /* RC71: prevent intermediate owner/receiver/saved states from flashing during async startup. */
-html.rc71-boot body{visibility:hidden!important}
+html.rc71-boot body{visibility:visible!important}
 
 :root{--navy:#123a78;--blue:#3478ee;--ink:#0f172a;--muted:#64748b;--line:#dbe5f2;--soft:#f8fbff;--green:#16a34a;--shadow:0 12px 32px rgba(15,23,42,.10)}
 *{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;font-family:Inter,"Noto Sans Bengali","Nirmala UI","Vrinda",system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;color:var(--ink);background:#fff}
@@ -559,7 +560,7 @@ body.personalProfileMode .floatingCardBtn,body.personalProfileMode .floatingCard
 
 
 
-/* RC98 — compact, consistent controls + frozen AI Watch */
+/* RC98 — compact, consistent controls; AI Watch later activated in subsequent releases */
 .rc98LabelInfo{display:flex;align-items:center;gap:7px;flex-wrap:wrap}
 .rc98LabelInfo>label{margin:0!important}
 .publicCardSetting .rc97Info{margin:0;position:relative}
@@ -584,7 +585,7 @@ body.personalProfileMode .floatingCardBtn,body.personalProfileMode .floatingCard
 .savedMeetingActions .mini{background:#fff!important;color:#174a75!important;border:1px solid #cbdced!important}
 /* Consistent Edit My Card action colours. */
 #editView .actions #saveCloudBtn,#editView .actions #previewBtn,#editView .actions #deleteBtn{background:#edf6ff!important;color:#125fc7!important;border:1px solid #c7dcf5!important}
-/* Frozen roadmap feature: visible but clearly unavailable. */
+/* Compatibility styling retained for any disabled account control. */
 .rc98AiWatch .rc96GroupActions .rc96Nav:disabled{opacity:.62;cursor:not-allowed}
 @media(max-width:520px){
   #savedSearchRow{grid-template-columns:minmax(0,1fr) 44px 44px!important;gap:6px!important}
@@ -608,6 +609,25 @@ body.personalProfileMode .floatingCardBtn,body.personalProfileMode .floatingCard
 
 /* RC104 — remove obsolete floating card shortcut only. */
 .floatingCardBtn,.floatingCardPanel{display:none!important}
+
+.aiWatchResultActions{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}.aiWatchResultActions button{border:1px solid #c7dcf5;border-radius:10px;padding:7px 12px;background:#f5f9fd;color:#173e63;font-weight:800;font-size:12px}.aiWatchResultActions button:disabled{opacity:.65}
+
+/* RC121 — subscription pathway preparation only; payments and feature locking remain inactive */
+.dsPlanWrap{gap:12px!important}
+.dsPlanStatus{display:flex;justify-content:space-between;gap:10px;align-items:center;padding:11px 12px;border:1px solid #bfdbfe;border-radius:12px;background:#eff6ff;color:#173e63}
+.dsPlanStatus span{font-size:12px;font-weight:800;color:#64748b}.dsPlanStatus strong{font-size:13px;text-align:right}
+.dsPlanGrid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.dsPlanCard{border:1px solid #dbe5f2;border-radius:14px;background:#fff;padding:13px}
+.dsPlanPremium{border-color:#bfdbfe;background:linear-gradient(145deg,#f8fbff,#eef6ff)}
+.dsPlanTitle{font-weight:950;color:#123f70;font-size:17px}.dsPlanPrice{margin-top:3px;color:#2563eb;font-weight:850}
+.dsPlanCard ul{margin:10px 0 0;padding-left:20px;color:#475569;line-height:1.55}
+.dsPlanCard li{margin:4px 0}.dsUpgradeMsg{padding:11px 12px;border-radius:12px;background:#ecfdf5;color:#166534;font-weight:750;line-height:1.45}
+.dsPlanHint{text-align:center}
+@media(max-width:620px){.dsPlanGrid{grid-template-columns:1fr}.dsPlanStatus{align-items:flex-start;flex-direction:column}.dsPlanStatus strong{text-align:left}}
+
+
+/* RC124: hold the page until its saved location is restored, preventing My Card flash. */
+
 </style>
 <script>
 /* Built-in QR generator: no external CDN request. */
@@ -2122,14 +2142,41 @@ input,select,textarea{border-color:#cbdcf0!important;background:#fbfdff!importan
 <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
 <!-- RC96 V2: Reorganized Commercial Account Workspace; real feature panels moved into designated sections; RC95 frozen baseline preserved -->
 
-<!-- DShario production: RC104 application + production PWA wiring -->
-<link rel="manifest" href="manifest.webmanifest">
+<!-- RC106 AI WATCH EDIT: RC105 + editable Watches + cleaner Updates area; isolated from live index.html -->
+<link rel="manifest" href="manifest-rc101.webmanifest">
 <meta name="theme-color" content="#0b4f8a">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
 <meta name="apple-mobile-web-app-title" content="DShario">
 <link rel="apple-touch-icon" href="dshario-icon-192.png">
+
+<script id="rc126-test-service-worker-cleanup">
+if("serviceWorker" in navigator && /\/index_RC126_/i.test(location.pathname)){
+  navigator.serviceWorker.getRegistrations().then(rs=>Promise.all(rs.map(r=>r.unregister()))).catch(()=>{});
+}
+</script>
+
+
+<style id="rc127-account-accordion-css-root-fix">
+/* RC127 — final cascade owner for Account accordion visibility.
+   Earlier RC96 CSS later in the file sets .rc96GroupActions{display:grid},
+   which overrode the older closed-state rule. */
+#rc96AccountWorkspace .rc96Group:not(.rc97Open) > .rc96GroupActions,
+#rc96AccountWorkspace .rc96Group:not(.rc97Open) > .rc96FeatureBody{
+  display:none !important;
+}
+#rc96AccountWorkspace .rc96Group.rc97Open > .rc96GroupActions{
+  display:grid !important;
+}
+#rc96AccountWorkspace .rc96Group.rc97Open > .rc96FeatureBody{
+  display:block !important;
+}
+</style>
+
+
+
+<!-- FINAL CANDIDATE 2: landing dedup + account refresh DOM preservation -->
 </head>
 <body>
 <div class="app">
@@ -2577,7 +2624,7 @@ input,select,textarea{border-color:#cbdcf0!important;background:#fbfdff!importan
         <button class="landingCreate" id="homeCreateBtn" type="button">Create Free Card →</button>
         <button class="landingSignin" id="homeSigninHeroBtn" type="button">Sign In</button>
       </div>
-      <div class="landingBetaNote">Free during beta.</div>
+      <div class="landingBetaNote">Create and share your card free. Premium features are currently open for testing.</div>
     </div>
 
     <div class="landingPhoneStage" aria-hidden="true">
@@ -2609,6 +2656,8 @@ input,select,textarea{border-color:#cbdcf0!important;background:#fbfdff!importan
     <div class="landingFeatureCard"><span>👤</span><strong>Profile + AI Writer</strong><small>Keep your broader profile separate from your card and use AI assistance to draft a professional profile from facts you provide.</small></div>
     <div class="landingFeatureCard"><span>📄</span><strong>Secure Content Sharing</strong><small>Share supported documents through controlled DShario sharing flows while keeping identity and content sharing distinct.</small></div>
     <div class="landingFeatureCard"><span>📝</span><strong>AI Meeting Minutes</strong><small>Record with consent, transcribe, review, edit and generate a summary, decisions and action items. Download Word/PDF or share a read-only document link.</small></div>
+    <div class="landingFeatureCard"><span>🔎</span><strong>My Interests / AI Watch</strong><small>Create focused Watches for jobs, sports, news, technology and other interests. DShario checks for relevant updates, notifies you and lets you save or dismiss useful results.</small></div>
+    <div class="landingFeatureCard"><span>📱</span><strong>PWA / Install DShario</strong><small>Install DShario on a supported device for quicker home-screen access and a standalone app experience. Installation is optional and shared links still work in a browser.</small><button id="installDSharioBtn" class="mini" type="button" style="margin-top:10px">Install DShario</button><div id="installDSharioHint" class="hint" style="margin-top:7px">You can also use your browser menu and choose Install app or Add to Home screen.</div></div>
   </div>
 
   <div class="landingHow">
@@ -2623,15 +2672,6 @@ input,select,textarea{border-color:#cbdcf0!important;background:#fbfdff!importan
     </div>
   </div>
 
-  <div class="landingRoadmap">
-    <h2>App access & what’s next</h2>
-    <p>DShario works in your browser. Installation is optional for faster app-style access.</p>
-    <div class="landingRoadmapGrid">
-      <div class="landingRoadmapItem" id="pwaLandingCard"><b>AVAILABLE</b><strong>📱 Install DShario</strong><small>Optionally install DShario on a supported device for quicker home-screen access and a standalone app experience. Shared cards and links still work without installation.</small><button id="installDSharioBtn" class="mini" type="button" style="margin-top:10px">Install DShario</button><div id="installDSharioHint" class="hint" style="margin-top:7px">You can also use your browser menu and choose Install app or Add to Home screen.</div></div>
-      <div class="landingRoadmapItem"><b>ROADMAP</b><strong>🔎 My Interests / AI Watch</strong><small>Create focused watches for topics that matter to you and surface meaningful updates rather than a generic feed.</small></div>
-    </div>
-  </div>
-
   <div class="landingBenefits">
     <div><span>✓</span><strong>You’re in Control</strong><small>Choose what to share and which workflow to use.</small></div>
     <div><span>🔒</span><strong>Privacy by Choice</strong><small>Share deliberately and use controlled links where available.</small></div>
@@ -2640,8 +2680,8 @@ input,select,textarea{border-color:#cbdcf0!important;background:#fbfdff!importan
 
   <div class="landingBottom">
     <div class="landingBottomBrand"><span class="landingDsMark">DS</span><span>DShario</span></div>
-    <div class="landingBottomTag">Connect. Share. Remember. Follow Up.</div>
-    <div class="landingBottomBeta">Currently in BETA. We’re continuing to improve DShario.</div>
+    <div class="landingBottomTag">Connect. Share. Remember. Follow Up. Collaborate.</div>
+    <div class="landingBottomBeta">One place for purposeful sharing, follow-up and collaboration.</div>
   </div>
 </div>
 </section>
@@ -2679,11 +2719,56 @@ input,select,textarea{border-color:#cbdcf0!important;background:#fbfdff!importan
         </div>
         <div class="rc96Group rc98AiWatch">
           <div class="rc96GroupHead"><div class="rc96GroupIcon">🔎</div><div><strong>My Interests / AI Watch</strong><small>Focused updates for topics that matter to you</small></div><span class="rc97Chevron">›</span></div>
-          <div class="rc96GroupActions"><button class="rc96Nav" type="button" disabled>AI Watch <span>Coming soon</span></button></div>
+          <div id="aiWatchBody" class="rc96FeatureBody">
+            <div class="aiWatchIntro">Create focused Watches. DShario will use these interests to surface meaningful changes instead of a generic feed.</div>
+            <button id="addAiWatchBtn" class="rc96Nav" type="button">＋ Create a Watch <span>Add interest ›</span></button>
+            <div id="aiWatchForm" class="aiWatchForm" hidden>
+              <label>Area<select id="aiWatchArea"><option>Jobs &amp; Career</option><option>Business</option><option>Technology</option><option>Immigration</option><option>Pharma / Healthcare</option><option>News &amp; Current Affairs</option><option>Entertainment</option><option>Sports</option><option>Travel</option><option>Games &amp; Gaming</option><option>Finance &amp; Markets</option><option>Education &amp; Learning</option><option>Shopping &amp; Deals</option><option>Events</option><option>Science</option><option>Lifestyle</option><option>Other</option></select></label>
+              <label>What are you interested in?<input id="aiWatchInterest" type="text" maxlength="160" placeholder="e.g. Quality Assurance jobs in Adelaide"></label>
+              <label>Keywords / criteria <span class="hint">(optional)</span><input id="aiWatchKeywords" type="text" maxlength="200" placeholder="e.g. QA, GMP, pharmaceutical, Adelaide"></label>
+              <div class="aiWatchFormActions"><button id="saveAiWatchBtn" class="btn" type="button">Save Watch</button><button id="cancelAiWatchBtn" class="mini" type="button">Cancel</button></div>
+              <div id="aiWatchStatus" class="hint"></div>
+            </div>
+            <div id="aiWatchList" class="aiWatchList"></div>
+            <div class="aiWatchResultsHead"><strong>Updates</strong></div>
+            <div id="aiWatchEmptyResults" class="aiWatchEmpty">No updates yet. DShario will show relevant Watch updates here when they are found.</div>
+          </div>
         </div>
         <div class="rc96Group rc96Subscription">
-          <div class="rc96GroupHead"><div class="rc96GroupIcon">♛</div><div><strong>Subscription</strong><small>Plans and additional features</small></div><span class="rc97Chevron">›</span></div>
-          <div class="rc96GroupActions"><button class="rc96Nav" type="button" disabled>My Subscription <span>Coming soon</span></button></div>
+          <div class="rc96GroupHead"><div class="rc96GroupIcon">♛</div><div><strong>Subscription</strong><small>Free card sharing or full DShario Premium</small></div><span class="rc97Chevron">›</span></div>
+          <div class="rc96GroupActions dsPlanWrap">
+            <div class="dsPlanStatus"><span>Current access</span><strong>Testing access — all features available</strong></div>
+            <div class="dsPlanGrid">
+              <div class="dsPlanCard">
+                <div class="dsPlanTitle">Free</div>
+                <div class="dsPlanPrice">My Card</div>
+                <ul>
+                  <li>Create &amp; edit My Card</li>
+                  <li>QR / link card sharing</li>
+                  <li>Basic account &amp; security</li>
+                </ul>
+              </div>
+              <div class="dsPlanCard dsPlanPremium">
+                <div class="dsPlanTitle">DShario Premium</div>
+                <div class="dsPlanPrice">Full DShario</div>
+                <ul>
+                  <li>My Connections &amp; relationship tools</li>
+                  <li>Opportunities &amp; AI Follow-Up</li>
+                  <li>AI Profile Writer</li>
+                  <li>Document / content sharing</li>
+                  <li>Meeting Minutes</li>
+                  <li>My Interests / AI Watch</li>
+                  <li>Future premium features</li>
+                </ul>
+              </div>
+            </div>
+            <button id="dsUpgradePreviewBtn" class="btn" type="button">Upgrade to Premium</button>
+            <div id="dsUpgradePreviewMsg" class="dsUpgradeMsg" hidden>
+              <div>Subscription activation is being prepared. No payment will be taken and your current testing access will not change.</div>
+              <button id="dsUpgradePreviewClose" class="btn secondary" type="button" style="margin-top:10px;width:100%">Close</button>
+            </div>
+            <div class="hint dsPlanHint">Subscription pathway preview only — payments and feature locking are not active.</div>
+          </div>
         </div>
         <div class="rc96Group rc96Security">
           <div class="rc96GroupHead"><div class="rc96GroupIcon">🛡️</div><div><strong>Security & Privacy</strong><small>Account, sharing and data information</small></div><span class="rc97Chevron">›</span></div>
@@ -2937,20 +3022,21 @@ input,select,textarea{border-color:#cbdcf0!important;background:#fbfdff!importan
   <div class="modalBox">
     <button id="helpClose" class="modalClose" type="button">Close</button>
     <h1 id="helpTitle">DShario User Guide</h1>
-    <p id="helpIntro">A simple guide to creating, sharing and managing your DShario.</p>
+    <p id="helpIntro">A simple guide to DShario’s card, connection, collaboration and AI-assisted features.</p>
     <div class="helpSteps">
-      <div class="helpStep"><strong>1. Create My Card</strong><span>Add only the professional and contact information you want to share. Your Profile is separate from My Card.</span></div>
+      <div class="helpStep"><strong>1. Create My Card</strong><span>Add the professional and contact information you want to share. Your Profile is separate from My Card.</span></div>
       <div class="helpStep"><strong>2. Share with a purpose</strong><span>Choose Business, Career, Networking, Social or Full. Use your permanent link/QR for ongoing sharing or Temporary Share when you want time-limited access.</span></div>
-      <div class="helpStep"><strong>3. Save a connection</strong><span>A recipient can save a received DShario to My Connections. DShario keeps the latest saved view as the active connection while retaining a lightweight history trace.</span></div>
-      <div class="helpStep"><strong>4. Manage My Connections</strong><span>Favourite and search connections, review history and add relationship context. Add Opportunity becomes available after a person is saved as a connection.</span></div>
-      <div class="helpStep"><strong>5. Opportunities and follow-ups</strong><span>Open a saved connection to record an opportunity, its stage or notes, set a follow-up date and prepare an editable follow-up message. Due items appear through the reminder/follow-up controls.</span></div>
-      <div class="helpStep"><strong>6. My Profile and AI Profile Writer</strong><span>Your Profile is separate from My Card. Turn Profile Sharing on if you want recipients to see a separate View Profile option. The AI writer drafts from facts you provide; review and edit the result before using it.</span></div>
-      <div class="helpStep"><strong>7. Share documents/content</strong><span>Use DShario’s supported document-sharing flow for files you are authorised to share. Time-limited or revoked access cannot recall a file that a recipient already downloaded or copied.</span></div>
-      <div class="helpStep"><strong>8. Create Meeting Minutes</strong><span>Get the participants’ consent before recording. Record the meeting, transcribe it, review the transcript and use AI to prepare a summary, key decisions and action items. Always review AI-generated minutes for accuracy.</span></div>
-      <div class="helpStep"><strong>9. Edit and keep meeting history</strong><span>Saved meetings open as professional read-only records. Choose Edit Meeting to update the transcript or minutes, regenerate AI minutes when needed and Save Changes. Meaningful saves can create revision/activity history.</span></div>
-      <div class="helpStep"><strong>10. Share Meeting Minutes</strong><span>Share via DShario creates a recipient-side DShario copy for collaboration. Copy Link creates an external read-only meeting document that can be sent through messaging or email. The external document offers Word and PDF downloads.</span></div>
-      <div class="helpStep"><strong>11. Recording and AI privacy</strong><span>Do not record people without appropriate consent or submit information to AI tools that you are not authorised to process. Avoid unnecessary sensitive information and check generated content before sharing it.</span></div>
-      <div class="helpStep"><strong>12. Install DShario (optional)</strong><span>DShario works normally in your browser without installation. On supported devices, choose Install DShario, Install app or Add to Home screen for quicker access from the DShario icon and a standalone app experience. Recipients do not need to install DShario to open shared cards or external links. My Interests / AI Watch remains a roadmap feature.</span></div>
+      <div class="helpStep"><strong>3. Save and manage connections</strong><span>A recipient can save a received DShario to My Connections. Search or favourite connections, review the latest saved view and history trace, and add useful relationship context.</span></div>
+      <div class="helpStep"><strong>4. Opportunities and AI Follow-Up</strong><span>Open a saved connection to add an opportunity, stage or notes, set a follow-up date and prepare an editable AI-assisted follow-up message. Review the message before sending it through your chosen channel.</span></div>
+      <div class="helpStep"><strong>5. My Profile and AI Profile Writer</strong><span>Your Profile is separate from My Card. Turn Profile Sharing on when you want recipients to see View Profile. The AI writer drafts a profile from facts you provide; review and edit it before use.</span></div>
+      <div class="helpStep"><strong>6. Share documents/content</strong><span>Use Shared Content for supported files you are authorised to share. Permanent or time-limited access can be managed in DShario, but revocation cannot recall a copy already downloaded or copied by a recipient.</span></div>
+      <div class="helpStep"><strong>7. Create Meeting Minutes</strong><span>Obtain participants’ consent before recording. Record, transcribe and edit the transcript, then use AI to prepare a summary, key decisions and action items. Review AI-generated content for accuracy.</span></div>
+      <div class="helpStep"><strong>8. Save, edit and share Meeting Minutes</strong><span>Saved meetings can keep revision/activity history. Share with another DShario user for collaboration, or use Copy Link for an external read-only document with Word/PDF download options.</span></div>
+      <div class="helpStep"><strong>9. My Interests / AI Watch</strong><span>Create a focused Watch by choosing an area, describing the interest and optionally adding keywords. DShario can check for relevant public-source updates automatically. New results can notify you; useful updates can be saved under the Watch or dismissed.</span></div>
+      <div class="helpStep"><strong>10. Notifications</strong><span>The DShario notification controls can surface received Meeting Minutes, reminders/follow-ups and AI Watch updates. Open the relevant item to review it and take action.</span></div>
+      <div class="helpStep"><strong>11. Install DShario (optional)</strong><span>DShario works in your browser without installation. On supported devices, choose Install DShario, Install app or Add to Home screen for quicker app-style access. Recipients do not need to install DShario to open supported shared links.</span></div>
+      <div class="helpStep"><strong>12. Subscription</strong><span>The planned Free access includes My Card creation/editing, QR/link card sharing and basic account/security. DShario Premium is planned to unlock the wider connection, AI Follow-Up, AI Profile Writer, Shared Content, Meeting Minutes and AI Watch features. During the current testing period all features remain available and payment/feature locking is not active.</span></div>
+      <div class="helpStep"><strong>13. Privacy and responsible AI use</strong><span>Share deliberately, record meetings only with appropriate consent, avoid unnecessary sensitive information and review AI-generated profiles, follow-ups, minutes and Watch summaries before relying on or sharing them.</span></div>
     </div>
   </div>
 </div>
@@ -2959,55 +3045,40 @@ input,select,textarea{border-color:#cbdcf0!important;background:#fbfdff!importan
   <div class="modalBox">
     <button id="termsClose" class="modalClose" type="button">Close</button>
     <h1 id="termsTitle">DShario Terms of Use</h1>
-    <p><strong>Last updated: 21 September 2026</strong></p>
-    <p>These Terms apply to the current DShario beta. By creating an account or using DShario, you agree to these Terms. DShario is still being tested and features may change before commercial release.</p>
-
+    <p><strong>Last updated: 28 September 2026</strong></p>
+    <p>These Terms apply when you create an account or use DShario. Features may continue to be improved as the service develops.</p>
     <h2>1. The service</h2>
-    <p>DShario combines digital identity sharing, saved connections, relationship follow-ups, profiles, supported content sharing and meeting-minutes tools. Some functions use artificial intelligence. DShario may also be optionally installed on supported devices as a Progressive Web App (PWA); installation is not required to use the browser service or open supported shared links. Features still marked Coming Soon or Roadmap, including My Interests / AI Watch, are not part of the current service.</p>
-
+    <p>DShario provides digital card and purpose-based sharing, saved connections, opportunities and follow-ups, profiles, supported content sharing, Meeting Minutes, notifications, My Interests / AI Watch and optional PWA installation. Selected functions use artificial intelligence or external data/services.</p>
     <h2>2. Accounts and security</h2>
     <p>Provide accurate account information, keep your sign-in credentials secure and take reasonable care of activity through your account. DShario is intended for adult/professional use and is not designed for children.</p>
-
     <h2>3. Your information and sharing choices</h2>
-    <p>You decide what information to add to My Card and My Profile and which available sharing option to use. A recipient may copy, save, screenshot, forward or download information you make accessible. Expiry or revocation can stop future access through DShario but cannot recall a copy already obtained by a recipient.</p>
-
+    <p>You decide what information to add to My Card and My Profile and which available sharing option to use. A recipient may copy, save, screenshot, forward or download information you make accessible. Expiry or revocation can stop future access through DShario where supported but cannot recall a copy already obtained by a recipient.</p>
     <h2>4. Connections, opportunities and follow-ups</h2>
-    <p>My Connections, opportunity notes, reminders and AI-assisted follow-up tools are organisational aids. You remain responsible for deciding whether, when and how to contact another person and for ensuring communications are lawful and appropriate.</p>
-
+    <p>My Connections, notes, opportunities, reminders and AI-assisted follow-up tools are organisational aids. You remain responsible for deciding whether, when and how to contact another person and for ensuring communications are lawful and appropriate.</p>
     <h2>5. Documents and shared content</h2>
-    <p>You must have the right and authority to upload or share every file. Do not upload malware, unlawful material, confidential information you are not authorised to disclose, or unnecessary highly sensitive information. File types, sizes and other beta limits may change.</p>
-
+    <p>You must have the right and authority to upload or share every file. Do not upload malware, unlawful material, confidential information you are not authorised to disclose, or unnecessary highly sensitive information. File types, sizes and service limits may change.</p>
     <h2>6. Meeting Minutes, recording and consent</h2>
-    <p>You are responsible for obtaining any consent or permission required before recording a meeting or processing another person's voice or information. DShario may transcribe recorded audio and use AI to help generate summaries, decisions and action items. AI and transcription can be inaccurate, so review and correct the record before relying on or sharing it.</p>
-
+    <p>You are responsible for obtaining any consent or permission required before recording a meeting or processing another person’s voice or information. DShario may transcribe recorded audio and use AI to help generate summaries, decisions and action items. AI and transcription can be inaccurate, so review and correct the record before relying on or sharing it.</p>
     <h2>7. Meeting sharing and downloads</h2>
-    <p>Share via DShario can create a recipient-side copy. External Copy Link sharing provides a read-only meeting document and may allow Word/PDF downloads. A person who receives or downloads meeting content may retain a copy outside DShario. Only share meeting information with appropriate recipients.</p>
-
-    <h2>8. AI-assisted features</h2>
-    <p>AI-generated profiles, meeting minutes and follow-up text are drafts or assistance, not guaranteed facts or professional advice. Review outputs before use. Do not intentionally submit content you lack authority to process or disclose.</p>
-
-    <h2>9. Your content and acceptable use</h2>
+    <p>Share via DShario can create a recipient-side copy for collaboration. External Copy Link sharing can provide a read-only meeting document with Word/PDF download options. A person who receives or downloads meeting content may retain a copy outside DShario.</p>
+    <h2>8. AI-assisted features and AI Watch</h2>
+    <p>AI-generated profiles, follow-up text, meeting outputs and AI Watch summaries or relevance results are assistance, not guaranteed facts or professional advice. AI Watch may use your chosen interests, keywords and public-source information to identify potentially relevant updates. Sources and AI output can be incomplete, delayed or inaccurate; review important information at its original source before acting on it.</p>
+    <h2>9. Notifications</h2>
+    <p>DShario may provide in-app notifications for supported events such as received Meeting Minutes, reminders/follow-ups and AI Watch updates. Notifications are a convenience and may be delayed or unavailable; do not rely on DShario as the sole method for time-critical alerts.</p>
+    <h2>10. Subscription and access</h2>
+    <p>DShario currently provides testing access to its features and payment/feature locking is not active. The planned subscription model keeps My Card creation/editing, QR/link card sharing and basic account/security in Free access, while DShario Premium is planned for the wider connection, AI Follow-Up, AI Profile Writer, Shared Content, Meeting Minutes, AI Watch and future premium features. Prices, billing terms and activation details must be shown before any paid subscription is charged.</p>
+    <h2>11. Your content and acceptable use</h2>
     <p>You retain ownership of content you provide and give DShario permission to process, store and display it as reasonably necessary to provide the features you request. Do not impersonate others, infringe privacy or intellectual-property rights, misuse personal information, harass people, distribute malicious material, attempt unauthorised access or use DShario for unlawful, fraudulent or harmful activity.</p>
-
-    <h2>10. Third-party services</h2>
-    <p>DShario relies on third-party infrastructure and AI/service providers. Those services may have their own terms and privacy practices. Availability can also depend on external providers, networks and quotas.</p>
-
-    <h2>11. Beta availability, data and backups</h2>
-    <p>DShario does not promise uninterrupted or error-free beta operation. Features, limits and storage arrangements may change. Keep independent copies of information or documents that are important to you.</p>
-
-    <h2>12. Deletion, revocation and retained copies</h2>
-    <p>Where DShario provides deletion or revocation controls, they affect DShario's available copy or future access as described in the interface. They cannot erase copies another person has already downloaded, copied, exported or stored elsewhere. Some operational, security or legal records may need to be retained.</p>
-
-    <h2>13. Legal rights and liability</h2>
-    <p>Nothing in these Terms excludes rights or remedies that cannot lawfully be excluded, including applicable Australian Consumer Law protections. To the extent permitted by law, users remain responsible for their sharing decisions, content and independent use of information obtained from DShario.</p>
-
-    <h2>14. Suspension and changes</h2>
-    <p>Access may be restricted where reasonably necessary to protect users or the service, investigate misuse or comply with law. These Terms may be updated as DShario changes; the update date will be shown here.</p>
-
-    <h2>15. Governing law and contact</h2>
-    <p>These Terms are governed by laws applicable in South Australia, Australia, subject to mandatory laws that apply elsewhere. Until a dedicated support address is established, contact DShario through its official LinkedIn Page. A dedicated legal/support contact should be added before commercial launch.</p>
-
-    <p><strong>Beta notice:</strong> These Terms describe the current beta and should receive professional legal review before full commercial launch.</p>
+    <h2>12. Third-party services</h2>
+    <p>DShario relies on third-party infrastructure, AI/API providers and public information sources for selected functions. Those services may have their own terms and privacy practices, and availability can depend on external providers, networks, quotas and source availability.</p>
+    <h2>13. Availability, data and backups</h2>
+    <p>DShario does not promise uninterrupted or error-free operation. Features, limits and storage arrangements may change. Keep independent copies of information or documents that are important to you.</p>
+    <h2>14. Deletion, revocation and retained copies</h2>
+    <p>Where DShario provides deletion or revocation controls, they affect DShario’s available copy or future access as described in the interface. They cannot erase copies another person has already downloaded, copied, exported or stored elsewhere. Some operational, security or legal records may need to be retained.</p>
+    <h2>15. Legal rights and liability</h2>
+    <p>Nothing in these Terms excludes rights or remedies that cannot lawfully be excluded, including applicable Australian Consumer Law protections. To the extent permitted by law, users remain responsible for their sharing decisions, content and independent use of information obtained through DShario.</p>
+    <h2>16. Changes, governing law and contact</h2>
+    <p>These Terms may be updated as DShario changes; the latest update date will be displayed here. These Terms are governed by laws applicable in South Australia, Australia, subject to mandatory laws that apply elsewhere. For support or legal questions, use DShario’s official contact channel identified by the service.</p>
   </div>
 </div>
 
@@ -3015,61 +3086,79 @@ input,select,textarea{border-color:#cbdcf0!important;background:#fbfdff!importan
   <div class="modalBox">
     <button id="privacyClose" class="modalClose" type="button">Close</button>
     <h1 id="privacyTitle">DShario Privacy Policy</h1>
-    <p><strong>Last updated: 21 September 2026</strong></p>
-    <p>This policy describes the personal information handled by the current DShario beta and how that information is used. DShario is being developed in Australia and may be used by people in other countries.</p>
-
+    <p><strong>Last updated: 28 September 2026</strong></p>
+    <p>This policy describes the personal information DShario may handle when you use its card, connection, collaboration and AI-assisted features. DShario is developed in Australia and may be used by people in other countries.</p>
     <h2>1. Information DShario may handle</h2>
-    <p>Depending on the features you use, DShario may handle account/authentication details; My Card and My Profile information; profile images and links; sharing choices and tokens; saved connections and connection history; notes, opportunities and follow-up information; documents you choose to share; meeting titles, participants, dates, duration, audio submitted for transcription, transcripts, summaries, decisions, action items, revision/activity history and meeting-share links; and technical/service information needed to operate and secure the beta.</p>
-
+    <p>Depending on the features you use, DShario may handle account/authentication details; My Card and My Profile information; profile images and links; sharing choices and tokens; saved connections and connection history; notes, opportunities, reminders and follow-up information; documents you choose to share; meeting titles, participants, dates, duration, audio submitted for transcription, transcripts, summaries, decisions, action items, revision/activity history and meeting-share links; AI Watch areas, interests, keywords, update results, saved/dismissed status and related notification status; subscription/access status; and technical/service information needed to operate and secure DShario.</p>
     <h2>2. Why information is used</h2>
-    <p>DShario uses information to authenticate users; create and share cards/profiles; save and manage connections; support opportunities and follow-ups; process user-requested documents; transcribe meetings; generate AI-assisted profiles, follow-up text and meeting minutes; create downloads and sharing links; maintain revision/activity records; provide security and troubleshooting; and operate and improve the beta.</p>
-
+    <p>DShario uses information to authenticate users; create and share cards/profiles; save and manage connections; support opportunities, reminders and follow-ups; process user-requested documents; transcribe meetings; generate AI-assisted profiles, follow-up text and meeting minutes; run user-created AI Watches and surface relevant updates; provide in-app notifications; create downloads and sharing links; maintain revision/activity records; manage feature access; provide security and troubleshooting; and operate and improve the service.</p>
     <h2>3. User-directed sharing</h2>
     <p>DShario is built around deliberate sharing. You choose the information and available sharing method. Recipients may be able to copy, download, screenshot, save or forward information you share. Expiry, deletion or revocation can stop future DShario access where supported, but cannot recall a copy already obtained outside DShario.</p>
-
     <h2>4. My Card, My Profile and My Connections</h2>
-    <p>My Card and My Profile are separate. Profile information is not intended to become part of My Card automatically. If Profile Sharing is enabled, a recipient may be offered a separate View Profile action. When a recipient saves a DShario connection, DShario can keep the latest saved view as the active connection and retain limited history information needed for the connection experience.</p>
-
-    <h2>5. Opportunities, notes and follow-ups</h2>
-    <p>Information you add about a saved connection, opportunity or follow-up is stored to provide those organisational features. AI-assisted follow-up text should be reviewed by you before it is used or sent.</p>
-
+    <p>My Card and My Profile are separate. Profile information is not added to My Card automatically. If Profile Sharing is enabled, a recipient may be offered a separate View Profile action. When a recipient saves a DShario connection, DShario can keep the latest saved view as the active connection and retain limited history information needed for the connection experience.</p>
+    <h2>5. Opportunities, notes, reminders and follow-ups</h2>
+    <p>Information you add about a saved connection, opportunity, reminder or follow-up is stored to provide those organisational features. AI-assisted follow-up text should be reviewed by you before it is used or sent.</p>
     <h2>6. Documents and shared content</h2>
     <p>DShario may store or process documents you intentionally upload for supported sharing features. Access may be controlled by the sharing method you choose. A recipient may retain a downloaded copy even after DShario access expires or is revoked.</p>
-
     <h2>7. Meeting recordings, transcription and AI minutes</h2>
-    <p>When you use Meeting Minutes, recorded audio may be sent for transcription and the resulting transcript may be processed to generate AI-assisted summaries, decisions and action items. DShario also stores meeting information you save, including relevant revisions/activity. You are responsible for obtaining appropriate consent or authority before recording or submitting other people's information.</p>
-
-    <h2>8. AI-assisted processing</h2>
-    <p>DShario currently uses external AI/service providers for selected beta functions, including profile writing and meeting transcription/minutes. Information submitted to an AI feature may be sent to the relevant provider to produce the requested result. AI output can be inaccurate and should be reviewed. DShario should update this policy with final provider, retention and data-location details before commercial launch.</p>
-
-    <h2>9. Service providers and storage</h2>
-    <p>DShario uses Supabase for authentication and backend database/storage functions and uses web-hosting infrastructure to deliver the application. It also uses external AI/API services for selected AI and transcription functions. Providers process information as needed to provide those services, subject to their applicable arrangements.</p>
-
-    <h2>10. Overseas processing</h2>
-    <p>Some service providers may process or store information outside Australia or outside the user's country. The production provider configuration and relevant countries should be confirmed and stated more specifically before commercial launch.</p>
-
-    <h2>11. Security</h2>
-    <p>DShario uses access controls appropriate to the current beta, including authenticated ownership controls and database access policies. No online service can guarantee absolute security. Use a strong unique password, share deliberately and avoid submitting unnecessary sensitive information.</p>
-
-    <h2>12. Access, correction and deletion</h2>
-    <p>Users can review and edit information through available DShario controls. Some account/backend access, correction or deletion requests may require assistance. Until a dedicated privacy address is established, contact DShario through its official LinkedIn Page. Deleting information from DShario does not delete copies another person has already stored independently.</p>
-
-    <h2>13. Retention</h2>
-    <p>DShario retains information while needed to provide the selected beta features and for legitimate operational, security or legal purposes. Temporary/revocable access follows the status of the relevant sharing mechanism. More specific production retention periods should be documented before commercial launch.</p>
-
-    <h2>14. Children and sensitive information</h2>
-    <p>DShario is intended for adult/professional use and is not designed for children. Do not submit passwords, payment credentials, government identifiers, health information or other highly sensitive material unless a future feature expressly supports that information with appropriate safeguards.</p>
-
-    <h2>15. Privacy questions and complaints</h2>
-    <p>For privacy questions, access/correction/deletion requests or complaints, contact DShario through its official LinkedIn Page. DShario should establish a dedicated privacy contact and formal complaint process before commercial launch.</p>
-
-    <h2>16. Changes</h2>
-    <p>This policy will be updated when DShario's features, providers or information-handling practices materially change. The latest update date will be displayed here.</p>
-
-    <p><strong>Beta/legal review notice:</strong> This policy is intended to transparently describe the current beta. It should receive professional legal/privacy review, including confirmation of applicable Australian Privacy Act obligations and target-market requirements, before full commercial launch.</p>
+    <p>When you use Meeting Minutes, recorded audio may be sent for transcription and the resulting transcript may be processed to generate AI-assisted summaries, decisions and action items. DShario may store meeting information you save, including relevant revisions/activity and sharing information. You are responsible for obtaining appropriate consent or authority before recording or submitting other people’s information.</p>
+    <h2>8. My Interests / AI Watch</h2>
+    <p>When you create a Watch, DShario may store the area, interest, keywords/criteria and Watch status you choose. DShario may use those details with external AI/API services and public information sources to look for relevant updates. Update summaries, source information, timestamps and your Save/Dismiss/read choices may be stored so the Watch can operate and avoid unnecessary duplication.</p>
+    <h2>9. AI-assisted processing</h2>
+    <p>Selected DShario functions use external AI/API services. Information submitted to an AI-assisted feature may be sent to the relevant provider to produce the requested result. AI output can be inaccurate. Avoid unnecessary sensitive information and review generated content before relying on or sharing it.</p>
+    <h2>10. Notifications</h2>
+    <p>DShario may store notification records and read/unread status to provide in-app alerts for supported events, including received Meeting Minutes, reminders/follow-ups and AI Watch updates. Notification availability can depend on the browser, device, network and service status.</p>
+    <h2>11. Service providers, storage and overseas processing</h2>
+    <p>DShario uses Supabase for authentication and backend database/storage functions, web-hosting infrastructure to deliver the application, and external AI/API services for selected AI, transcription and update-checking functions. Some providers may process or store information outside Australia or outside the user’s country. Providers process information as needed to provide their services, subject to their applicable arrangements.</p>
+    <h2>12. Subscription information</h2>
+    <p>DShario may store a user’s plan or feature-access status. Payment collection and feature locking are not active in the current testing version. If paid subscriptions are activated, DShario will update its checkout information and privacy disclosures as necessary before collecting payment information.</p>
+    <h2>13. Security</h2>
+    <p>DShario uses authenticated access controls and database/storage access policies for supported features. No online service can guarantee absolute security. Use a strong unique password, share deliberately and avoid submitting unnecessary sensitive information.</p>
+    <h2>14. Access, correction and deletion</h2>
+    <p>Users can review, edit or delete information through available DShario controls where provided. Some account/backend requests may require assistance. Deleting information from DShario does not delete copies another person has already stored independently or information a third-party provider must retain under its own lawful obligations.</p>
+    <h2>15. Retention</h2>
+    <p>DShario retains information while reasonably needed to provide the features you use and for legitimate operational, security or legal purposes. Temporary/revocable access follows the status of the relevant sharing mechanism. Saved Watch updates, meeting history and connection history remain until removed through available controls or otherwise deleted under applicable retention practices.</p>
+    <h2>16. Children and sensitive information</h2>
+    <p>DShario is intended for adult/professional use and is not designed for children. Do not submit passwords, payment credentials, government identifiers, health information or other highly sensitive material unless a feature expressly supports that information with appropriate safeguards.</p>
+    <h2>17. Privacy questions and complaints</h2>
+    <p>For privacy questions, access/correction/deletion requests or complaints, use DShario’s official contact channel identified by the service. DShario will review privacy requests and complaints and respond as appropriate under applicable law.</p>
+    <h2>18. Changes</h2>
+    <p>This policy will be updated when DShario’s features, providers or information-handling practices materially change. The latest update date will be displayed here.</p>
   </div>
 </div>
 
+
+<script id="rc136-preauth-account-restore">
+(function(){
+  if(location.hash!=="#account") return;
+  window.__dsharioInitialAccountRestore=true;
+  try{
+    const byId=id=>document.getElementById(id);
+    document.querySelectorAll(".view").forEach(v=>v.classList.remove("active"));
+    byId("accountView")?.classList.add("active");
+    if(byId("tabs")) byId("tabs").style.display="grid";
+    if(byId("publicHeader")) byId("publicHeader").style.display="none";
+    if(byId("accountPill")) byId("accountPill").style.display="inline-block";
+    if(byId("signedOutBox")) byId("signedOutBox").style.display="none";
+    if(byId("signedInBox")) byId("signedInBox").style.display="block";
+
+    const st=JSON.parse(sessionStorage.getItem("dshario_rc126_ui_state")||"null");
+    if(st?.view==="account" && st.group){
+      const map={connections:".rc96Connections",meetings:".rc96Meetings",content:".rc96Content",profile:".rc96Profile",aiwatch:".rc98AiWatch",subscription:".rc96Subscription",security:".rc96Security",help:".rc96Account"};
+      document.querySelectorAll("#rc96AccountWorkspace .rc96Group").forEach(g=>{g.classList.remove("rc97Open");g.querySelector(":scope > .rc96GroupHead")?.setAttribute("aria-expanded","false")});
+      const g=document.querySelector("#rc96AccountWorkspace "+(map[st.group]||"__none__"));
+      if(g){g.classList.add("rc97Open");g.querySelector(":scope > .rc96GroupHead")?.setAttribute("aria-expanded","true")}
+      requestAnimationFrame(()=>window.scrollTo({top:Number(st.y)||0,behavior:"auto"}));
+    }
+    /* Final startup strategy: show the cached account route immediately. Authentication and fresh data continue in the background. */
+    document.documentElement.classList.remove("rc71-boot");
+  }catch(e){document.documentElement.classList.remove("rc71-boot")}
+})();
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2">// RC32.9: adds an Elegant printed-card-inspired template while preserving RC32.8 photo adjustment and share-type synchronization. Exact direct @DShario synchronization uses the companion one-time Supabase migration.
+// RC32.24: DShario username/address is routing identity only; hidden from shared/public/downloaded/saved card presentation.
+</script>
 <script>
 try {
   if (!localStorage.getItem('dshario-profile') && localStorage.getItem('cardlink-profile')) {
@@ -3736,7 +3825,13 @@ function setView(name){
   document.body.classList.toggle("signedOutMinimal",signedOutMinimal);
   if($("authBackRow")) $("authBackRow").style.display=(!user&&name==="account"&&!pendingSharedAction&&!pendingMemberExchange)?"block":"none";
   if($("accountLead")) $("accountLead").style.display=user?"none":"block";
-  window.scrollTo({top:0,behavior:"smooth"});
+  /* On a normal navigation, start at the top. During the first #account paint after
+     a browser refresh, preserve the saved scroll position instead of smoothly
+     scrolling to 0 and then jumping back. That double movement was the remaining
+     visible refresh shake. */
+  if(!(name==="account" && window.__dsharioInitialAccountRestore)){
+    window.scrollTo({top:0,behavior:"smooth"});
+  }
 }
 function parseWhatsappValue(raw){
   const value=(raw||"").toString().trim();
@@ -4056,7 +4151,7 @@ $("slug").addEventListener("blur",()=>checkUsernameAvailability($("slug").value)
 
 $("saveCloudBtn").onclick=saveCloud; $("deleteBtn").onclick=deleteCard;
 $("previewBtn").onclick=()=>{const d=getForm(); render({...d,id:currentCard?.id}); setView("card")};
-$("myTab").onclick=async()=>{if(!user){setView("account");return} await loadOwnerCard(); await loadOwnerDocuments(); setView(currentCard?"card":"edit")}; $("editTab").onclick=async()=>{if(!user){setView("account");msg("Sign in or create an account first.","info");return} if(!currentCard) await loadOwnerCard(); if(currentCard){const pw=prompt("Confirm your password to edit your DShario:");if(pw===null)return;if(!pw){msg("Password is required.","err");return}const {error}=await sb.auth.signInWithPassword({email:user.email,password:pw});if(error){msg("Password confirmation failed.","err");return}} await loadOwnerDocuments();setForm(currentCard||{});setView("edit")}; $("accountTab").onclick=async()=>{if(user)await loadOwnerCard();setView("account");updateSignedInHandle();if(user){await loadMyConnections();await loadReceivedContacts();await loadOwnerDocuments();renderAccountTempDocs();updateAccountSendType();await loadNotifications()}}; 
+$("myTab").onclick=async()=>{if(!user){setView("account");return} try{history.replaceState({},"",location.pathname+location.search+"#mycard")}catch{}; await loadOwnerCard(); await loadOwnerDocuments(); setView(currentCard?"card":"edit")}; $("editTab").onclick=async()=>{if(!user){setView("account");msg("Sign in or create an account first.","info");return} try{history.replaceState({},"",location.pathname+location.search+"#edit")}catch{}; if(!currentCard) await loadOwnerCard(); if(currentCard){const pw=prompt("Confirm your password to edit your DShario:");if(pw===null)return;if(!pw){msg("Password is required.","err");return}const {error}=await sb.auth.signInWithPassword({email:user.email,password:pw});if(error){msg("Password confirmation failed.","err");return}} await loadOwnerDocuments();setForm(currentCard||{});setView("edit")}; $("accountTab").onclick=async()=>{if(user)await loadOwnerCard();try{history.replaceState({},"",location.pathname+location.search+"#account")}catch{};setView("account");updateSignedInHandle();if(user){await loadMyConnections();await loadReceivedContacts();await loadOwnerDocuments();renderAccountTempDocs();updateAccountSendType();await loadNotifications()}}; 
 $("accountPill").onclick=async()=>{
   if(user){toggleNotifications();return}
   setAuthMode("signin");setView("account");
@@ -5181,7 +5276,11 @@ function updateSharedMemberNav(){
   refreshAppNav();
 }
 if($("sharedBackBtn")) $("sharedBackBtn").onclick=()=>location.replace(location.origin+location.pathname+"#account");
-if($("backToConnectionsBtn")) $("backToConnectionsBtn").onclick=()=>location.replace(location.origin+location.pathname+"#account");
+if($("backToConnectionsBtn")) $("backToConnectionsBtn").onclick=()=>{
+  try{sessionStorage.setItem("dshario_rc126_ui_state",JSON.stringify({view:"account",group:"connections",y:0}))}catch{}
+  // Important: drop ?connection=1 / saved-card query parameters before returning.
+  location.replace(location.origin+location.pathname+"#account");
+};
 if($("connectionOnlyDownloadBtn")) $("connectionOnlyDownloadBtn").onclick=()=>$("pngBtn")?.click();
 
 function applyConnectionOnlyMode(){
@@ -5873,9 +5972,15 @@ $("memberExchangeBtn").onclick=openMemberExchange; $("guestExchangeBtn").onclick
 
   // Production rule: the plain DShario URL is always a neutral landing page.
   // Never preload any saved card here. My Card is loaded only after an authenticated user taps My Card.
+  const restoringAccountRoute = location.hash==="#account";
   await refreshAuth(false);
-  currentCard=null;
-  render(null);
+  /* Final refresh fix: the pre-auth restorer has already painted the saved Account section.
+     Do not clear/re-render that DOM during session restoration; doing so caused the visible
+     jump/blank/shake before the same section was opened again. Fresh data still loads below. */
+  if(!restoringAccountRoute){
+    currentCard=null;
+    render(null);
+  }
   publicMode=false;
   $("tabs").style.display="grid";
   $("publicHeader").style.display="none";
@@ -5897,6 +6002,18 @@ $("memberExchangeBtn").onclick=openMemberExchange; $("guestExchangeBtn").onclick
     await loadReceivedContacts();
     await loadOwnerDocuments(); renderAccountTempDocs(); updateAccountSendType(); await loadNotifications();
     refreshAppNav();
+    try{
+      const st=JSON.parse(sessionStorage.getItem("dshario_rc126_ui_state")||"null");
+      if(st?.view==="account" && st.group){
+        const map={connections:".rc96Connections",meetings:".rc96Meetings",content:".rc96Content",profile:".rc96Profile",aiwatch:".rc98AiWatch",subscription:".rc96Subscription",security:".rc96Security",help:".rc96Account"};
+        document.querySelectorAll("#rc96AccountWorkspace .rc96Group").forEach(g=>{g.classList.remove("rc97Open");g.querySelector(":scope > .rc96GroupHead")?.setAttribute("aria-expanded","false")});
+        const g=document.querySelector("#rc96AccountWorkspace "+(map[st.group]||"__none__"));
+        if(g){g.classList.add("rc97Open");g.querySelector(":scope > .rc96GroupHead")?.setAttribute("aria-expanded","true")}
+        const savedY=Number(st.y)||0;
+        requestAnimationFrame(()=>requestAnimationFrame(()=>window.scrollTo({top:savedY,behavior:"auto"})));
+      }
+    }catch(e){console.warn("RC129 account feature restore:",e)}
+    window.__dsharioInitialAccountRestore=false;
     return;
   }
   if(location.hash==="#edit" && user){
@@ -6125,7 +6242,7 @@ body.personalProfileMode .cardWrap{margin-top:0!important;}
   document.getElementById('floatingMyCardBtn').addEventListener('click',async()=>{closePanel();await ensureOwnerCard();});
   document.getElementById('floatingShareBtn').addEventListener('click',async()=>{
     closePanel();if(!(await ensureOwnerCard()))return;
-    const b=document.getElementById('openShareWizardBtn');if(b){await b.onclick();setTimeout(()=>document.getElementById('shareWizard')?.scrollIntoView({behavior:'smooth',block:'start'}),80);}
+    const b=document.getElementById('openShareWizardBtn');if(b){await b.onclick();setTimeout(()=>document.getElementById('shareWizard')?.scrollIntoView({behavior:'auto',block:'start'}),80);}
   });
   document.getElementById('floatingQrBtn').addEventListener('click',async()=>{
     closePanel();if(!(await ensureOwnerCard()))return;
@@ -7231,7 +7348,8 @@ body.connectionOnlyMode.rc70-saved-route #dsTrialOppSection{display:block!import
 (function(){
   window.DSharioRevealStartup=function(){
     requestAnimationFrame(()=>requestAnimationFrame(()=>{
-      document.documentElement.classList.remove('rc71-boot');
+      if(window.__rc139RemoveCover) window.__rc139RemoveCover();
+      else document.documentElement.classList.remove('rc71-boot');
     }));
   };
   /* Safety only: never leave the page permanently hidden if an unexpected startup error occurs. */
@@ -7239,6 +7357,17 @@ body.connectionOnlyMode.rc70-saved-route #dsTrialOppSection{display:block!import
 })();
 </script>
 
+
+<!-- FINAL: non-blocking startup. The last open account route is painted immediately; auth/data refresh in background. -->
+<script id="final-nonblocking-startup">
+(function(){
+  window.__rc139RemoveCover=function(){
+    const d=document.getElementById('rc139StartupCover');
+    document.documentElement.classList.remove('rc71-boot');
+    if(d)d.remove();
+  };
+})();
+</script>
 
 <style id="rc74-meeting-minutes-style">
 .meetingMinutesPanel{margin-top:24px;padding:18px;border:1px solid #cfe0f3;border-radius:18px;background:linear-gradient(145deg,#f8fcff,#eef6ff)}
@@ -7910,19 +8039,123 @@ document.addEventListener("DOMContentLoaded",function(){
     s.textContent=(i+1)+". "+text;
   });
 });
-// RC97: all Account features start closed and open only when tapped.
+// RC126: single owner for Account accordion + refresh state.
 (function(){
+  const KEY="dshario_rc126_ui_state";
+  const workspace=document.getElementById("rc96AccountWorkspace");
   const groups=[...document.querySelectorAll("#rc96AccountWorkspace .rc96Group")];
+
+  function groupKey(group){
+    if(!group)return "";
+    if(group.classList.contains("rc96Connections")) return "connections";
+    if(group.classList.contains("rc96Meetings")) return "meetings";
+    if(group.classList.contains("rc96Content")) return "content";
+    if(group.classList.contains("rc96Profile")) return "profile";
+    if(group.classList.contains("rc98AiWatch")) return "aiwatch";
+    if(group.classList.contains("rc96Subscription")) return "subscription";
+    if(group.classList.contains("rc96Security")) return "security";
+    if(group.classList.contains("rc96Account")) return "help";
+    return "";
+  }
+  function findGroup(key){return groups.find(g=>groupKey(g)===key)||null}
+  function closeAll(){
+    groups.forEach(g=>{
+      g.classList.remove("rc97Open");
+      g.querySelector(":scope > .rc96GroupHead")?.setAttribute("aria-expanded","false");
+    });
+  }
+  function openGroup(group){
+    closeAll();
+    if(group){
+      group.classList.add("rc97Open");
+      group.querySelector(":scope > .rc96GroupHead")?.setAttribute("aria-expanded","true");
+    }
+  }
+  function currentView(){
+    if(document.getElementById("accountTab")?.classList.contains("active")) return "account";
+    if(document.getElementById("editTab")?.classList.contains("active")) return "edit";
+    return "card";
+  }
+  function saveState(){
+    try{
+      const open=groups.find(g=>g.classList.contains("rc97Open"));
+      sessionStorage.setItem(KEY,JSON.stringify({
+        view:currentView(),
+        group:groupKey(open),
+        y:window.scrollY||0
+      }));
+    }catch{}
+  }
+
+  // Exactly one accordion listener per Account group.
+  closeAll();
   groups.forEach(group=>{
-    group.classList.remove("rc97Open");
     const head=group.querySelector(":scope > .rc96GroupHead");
     if(!head)return;
-    head.setAttribute("role","button"); head.setAttribute("tabindex","0"); head.setAttribute("aria-expanded","false");
-    const toggle=()=>{const opening=!group.classList.contains("rc97Open"); groups.forEach(g=>{g.classList.remove("rc97Open");g.querySelector(":scope > .rc96GroupHead")?.setAttribute("aria-expanded","false")}); if(opening){group.classList.add("rc97Open");head.setAttribute("aria-expanded","true")}};
-    head.addEventListener("click",toggle); head.addEventListener("keydown",e=>{if(e.key==="Enter"||e.key===" "){e.preventDefault();toggle()}});
+    head.setAttribute("role","button");
+    head.setAttribute("tabindex","0");
+    head.setAttribute("aria-expanded","false");
+    const toggle=()=>{
+      const wasOpen=group.classList.contains("rc97Open");
+      if(wasOpen) closeAll(); else openGroup(group);
+      saveState();
+    };
+    head.onclick=toggle;
+    head.onkeydown=e=>{
+      if(e.key==="Enter"||e.key===" "){e.preventDefault();toggle()}
+    };
   });
-  const profile=document.getElementById("myProfileSection"); if(profile) profile.open=false;
-  const syncSignedIn=()=>{const src=document.getElementById("signedInHandle"),dst=document.getElementById("rc97SignedIn"); if(!dst)return; const t=(src?.textContent||"").trim(); dst.textContent=t||"Signed in"};
+
+  // Subscription preview: content only. Accordion is owned above.
+  const upgrade=document.getElementById("dsUpgradePreviewBtn");
+  const preview=document.getElementById("dsUpgradePreviewMsg");
+  const previewClose=document.getElementById("dsUpgradePreviewClose");
+  function resetSubscription(){
+    if(preview) preview.hidden=true;
+    if(upgrade){upgrade.textContent="Upgrade to Premium";upgrade.disabled=false}
+  }
+  if(upgrade) upgrade.onclick=e=>{
+    e.preventDefault();e.stopPropagation();
+    if(preview) preview.hidden=false;
+    upgrade.textContent="Premium activation coming soon";
+    upgrade.disabled=true;
+  };
+  if(previewClose) previewClose.onclick=e=>{
+    e.preventDefault();e.stopPropagation();
+    resetSubscription();
+    closeAll();
+    saveState();
+  };
+
+  // Save top-level navigation state without adding competing navigation behavior.
+  ["myTab","editTab","accountTab"].forEach(id=>{
+    document.getElementById(id)?.addEventListener("click",()=>setTimeout(saveState,150));
+  });
+  addEventListener("beforeunload",saveState);
+  document.addEventListener("visibilitychange",()=>{if(document.visibilityState==="hidden")saveState()});
+
+  // Restore once, after normal app initialization has settled.
+  setTimeout(()=>{
+    let st=null;
+    try{st=JSON.parse(sessionStorage.getItem(KEY)||"null")}catch{}
+    if(!st)return;
+    try{
+      if(typeof setView==="function"){
+        setView(st.view==="account"?"account":st.view==="edit"?"edit":"card");
+      }
+      if(st.view==="account") openGroup(findGroup(st.group));
+      if(Number.isFinite(st.y)) window.scrollTo(0,st.y);
+    }catch(e){console.warn("RC126 state restore:",e)}
+  },0);
+
+  const profile=document.getElementById("myProfileSection");
+  if(profile) profile.open=false;
+  const syncSignedIn=()=>{
+    const src=document.getElementById("signedInHandle"),dst=document.getElementById("rc97SignedIn");
+    if(!dst)return;
+    const t=(src?.textContent||"").trim();
+    dst.textContent=t||"Signed in";
+  };
   syncSignedIn(); setTimeout(syncSignedIn,700);
 })();
 
@@ -7995,9 +8228,9 @@ document.getElementById("rc96SignOut")?.addEventListener("click",function(){
     }
   });
 
-  if('serviceWorker' in navigator){
+  if('serviceWorker' in navigator && !/\/index_RC\d+/i.test(location.pathname)){
     window.addEventListener('load',function(){
-      navigator.serviceWorker.register('./sw.js').catch(function(err){
+      navigator.serviceWorker.register('./pwa-sw-rc101.js').catch(function(err){
         console.warn('DShario PWA service worker registration failed',err);
       });
       syncInstallUi();
@@ -8007,5 +8240,472 @@ document.getElementById("rc96SignOut")?.addEventListener("click",function(){
   }
 })();
 </script>
+
+<style id="rc105-ai-watch-v1">
+/* RC105 — AI Watch V1. RC104 remains untouched. */
+.rc98AiWatch .rc96FeatureBody{display:none}.rc98AiWatch.rc97Open .rc96FeatureBody{display:block}
+.aiWatchIntro{font-size:13px;line-height:1.5;color:#61778b;margin:2px 0 10px}
+.aiWatchForm{margin-top:9px;padding:11px;border:1px solid #dce8f3;border-radius:13px;background:#f8fbfe}
+.aiWatchForm label{display:block;font-size:13px;font-weight:800;color:#244b6f;margin-bottom:9px}
+.aiWatchForm input,.aiWatchForm select{width:100%;box-sizing:border-box;margin-top:5px;padding:10px;border:1px solid #cbdced;border-radius:10px;background:#fff;color:#173e63;font:inherit}
+.aiWatchFormActions{display:flex;gap:8px;align-items:center;flex-wrap:wrap}.aiWatchFormActions .btn{width:auto;padding:9px 14px}
+.aiWatchList{display:grid;gap:8px;margin-top:10px}.aiWatchCard{border:1px solid #dce8f3;border-radius:13px;padding:10px;background:#fff}
+.aiWatchCardTop{display:flex;justify-content:space-between;gap:8px;align-items:flex-start}.aiWatchCard strong{color:#173e63}.aiWatchArea{font-size:11px;font-weight:800;color:#125fc7;background:#edf6ff;border-radius:999px;padding:4px 7px;white-space:nowrap}
+.aiWatchKeywords{font-size:12px;color:#6b7f91;margin-top:5px}.aiWatchActions{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}.aiWatchActions .mini{padding:6px 9px}
+.aiWatchPaused{opacity:.65}.aiWatchResultsHead{display:flex;justify-content:space-between;gap:8px;align-items:end;margin-top:14px;padding-top:11px;border-top:1px solid #e5edf5}.aiWatchResultsHead strong{color:#173e63}.aiWatchResultsHead span{font-size:11px;color:#7b8e9f;text-align:right}
+.aiWatchEmpty{font-size:12px;line-height:1.45;color:#6b7f91;padding:10px;margin-top:7px;border:1px dashed #cbdced;border-radius:11px;background:#fbfdff}
+</style>
+<style id="rc106-ai-watch-edit-style">
+/* RC106 — editable Watches + mobile Updates cleanup. */
+.aiWatchResultsHead{display:block!important;align-items:initial!important}
+.aiWatchResultsHead strong{display:block;font-size:17px}
+.aiWatchActions [data-watch-edit]{background:#edf6ff!important;color:#125fc7!important;border-color:#c7dcf5!important}
+.aiWatchEditNote{font-size:11px;color:#6b7f91;margin-top:5px}
+</style>
+<script id="rc106-ai-watch-edit-script">
+(()=>{
+ const KEY='dshario_ai_watch_v1'; let editingIndex=null;
+ const $=id=>document.getElementById(id);
+ const esc=v=>String(v||'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+ const load=()=>{try{return JSON.parse(localStorage.getItem(KEY)||'[]')}catch{return []}};
+ const save=a=>localStorage.setItem(KEY,JSON.stringify(a));
+ function resetForm(){editingIndex=null;$('aiWatchInterest').value='';$('aiWatchKeywords').value='';$('saveAiWatchBtn').textContent='Save Watch';$('aiWatchStatus').textContent=''}
+ function render(){const box=$('aiWatchList');if(!box)return;const a=load();box.innerHTML=a.length?a.map((w,i)=>`<div class="aiWatchCard ${w.active?'':'aiWatchPaused'}"><div class="aiWatchCardTop"><div><strong>${esc(w.interest)}</strong><div class="aiWatchKeywords">${w.keywords?'Keywords: '+esc(w.keywords):'No extra keywords'}</div></div><span class="aiWatchArea">${esc(w.area)}</span></div><div class="aiWatchActions"><button class="mini" type="button" data-watch-edit="${i}">Edit</button><button class="mini" type="button" data-watch-toggle="${i}">${w.active?'Pause':'Activate'}</button><button class="mini" type="button" data-watch-delete="${i}">Delete</button></div></div>`).join(''):'<div class="aiWatchEmpty">No Watches yet. Create your first focused Watch above.</div>';
+ box.querySelectorAll('[data-watch-edit]').forEach(b=>b.onclick=()=>{const x=load(),i=+b.dataset.watchEdit,w=x[i];if(!w)return;editingIndex=i;$('aiWatchArea').value=w.area;$('aiWatchInterest').value=w.interest;$('aiWatchKeywords').value=w.keywords||'';$('saveAiWatchBtn').textContent='Save Changes';$('aiWatchStatus').textContent='Editing this Watch.';$('aiWatchForm').hidden=false;$('aiWatchForm').scrollIntoView({behavior:'smooth',block:'nearest'});$('aiWatchInterest').focus()});
+ box.querySelectorAll('[data-watch-toggle]').forEach(b=>b.onclick=()=>{const x=load(),i=+b.dataset.watchToggle;x[i].active=!x[i].active;save(x);render()});
+ box.querySelectorAll('[data-watch-delete]').forEach(b=>b.onclick=()=>{const x=load(),i=+b.dataset.watchDelete;x.splice(i,1);save(x);if(editingIndex===i){resetForm();$('aiWatchForm').hidden=true}else if(editingIndex!==null&&i<editingIndex)editingIndex--;render()});
+ }
+ function init(){if(!$('addAiWatchBtn'))return;render();$('addAiWatchBtn').onclick=()=>{resetForm();$('aiWatchForm').hidden=false;$('aiWatchInterest').focus()};$('cancelAiWatchBtn').onclick=()=>{resetForm();$('aiWatchForm').hidden=true};$('saveAiWatchBtn').onclick=()=>{const interest=$('aiWatchInterest').value.trim();if(!interest){$('aiWatchStatus').textContent='Please describe what you want to watch.';return}const a=load(), item={area:$('aiWatchArea').value,interest,keywords:$('aiWatchKeywords').value.trim(),active:true,updated:new Date().toISOString()};if(editingIndex!==null&&a[editingIndex]){item.active=a[editingIndex].active;item.created=a[editingIndex].created||item.updated;a[editingIndex]=item}else{item.created=item.updated;a.unshift(item)}save(a);resetForm();$('aiWatchForm').hidden=true;render()}}
+ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init);else init();
+})();
+</script>
+
+
+<style id="rc107-test-marker-style">#rc107TestMarker{position:fixed;right:8px;bottom:8px;z-index:99999;background:#173e63;color:#fff;padding:5px 8px;border-radius:8px;font:700 11px/1.2 system-ui;opacity:.88}</style>
+
+
+<style id="rc108-ai-watch-live-style">
+/* RC110 — cleaner AI Watch result presentation. */
+.aiWatchCheckRow{display:none!important}
+.aiWatchLiveStatus{display:none}
+.aiWatchResultList{display:grid;gap:14px;margin-top:12px}
+.aiWatchResult{border:1px solid #d6e4f0;border-radius:18px;padding:17px;background:#fff;box-shadow:0 3px 12px rgba(23,62,99,.06)}
+.aiWatchResult h4{margin:0 0 12px;color:#123f69;font-size:19px;line-height:1.28}
+.aiWatchResultSection{margin-top:12px}
+.aiWatchResultLabel{display:block;margin-bottom:5px;font-size:13px;font-weight:900;color:#173e63}
+.aiWatchSummary{margin:0!important;font-size:15px!important;line-height:1.55!important;color:#425f77!important}
+.aiWatchWhy,.aiWatchChanged{margin:0!important;padding:12px 13px;border-radius:12px;font-size:14px!important;line-height:1.52!important;color:#49657d!important}
+.aiWatchWhy{background:#f2f7fc}
+.aiWatchChanged{background:#f8fafc;border:1px solid #e5edf5}
+.aiWatchDetails{margin-top:10px}
+.aiWatchDetails summary{cursor:pointer;font-size:13px;font-weight:850;color:#1261b8}
+.aiWatchSources{display:flex;gap:7px;flex-wrap:wrap;margin-top:13px}
+.aiWatchSources a{font-size:12px;font-weight:800;color:#1261b8;text-decoration:none;border:1px solid #bdd7ef;border-radius:999px;padding:7px 10px;background:#eef7ff}
+.aiWatchResultActions{display:flex;gap:9px;flex-wrap:wrap;margin-top:15px}
+.aiWatchResultActions button{border:1px solid #c9d9e8;border-radius:11px;background:#fff;color:#173e63;font:800 14px/1 system-ui;padding:10px 15px}
+.aiWatchResultActions [data-save-update]{background:#edf6ff;color:#125fc7;border-color:#bfd8f1}
+.aiWatchCard .aiWatchActions [data-watch-check]{background:#173e63!important;color:#fff!important;border-color:#173e63!important}
+.aiWatchToast{display:none;margin:9px 0 0;padding:9px 11px;border-radius:10px;background:#f2f7fc;color:#49657d;font-size:12px;font-weight:700}
+.aiWatchToast.show{display:block}
+.aiWatchSavedWrap{margin-top:16px;border-top:1px solid #e5edf5;padding-top:14px}
+.aiWatchSavedToggle{border:0;background:transparent;color:#173e63;font:900 15px/1.2 system-ui;padding:0;cursor:pointer}
+.aiWatchSavedList{display:grid;gap:8px;margin-top:10px}
+.aiWatchSavedItem{border:1px solid #dce8f3;border-radius:12px;padding:11px;background:#fbfdff}
+.aiWatchSavedItem strong{display:block;color:#173e63;font-size:13px;margin-bottom:4px}
+.aiWatchSavedItem p{margin:0;color:#5b7185;font-size:12px;line-height:1.45}
+.aiWatchSavedItem a{display:inline-block;margin-top:6px;margin-right:6px;color:#125fc7;font-size:11px;font-weight:800;text-decoration:none}
+@media(max-width:560px){
+ .aiWatchResult{padding:15px}
+ .aiWatchResult h4{font-size:18px}
+ .aiWatchSummary{font-size:14px!important}
+ .aiWatchWhy,.aiWatchChanged{font-size:13px!important}
+}
+
+.aiWatchPerSaved{margin-top:11px;border-top:1px solid #e4edf5;padding-top:10px}
+.aiWatchPerSavedBtn{border:0!important;background:transparent!important;color:#1261b8!important;padding:4px 0!important;font:850 13px/1.3 system-ui!important}
+.aiWatchPerSavedList{display:grid;gap:8px;margin-top:8px}
+.aiWatchPerSavedItem{border:1px solid #dce8f3;border-radius:11px;padding:10px;background:#fbfdff}
+.aiWatchPerSavedItem strong{display:block;color:#173e63;font-size:12px;margin-bottom:4px}
+.aiWatchPerSavedItem p{margin:0;color:#5b7185;font-size:12px;line-height:1.45}
+.aiWatchPerSavedItem a{display:inline-block;margin-top:6px;margin-right:6px;color:#125fc7;font-size:11px;font-weight:800;text-decoration:none}
+
+.aiWatchPerLive{display:grid;gap:10px;margin-top:12px}
+.aiWatchPerLive:empty{display:none}
+.aiWatchSavedItem details{margin-top:8px}
+.aiWatchSavedItem summary{cursor:pointer;color:#1261b8;font-size:12px;font-weight:850}
+.aiWatchSavedDetail{margin-top:8px;padding-top:8px;border-top:1px solid #e5edf5}
+.aiWatchSavedDetail .lbl{display:block;margin:8px 0 3px;color:#173e63;font-size:11px;font-weight:900}
+.aiWatchSavedDetail p{margin:0;color:#536d84;font-size:12px;line-height:1.5}
+.aiWatchSavedDelete{margin-top:12px;border:1px solid #e1c8c8!important;background:#fff!important;color:#8a3030!important;border-radius:10px!important;padding:9px 12px!important;font:800 12px/1 system-ui!important}
+.aiWatchChecking{opacity:.86!important;cursor:wait!important;pointer-events:none}.aiWatchSpinner{display:inline-block;width:14px;height:14px;margin-right:7px;border:2px solid currentColor;border-right-color:transparent;border-radius:50%;vertical-align:-2px;animation:aiWatchSpin .75s linear infinite}@keyframes aiWatchSpin{to{transform:rotate(360deg)}}
+</style>
+<script id="rc108-ai-watch-live-script">
+(()=>{
+ const ENDPOINT=SUPABASE_URL+'/functions/v1/ai-watch';
+ const $=id=>document.getElementById(id);
+ const esc=v=>String(v||'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+ const load=()=>{try{return JSON.parse(localStorage.getItem('dshario_ai_watch_v1')||'[]')}catch{return []}};
+ async function token(){const {data}=await sb.auth.getSession();return data?.session?.access_token||''}
+ function toast(t){
+   let e=$('aiWatchToast');
+   if(!e){e=document.createElement('div');e.id='aiWatchToast';e.className='aiWatchToast';const body=$('aiWatchBody');body?.prepend(e)}
+   e.textContent=t||'';e.classList.toggle('show',!!t);
+   if(t)setTimeout(()=>{if(e.textContent===t)e.classList.remove('show')},4500)
+ }
+ function resultKey(w,d){
+   const u=(d.sources||[]).map(x=>x.url||'').join('|');
+   return btoa(unescape(encodeURIComponent((w.interest||'')+'|'+(d.summary||'')+'|'+u))).replace(/[^a-zA-Z0-9]/g,'').slice(0,120)
+ }
+ async function persistUpdate(w,d,status){
+   const {data:{user}}=await sb.auth.getUser();if(!user)throw new Error('Please sign in again.');
+   const payload={user_id:user.id,watch_interest:w.interest||'',watch_area:w.area||'',watch_keywords:w.keywords||'',
+     summary:d.summary||'',why_relevant:d.why_relevant||'',what_changed:d.what_changed||'',
+     sources:Array.isArray(d.sources)?d.sources:[],status,result_key:resultKey(w,d),
+     checked_at:d.checked_at||new Date().toISOString(),updated_at:new Date().toISOString()};
+   const {error}=await sb.from('ai_watch_updates').upsert(payload,{onConflict:'user_id,result_key'});if(error)throw error
+ }
+ function watchCard(w){
+   return [...($('aiWatchList')?.querySelectorAll('.aiWatchCard')||[])].find(c=>c.dataset.watchInterest===(w.interest||''))
+ }
+ function sourceLinks(sources){
+   return (Array.isArray(sources)?sources:[]).slice(0,5).map((x,i)=>`<a href="${esc(x.url)}" target="_blank" rel="noopener">${esc(x.title||('Source '+(i+1)))}</a>`).join('')
+ }
+ async function showAutomaticUpdate(row,opts={}){
+   const watches=load();
+   const w=watches.find(x=>x.id && x.id===row.watch_id) || watches.find(x=>x.interest===row.watch_interest);
+   if(!w)return false;
+   wire();
+   const card=watchCard(w);
+   if(!card)return false;
+   const d={summary:row.summary,why_relevant:row.why_relevant,what_changed:row.what_changed,
+     sources:row.sources,checked_at:row.checked_at};
+   renderLive(w,d);
+   const live=card.querySelector('.aiWatchPerLive');
+   const result=live?.querySelector('.aiWatchResult');
+   if(!result)return false;
+   result.dataset.autoUpdateId=row.id;
+   const save=result.querySelector('[data-save-update]');
+   const dismiss=result.querySelector('[data-dismiss-update]');
+   async function act(status){
+     const {data:{user}}=await sb.auth.getUser();
+     if(!user)throw Error('Please sign in again.');
+     const {error}=await sb.from('ai_watch_updates').update({status,is_read:true,updated_at:new Date().toISOString()})
+       .eq('id',row.id).eq('user_id',user.id);
+     if(error)throw error;
+     result.remove();
+     toast(status==='saved'?'Saved under this Watch.':'Update dismissed.');
+     if(status==='saved')await refreshSaved(w);
+   }
+   if(save)save.onclick=()=>act('saved').catch(e=>toast('Could not save update: '+e.message));
+   if(dismiss)dismiss.onclick=()=>act('dismissed').catch(e=>toast('Could not dismiss update: '+e.message));
+   if(opts.scroll!==false)card.scrollIntoView({behavior:'auto',block:'start'});
+   return true;
+ }
+ window.DSharioOpenAutomaticWatchUpdate=showAutomaticUpdate;
+ async function hydrateAutomaticUpdates(){
+   try{
+     const {data:{user}}=await sb.auth.getUser();if(!user)return;
+     const {data,error}=await sb.from('ai_watch_updates')
+       .select('id,watch_id,watch_interest,summary,why_relevant,what_changed,sources,created_at,checked_at')
+       .eq('user_id',user.id).eq('status','new').eq('is_automatic',true)
+       .order('created_at',{ascending:false});
+     if(error){console.warn('RC138 automatic Watch load:',error);return}
+     for(const row of (data||[])) await showAutomaticUpdate(row,{scroll:false});
+   }catch(e){console.warn('RC138 automatic Watch hydration:',e)}
+ }
+ window.DSharioHydrateAutomaticWatchUpdates=hydrateAutomaticUpdates;
+ function renderLive(w,d){
+   const host=watchCard(w)?.querySelector('.aiWatchPerLive');if(!host)return;
+   const key=resultKey(w,d);
+   host.querySelectorAll('.aiWatchResult').forEach(x=>{if(x.dataset.resultKey===key)x.remove()});
+   const card=document.createElement('div');card.className='aiWatchResult';card.dataset.resultKey=key;
+   card.innerHTML=`<h4>New update</h4>
+     <div class="aiWatchResultSection"><span class="aiWatchResultLabel">Update</span><p class="aiWatchSummary">${esc(d.summary||'Relevant public update found.')}</p></div>
+     <div class="aiWatchResultSection"><span class="aiWatchResultLabel">Why it matters</span><div class="aiWatchWhy">${esc(d.why_relevant||'Relevant to this Watch.')}</div></div>
+     ${d.what_changed?`<details class="aiWatchDetails"><summary>View what changed</summary><div class="aiWatchResultSection"><div class="aiWatchChanged">${esc(d.what_changed)}</div></div></details>`:''}
+     <div class="aiWatchSources">${sourceLinks(d.sources)||'<span class="hint">No source links returned.</span>'}</div>
+     <div class="aiWatchResultActions"><button type="button" data-save-update>☆ Save</button><button type="button" data-dismiss-update>Dismiss</button></div>`;
+   card.querySelector('[data-save-update]').onclick=async()=>{
+     try{await persistUpdate(w,d,'saved');card.remove();toast('Saved under this Watch.');await refreshSaved(w)}
+     catch(e){toast('Could not save update: '+(e.message||e))}
+   };
+   card.querySelector('[data-dismiss-update]').onclick=async()=>{
+     try{await persistUpdate(w,d,'dismissed');card.remove();toast('Update dismissed.')}
+     catch(e){toast('Could not dismiss update: '+(e.message||e))}
+   };
+   host.prepend(card)
+ }
+ async function check(w,btn){
+   if(!w?.active){toast('Activate this Watch before checking.');return}
+   const original=btn?.innerHTML||'✨ Check now';
+   if(btn){btn.disabled=true;btn.classList.add('aiWatchChecking');btn.innerHTML='<span class="aiWatchSpinner"></span>AI checking…'}
+   try{
+     const t=await token();if(!t)throw new Error('Please sign in again.');
+     const r=await fetch(ENDPOINT,{method:'POST',headers:{Authorization:'Bearer '+t,apikey:SUPABASE_KEY,'Content-Type':'application/json'},body:JSON.stringify({area:w.area,interest:w.interest,keywords:w.keywords||''})});
+     const d=await r.json().catch(()=>({}));if(!r.ok)throw new Error(d.error||('AI Watch service returned '+r.status));
+     const key=resultKey(w,d);
+     const {data:old}=await sb.from('ai_watch_updates').select('status').eq('result_key',key).maybeSingle();
+     if(old?.status==='dismissed'){if(btn)btn.textContent='✓ No new update';setTimeout(()=>resetBtn(btn,original),1800);return}
+     if(old?.status==='saved'){if(btn)btn.textContent='✓ Already saved';setTimeout(()=>resetBtn(btn,original),1800);return}
+     renderLive(w,d);if(btn)btn.textContent='✓ Update found';setTimeout(()=>resetBtn(btn,original),1800)
+   }catch(e){if(btn)btn.textContent='Try again';toast('AI Watch could not check right now: '+(e.message||e));setTimeout(()=>resetBtn(btn,original),2200)}
+ }
+ function resetBtn(btn,original){if(!btn)return;btn.disabled=false;btn.classList.remove('aiWatchChecking');btn.innerHTML=original||'✨ Check now'}
+ async function refreshSaved(w){
+   const card=watchCard(w), list=card?.querySelector('.aiWatchPerSavedList'), btn=card?.querySelector('.aiWatchPerSavedBtn');
+   if(!list||!btn)return;
+   const {data:{user}}=await sb.auth.getUser();if(!user)return;
+   const {data,error}=await sb.from('ai_watch_updates')
+     .select('id,watch_interest,summary,why_relevant,what_changed,sources,checked_at,created_at')
+     .eq('user_id',user.id).eq('status','saved').eq('watch_interest',w.interest||'')
+     .order('created_at',{ascending:false}).limit(20);
+   if(error){btn.textContent='☆ Saved updates';list.innerHTML='<div class="aiWatchEmpty">Saved updates are temporarily unavailable.</div>';return}
+   const count=data?.length||0;btn.textContent=`☆ Saved updates (${count})`;
+   if(!count){list.innerHTML='<div class="aiWatchEmpty">No saved updates for this Watch yet.</div>';return}
+   list.innerHTML=data.map(x=>{
+     const dt=new Date(x.checked_at||x.created_at).toLocaleString();
+     const links=sourceLinks(x.sources);
+     return `<div class="aiWatchPerSavedItem"><strong>${esc(dt)}</strong><p>${esc(x.summary)}</p>
+       <details><summary>View full saved update</summary><div class="aiWatchSavedDetail">
+         <span class="lbl">Why it matters</span><p>${esc(x.why_relevant||'')}</p>
+         ${x.what_changed?`<span class="lbl">What changed</span><p>${esc(x.what_changed)}</p>`:''}
+         <span class="lbl">Sources</span><div class="aiWatchSources">${links||'<span class="hint">No source links returned.</span>'}</div>
+         <button type="button" class="aiWatchSavedDelete" data-delete-saved="${esc(x.id)}">Delete saved update</button>
+       </div></details></div>`
+   }).join('');
+   list.querySelectorAll('[data-delete-saved]').forEach(btn=>{
+     btn.onclick=async()=>{
+       if(!confirm('Delete this saved update?'))return;
+       const id=btn.getAttribute('data-delete-saved');
+       const {error}=await sb.from('ai_watch_updates').delete().eq('id',id);
+       if(error){toast('Could not delete saved update: '+(error.message||error));return}
+       toast('Saved update deleted.');await refreshSaved(w)
+     }
+   })
+ }
+ function removeGlobalUpdates(){
+   document.querySelector('.aiWatchResultsHead')?.remove();
+   $('aiWatchResultList')?.remove();
+   $('aiWatchSavedWrap')?.remove();
+   document.querySelectorAll('.aiWatchEmpty').forEach(el=>{if(/No updates yet|Live source checking|secure AI Watch service/i.test(el.textContent||''))el.remove()});
+ }
+ function wire(){
+   const body=$('aiWatchBody');if(!body)return;
+   document.querySelector('.aiWatchCheckRow')?.remove();removeGlobalUpdates();
+   const cards=$('aiWatchList')?.querySelectorAll('.aiWatchCard')||[];
+   cards.forEach((card,i)=>{
+     const w=load()[i];if(!w)return;card.dataset.watchInterest=w.interest||'';
+     const actions=card.querySelector('.aiWatchActions');
+     if(actions&&!actions.querySelector('[data-watch-check]')){
+       const b=document.createElement('button');b.className='mini';b.type='button';b.dataset.watchCheck=i;b.textContent='✨ Check now';
+       actions.prepend(b);b.onclick=()=>check(load()[i],b)
+     }
+     if(!card.querySelector('.aiWatchPerLive')){
+       const live=document.createElement('div');live.className='aiWatchPerLive';card.appendChild(live)
+     }
+     if(!card.querySelector('.aiWatchPerSaved')){
+       const s=document.createElement('div');s.className='aiWatchPerSaved';
+       s.innerHTML='<button type="button" class="aiWatchPerSavedBtn">☆ Saved updates</button><div class="aiWatchPerSavedList" hidden></div>';
+       card.appendChild(s);
+       const btn=s.querySelector('.aiWatchPerSavedBtn'),list=s.querySelector('.aiWatchPerSavedList');
+       btn.onclick=async()=>{list.hidden=!list.hidden;if(!list.hidden)await refreshSaved(load()[i])};
+       refreshSaved(w)
+     }
+   })
+ }
+ const obs=new MutationObserver(()=>wire());
+ const start=()=>{wire();const l=$('aiWatchList');if(l)obs.observe(l,{childList:true,subtree:true});setTimeout(()=>window.DSharioHydrateAutomaticWatchUpdates?.(),500)};
+ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',start);else start()
+})();
+</script>
+
+<!-- RC123: legacy RC113 refresh restorer disabled; replaced by unified refresh state. -->
+<script id="rc116-ai-watch-supabase-sync">
+(()=>{
+ const K='dshario_ai_watch_v1', norm=v=>String(v||'').trim();
+ const get=()=>{try{return JSON.parse(localStorage.getItem(K)||'[]')}catch{return []}};
+ const put=a=>localStorage.setItem(K,JSON.stringify(a));
+ let syncing=false, last='', interval=null;
+
+ function status(msg,kind='info'){
+   // RC120: server sync runs silently; keep technical failures in console only.
+   document.getElementById('aiWatchServerSyncStatus')?.remove();
+   if(kind==='error') console.warn('AI Watch server sync:', msg);
+ }
+ async function currentUser(){
+   const {data,error}=await sb.auth.getUser();
+   if(error) throw error;
+   return data?.user||null;
+ }
+ async function pull(u){
+   const {data,error}=await sb.from('ai_watches').select('id,area,interest,keywords,active,created_at').eq('user_id',u.id).order('created_at',{ascending:true});
+   if(error) throw error;
+   if(data?.length){
+     put(data.map(x=>({id:x.id,area:x.area,interest:x.interest,keywords:x.keywords||'',active:x.active!==false})));
+   }
+ }
+ async function syncNow(){
+   if(syncing)return;
+   syncing=true;
+   try{
+     const u=await currentUser();
+     if(!u){status('AI Watch server sync: waiting for sign-in…');return}
+     const watches=get();
+     status('AI Watch server sync: syncing…');
+     if(!watches.length){
+       await pull(u);
+     }else{
+       for(const w of watches){
+         if(!norm(w.interest))continue;
+         const row={user_id:u.id,area:norm(w.area)||'Other',interest:norm(w.interest),keywords:norm(w.keywords),active:w.active!==false,updated_at:new Date().toISOString()};
+         const {data,error}=await sb.from('ai_watches').upsert(row,{onConflict:'user_id,interest'}).select('id').single();
+         if(error) throw error;
+         if(data?.id) w.id=data.id;
+       }
+       put(watches);
+       const keep=new Set(watches.map(w=>norm(w.interest)).filter(Boolean));
+       const {data:serverRows,error:listErr}=await sb.from('ai_watches').select('id,interest').eq('user_id',u.id);
+       if(listErr) throw listErr;
+       for(const r of (serverRows||[])){
+         if(!keep.has(norm(r.interest))){
+           const {error:delErr}=await sb.from('ai_watches').delete().eq('id',r.id).eq('user_id',u.id);
+           if(delErr) throw delErr;
+         }
+       }
+     }
+     const {count,error:countErr}=await sb.from('ai_watches').select('*',{count:'exact',head:true}).eq('user_id',u.id);
+     if(countErr) throw countErr;
+     last=localStorage.getItem(K)||'[]';
+     status(`✓ AI Watch server sync complete — ${count||0} Watch${count===1?'':'es'} stored`, 'ok');
+   }catch(e){
+     console.error('RC116 AI Watch sync error',e);
+     status('AI Watch server sync failed: '+(e?.message||String(e)),'error');
+   }finally{syncing=false}
+ }
+ function begin(){
+   syncNow();
+   if(!interval)interval=setInterval(()=>{
+     const now=localStorage.getItem(K)||'[]';
+     if(now!==last)syncNow();
+   },1500);
+ }
+ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',()=>setTimeout(begin,500));else setTimeout(begin,500);
+ sb.auth.onAuthStateChange((event,session)=>{if(session?.user)setTimeout(syncNow,250)});
+ window.addEventListener('pageshow',()=>setTimeout(syncNow,500));
+})();
+</script>
+<script id="rc117-ai-watch-notifications-12h">
+(()=>{
+ const fmt12=v=>{const d=new Date(v);return isNaN(d)?String(v||''):d.toLocaleString('en-AU',{day:'2-digit',month:'2-digit',year:'numeric',hour:'numeric',minute:'2-digit',second:'2-digit',hour12:true})};
+ const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+ function fixTimes(root=document){
+  const rx=/\b(\d{1,2}\/\d{1,2}\/\d{4}),?\s+([01]?\d|2[0-3]):([0-5]\d):([0-5]\d)\b(?!\s*(?:AM|PM))/gi;
+  const w=document.createTreeWalker(root,NodeFilter.SHOW_TEXT),a=[];while(w.nextNode())a.push(w.currentNode);
+  a.forEach(n=>n.nodeValue=n.nodeValue.replace(rx,(m,date,hh,mm,ss)=>{let H=+hh,ap=H>=12?'PM':'AM',h12=H%12||12;return `${date}, ${h12}:${mm}${ss?':'+ss:''} ${ap}`}))
+ }
+ async function user(){try{return (await sb.auth.getUser()).data?.user||null}catch{return null}}
+ async function unread(){const u=await user();if(!u)return[];const {data,error}=await sb.from('ai_watch_updates').select('id,watch_id,watch_interest,summary,why_relevant,what_changed,sources,created_at,checked_at').eq('user_id',u.id).eq('status','new').eq('is_automatic',true).eq('is_read',false).order('created_at',{ascending:false});if(error){console.warn(error);return[]}return data||[]}
+ function bells(){return [...document.querySelectorAll('button,a,[role="button"],.notificationBell,.bell')].filter(e=>/notification|bell|🔔/i.test((e.textContent||'')+' '+(e.getAttribute('aria-label')||'')+' '+(e.getAttribute('title')||'')))}
+ function badge(n){const b0=bells()[0];if(!b0)return;if(getComputedStyle(b0).position==='static')b0.style.position='relative';let b=document.getElementById('rc117AiWatchBadge');if(!b){b=document.createElement('span');b.id='rc117AiWatchBadge';b.style.cssText='position:absolute;top:-5px;right:-6px;min-width:18px;height:18px;padding:0 5px;border-radius:10px;background:#c62828;color:#fff;font:700 11px/18px system-ui;text-align:center;z-index:20';b0.appendChild(b)}b.textContent=n;b.style.display=n?'block':'none'}
+ async function refresh(){badge((await unread()).length)}
+ function panel(){let p=document.getElementById('rc117AiWatchNotifications');if(!p){p=document.createElement('div');p.id='rc117AiWatchNotifications';p.style.cssText='display:none;position:fixed;left:12px;right:12px;top:70px;max-width:520px;margin:auto;z-index:10000;background:#fff;border:1px solid #d8e1ea;border-radius:14px;box-shadow:0 10px 30px #0002;padding:14px;max-height:70vh;overflow:auto';document.body.appendChild(p)}return p}
+ async function openPanel(){const p=panel(),rows=await unread();p.innerHTML='<div style="display:flex;justify-content:space-between;align-items:center"><strong>AI Watch notifications</strong><button id="rc117CloseN" style="border:0;background:transparent;font-size:22px">×</button></div>';if(!rows.length)p.innerHTML+='<div style="padding:18px 2px;color:#657786">No new AI Watch updates.</div>';rows.forEach(r=>{const d=document.createElement('div');d.style.cssText='padding:12px 2px;border-top:1px solid #e8edf2;cursor:pointer';d.innerHTML=`<div style="font-weight:700">AI Watch update — ${esc(r.watch_interest||'Watch')}</div><div style="margin-top:5px">${esc(r.summary||'New update available.')}</div><div style="font-size:12px;color:#6b7c8c;margin-top:5px">${esc(fmt12(r.checked_at||r.created_at))}</div>`;d.onclick=()=>openUpdate(r);p.appendChild(d)});p.querySelector('#rc117CloseN').onclick=()=>p.style.display='none';p.style.display='block'}
+ async function openUpdate(r){
+   const u=await user();if(!u)return;
+   panel().style.display='none';
+   // Existing authenticated Account route; do not reload or click an arbitrary matching element.
+   try{history.replaceState({},'',location.pathname+'#account')}catch{}
+   document.getElementById('accountTab')?.click();
+   const g=document.querySelector('#rc96AccountWorkspace .rc98AiWatch');
+   if(g && !g.classList.contains('rc97Open'))g.querySelector(':scope > .rc96GroupHead')?.click();
+   let ok=false;
+   for(let i=0;i<8 && !ok;i++){
+     ok=await window.DSharioOpenAutomaticWatchUpdate?.(r);
+     if(!ok)await new Promise(resolve=>setTimeout(resolve,150));
+   }
+   if(!ok){console.warn('Automatic Watch not found for notification',r.id);return}
+   const {error}=await sb.from('ai_watch_updates').update({is_read:true}).eq('id',r.id).eq('user_id',u.id);
+   if(error)console.warn('Could not mark Watch notification read',error);
+   await refresh();
+ }
+ function wire(){bells().forEach(b=>{if(b.dataset.rc117Bell)return;b.dataset.rc117Bell='1';b.addEventListener('click',()=>setTimeout(openPanel,50))})}
+ async function boot(){fixTimes();wire();await refresh();new MutationObserver(()=>{fixTimes();wire()}).observe(document.body,{childList:true,subtree:true});setInterval(refresh,30000)}
+ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',()=>setTimeout(boot,700));else setTimeout(boot,700)
+})();
+</script>
+
+<!-- RC123: legacy RC120 AI-Watch-only restorer disabled; replaced by unified refresh state. -->
+
+
+
+
+<script id="rc132-authoritative-connection-back">
+(function(){
+  const b=document.getElementById("backToConnectionsBtn");
+  if(!b)return;
+  b.addEventListener("click",async function(e){
+    e.preventDefault(); e.stopImmediatePropagation();
+    try{sessionStorage.setItem("dshario_rc126_ui_state",JSON.stringify({view:"account",group:"connections",y:0}))}catch{}
+
+    publicMode=false; connectionOnlyMode=false;
+    if(typeof publicShareCheckTimer!=="undefined" && publicShareCheckTimer){
+      clearInterval(publicShareCheckTimer); publicShareCheckTimer=null;
+    }
+    document.body.classList.remove("publicMode","connectionOnlyMode","tempConnection","personalProfileMode","expiredPublic","rc70-saved-route");
+    document.getElementById("connectionOnlyNav")?.style.setProperty("display","none");
+    document.getElementById("publicHeader")?.style.setProperty("display","none");
+    document.getElementById("sharedMemberNav")?.style.setProperty("display","none");
+    try{history.replaceState({},"",location.pathname+"#account")}catch{}
+
+    await refreshAuth(false);
+    if(!user){
+      try{
+        const d=(await sb.auth.getSession()).data;
+        session=d.session; user=session?.user||null;
+        await refreshAuth(false);
+      }catch{}
+    }
+
+    setView("account"); updateSignedInHandle();
+    if(user){
+      await loadMyConnections();
+      await loadReceivedContacts();
+      await loadNotifications();
+    }
+
+    const groups=[...document.querySelectorAll("#rc96AccountWorkspace .rc96Group")];
+    groups.forEach(g=>{
+      g.classList.remove("rc97Open");
+      g.querySelector(":scope > .rc96GroupHead")?.setAttribute("aria-expanded","false");
+    });
+    const g=document.querySelector("#rc96AccountWorkspace .rc96Connections");
+    if(g){
+      g.classList.add("rc97Open");
+      g.querySelector(":scope > .rc96GroupHead")?.setAttribute("aria-expanded","true");
+    }
+    window.scrollTo({top:0,behavior:"auto"});
+  },true);
+})();
+</script>
+
+<script id="rc138-ai-watch-auto-received-and-refresh-stability">
+(()=>{
+  let busy=false;
+  async function hydrate(){
+    if(busy)return;busy=true;
+    try{await window.DSharioHydrateAutomaticWatchUpdates?.()}finally{busy=false}
+  }
+  document.addEventListener('click',e=>{
+    const h=e.target.closest?.('#rc96AccountWorkspace .rc98AiWatch > .rc96GroupHead');
+    if(h)setTimeout(hydrate,250);
+  });
+  window.addEventListener('pageshow',()=>setTimeout(hydrate,900));
+  setInterval(()=>{
+    const g=document.querySelector('#rc96AccountWorkspace .rc98AiWatch');
+    if(g?.classList.contains('rc97Open'))hydrate();
+  },30000);
+})();
+</script>
+
 </body>
 </html>
