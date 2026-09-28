@@ -1,48 +1,72 @@
-# DShario
+DShario
+Connect. Share. Remember. Follow Up. Collaborate.
 
-**Connect. Share. Remember. Follow Up. Collaborate.**
+DShario is a connection, sharing and productivity platform designed to help people move beyond simply exchanging contact details. It brings digital identity, relationship management, follow-ups, collaboration, meeting documentation and interest monitoring into one connected experience.
 
-DShario is a connection and productivity platform designed to help people share professional identity, build meaningful connections, manage follow-ups, securely share content, and create AI-assisted meeting minutes.
+Core Capabilities
 
-## Current Beta
+Purpose-based digital card sharing
 
-DShario currently includes:
+Personal DShario address, QR and link sharing
 
-- Purpose-based digital card sharing
-- Personal DShario addresses
-- QR and link sharing
-- Temporary and permanent sharing
-- My Connections
-- Opportunities and follow-ups
-- Professional profiles
-- AI-assisted profile writing
-- Meeting recording and transcription
-- AI-assisted meeting minutes
-- Meeting sharing and revision history
-- Secure content-sharing capabilities
+Temporary and permanent sharing
 
-## Development Status
+My Connections and saved contacts
 
-DShario is currently in beta development and testing.
+Opportunities, reminders and AI-assisted follow-ups
 
-The current stable production baseline is based on the successfully tested RC100 release.
+Professional profiles and AI Profile Writer
 
-## Roadmap
+Secure content and document sharing
 
-Planned development includes:
+Meeting recording and transcription
 
-- Progressive Web App (PWA)
-- Improved mobile quick access
-- My Interests / AI Watch
-- Further sharing and collaboration improvements
-- Commercial production preparation
+AI-assisted Meeting Minutes, key decisions and action plans
 
-## Website
+Meeting sharing, editing and revision history
 
-https://www.dshario.com
+My Interests / AI Watch with automatic update checking
 
-## Status
+In-app notifications
 
-Beta — features and functionality may change during development and testing.
+Installable Progressive Web App (PWA)
 
-© 2026 DShario
+The DShario Workflow
+
+Meet → Connect → Share → Remember → Follow Up → Collaborate
+
+Rather than functioning only as a digital business card, DShario is designed to support what happens after people meet: remembering the connection, managing opportunities, following up, sharing information and collaborating.
+
+Product Access
+
+DShario is being prepared around a Free + Premium model.
+
+Free: Digital card creation, editing, QR/link sharing and essential account features.
+
+Premium: Advanced connection and productivity capabilities including AI Follow-Up, AI Profile Writer, content sharing, Meeting Minutes, AI Watch and future premium tools.
+
+During the current testing stage, features may remain available to testers while the commercial subscription system is prepared.
+
+Current Stage
+
+DShario has progressed from prototype development to a functional product undergoing real-world user testing and commercial preparation.
+
+Current priorities are product stability, user feedback, usage validation, commercial documentation and evaluating suitable partnership, licensing and acquisition opportunities.
+
+Technology
+
+DShario is a web-based platform with Progressive Web App capability. The current implementation uses cloud-based authentication, database/storage services and selected AI services to support its functionality.
+
+Security, privacy and controlled sharing are considered throughout the product design. Public repositories should not contain private credentials or API secrets.
+
+Commercial Direction
+
+DShario is being evaluated for further commercial development through suitable strategic partnerships, licensing opportunities or acquisition discussions.
+
+Website
+
+www.dshario.com
+
+Product status: Active testing and commercial preparation.
+
+© 2026 DShario. All rights reserved.
