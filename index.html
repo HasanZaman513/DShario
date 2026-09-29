@@ -8272,7 +8272,19 @@ document.getElementById("rc96SignOut")?.addEventListener("click",function(){
  function render(){const box=$('aiWatchList');if(!box)return;const a=load();box.innerHTML=a.length?a.map((w,i)=>`<div class="aiWatchCard ${w.active?'':'aiWatchPaused'}"><div class="aiWatchCardTop"><div><strong>${esc(w.interest)}</strong><div class="aiWatchKeywords">${w.keywords?'Keywords: '+esc(w.keywords):'No extra keywords'}</div></div><span class="aiWatchArea">${esc(w.area)}</span></div><div class="aiWatchActions"><button class="mini" type="button" data-watch-edit="${i}">Edit</button><button class="mini" type="button" data-watch-toggle="${i}">${w.active?'Pause':'Activate'}</button><button class="mini" type="button" data-watch-delete="${i}">Delete</button></div></div>`).join(''):'<div class="aiWatchEmpty">No Watches yet. Create your first focused Watch above.</div>';
  box.querySelectorAll('[data-watch-edit]').forEach(b=>b.onclick=()=>{const x=load(),i=+b.dataset.watchEdit,w=x[i];if(!w)return;editingIndex=i;$('aiWatchArea').value=w.area;$('aiWatchInterest').value=w.interest;$('aiWatchKeywords').value=w.keywords||'';$('saveAiWatchBtn').textContent='Save Changes';$('aiWatchStatus').textContent='Editing this Watch.';$('aiWatchForm').hidden=false;$('aiWatchForm').scrollIntoView({behavior:'smooth',block:'nearest'});$('aiWatchInterest').focus()});
  box.querySelectorAll('[data-watch-toggle]').forEach(b=>b.onclick=()=>{const x=load(),i=+b.dataset.watchToggle;x[i].active=!x[i].active;save(x);render()});
- box.querySelectorAll('[data-watch-delete]').forEach(b=>b.onclick=()=>{const x=load(),i=+b.dataset.watchDelete;x.splice(i,1);save(x);if(editingIndex===i){resetForm();$('aiWatchForm').hidden=true}else if(editingIndex!==null&&i<editingIndex)editingIndex--;render()});
+ box.querySelectorAll('[data-watch-delete]').forEach(b=>b.onclick=async()=>{
+   const x=load(),i=+b.dataset.watchDelete,w=x[i];if(!w)return;
+   b.disabled=true;b.textContent='Deleting…';
+   try{
+     const {data:{user:liveUser},error:userErr}=await sb.auth.getUser();if(userErr||!liveUser)throw(userErr||new Error('Please sign in again.'));
+     let q=sb.from('ai_watches').delete().eq('user_id',liveUser.id);
+     q=w.id?q.eq('id',w.id):q.eq('interest',w.interest||'');
+     const {error:delErr}=await q;if(delErr)throw delErr;
+     x.splice(i,1);save(x);
+     if(editingIndex===i){resetForm();$('aiWatchForm').hidden=true}else if(editingIndex!==null&&i<editingIndex)editingIndex--;
+     render();
+   }catch(e){console.error('AI Watch delete error',e);b.disabled=false;b.textContent='Delete';$('aiWatchStatus').textContent='Could not delete this Watch. Please try again.';}
+ });
  }
  window.DSharioRenderAiWatches=render;
  function init(){if(!$('addAiWatchBtn'))return;render();$('addAiWatchBtn').onclick=()=>{resetForm();$('aiWatchForm').hidden=false;$('aiWatchInterest').focus()};$('cancelAiWatchBtn').onclick=()=>{resetForm();$('aiWatchForm').hidden=true};$('saveAiWatchBtn').onclick=()=>{const interest=$('aiWatchInterest').value.trim();if(!interest){$('aiWatchStatus').textContent='Please describe what you want to watch.';return}const a=load(), item={area:$('aiWatchArea').value,interest,keywords:$('aiWatchKeywords').value.trim(),active:true,updated:new Date().toISOString()};if(editingIndex!==null&&a[editingIndex]){item.active=a[editingIndex].active;item.created=a[editingIndex].created||item.updated;a[editingIndex]=item}else{item.created=item.updated;a.unshift(item)}save(a);resetForm();$('aiWatchForm').hidden=true;render()}}
