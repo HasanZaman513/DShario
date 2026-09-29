@@ -2177,6 +2177,7 @@ if("serviceWorker" in navigator && /\/index_RC126_/i.test(location.pathname)){
 
 
 <!-- FINAL CANDIDATE 2: landing dedup + account refresh DOM preservation -->
+<!-- DShario production fix: account-isolated Meeting Minutes; legacy localStorage migration disabled -->
 </head>
 <body>
 <div class="app">
@@ -7553,12 +7554,11 @@ html,body{min-height:100%;height:auto!important}
     if(error)throw error;cloudMeetings=(data||[]).map(fromDbMeeting);return cloudMeetings
   }
   async function migrateLegacyMeetingsOnce(){
-    const liveUser=await requireMeetingUser(), marker="dshario_rc80_meeting_migrated_"+liveUser.id;
-    if(localStorage.getItem(marker)==="1")return;
-    const legacy=loadLegacyMeetings();
-    if(!legacy.length){localStorage.setItem(marker,"1");return}
-    const rows=legacy.map(x=>({owner_id:liveUser.id,title:x.title||"Untitled Meeting",participants:x.participants||null,meeting_started_at:x.startAt||x.dateTime||null,duration_seconds:Number(x.durationSeconds)||0,transcript:x.transcript||null,summary:x.summary||null,key_decisions:x.decisions||null,action_items:x.actionItems||null,record_type:"owner",source_owner_id:liveUser.id}));
-    const {error}=await sb.from("meeting_minutes").insert(rows);if(error)throw error;localStorage.setItem(marker,"1");meetingMsg("Existing saved meetings copied securely to your DShario account.","ok")
+    // Production privacy fix (29 Sep 2026): disabled legacy browser-local meeting migration.
+    // localStorage is shared by every DShario account using the same browser/profile, so importing
+    // old device-local meetings into the currently signed-in account can assign another user's
+    // historical test meetings to that account. Cloud Meeting Minutes are now account-only.
+    return;
   }
   async function loadMeetingTransferTimes(items){
     meetingSentAt={};meetingReceivedAt={};
@@ -7584,7 +7584,6 @@ html,body{min-height:100%;height:auto!important}
   async function renderMeetings(){
     const list=$m("savedMeetingsList");if(!list)return;list.innerHTML='<div class="savedMeetingEmpty">Loading saved meetings…</div>';
     try{
-      await migrateLegacyMeetingsOnce();
       const items=await loadCloudMeetings();
       await loadMeetingTransferTimes(items);
       const mine=items.filter(x=>x.recordType!=="received"), shared=items.filter(x=>x.recordType==="received");
