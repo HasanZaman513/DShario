@@ -2177,7 +2177,7 @@ if("serviceWorker" in navigator && /\/index_RC126_/i.test(location.pathname)){
 
 
 <!-- FINAL CANDIDATE 2: landing dedup + account refresh DOM preservation -->
-<!-- DShario production fix: account-isolated Meeting Minutes; legacy localStorage migration disabled -->
+<!-- DShario production fixes: account-isolated Meeting Minutes + account-scoped AI Watch storage; legacy browser-global data disabled -->
 </head>
 <body>
 <div class="app">
@@ -8263,17 +8263,18 @@ document.getElementById("rc96SignOut")?.addEventListener("click",function(){
 </style>
 <script id="rc106-ai-watch-edit-script">
 (()=>{
- const KEY='dshario_ai_watch_v1'; let editingIndex=null;
+ const watchKey=()=>user?.id?('dshario_ai_watch_v2:'+user.id):'dshario_ai_watch_v2:signed-out'; let editingIndex=null;
  const $=id=>document.getElementById(id);
  const esc=v=>String(v||'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
- const load=()=>{try{return JSON.parse(localStorage.getItem(KEY)||'[]')}catch{return []}};
- const save=a=>localStorage.setItem(KEY,JSON.stringify(a));
+ const load=()=>{try{return JSON.parse(localStorage.getItem(watchKey())||'[]')}catch{return []}};
+ const save=a=>localStorage.setItem(watchKey(),JSON.stringify(a));
  function resetForm(){editingIndex=null;$('aiWatchInterest').value='';$('aiWatchKeywords').value='';$('saveAiWatchBtn').textContent='Save Watch';$('aiWatchStatus').textContent=''}
  function render(){const box=$('aiWatchList');if(!box)return;const a=load();box.innerHTML=a.length?a.map((w,i)=>`<div class="aiWatchCard ${w.active?'':'aiWatchPaused'}"><div class="aiWatchCardTop"><div><strong>${esc(w.interest)}</strong><div class="aiWatchKeywords">${w.keywords?'Keywords: '+esc(w.keywords):'No extra keywords'}</div></div><span class="aiWatchArea">${esc(w.area)}</span></div><div class="aiWatchActions"><button class="mini" type="button" data-watch-edit="${i}">Edit</button><button class="mini" type="button" data-watch-toggle="${i}">${w.active?'Pause':'Activate'}</button><button class="mini" type="button" data-watch-delete="${i}">Delete</button></div></div>`).join(''):'<div class="aiWatchEmpty">No Watches yet. Create your first focused Watch above.</div>';
  box.querySelectorAll('[data-watch-edit]').forEach(b=>b.onclick=()=>{const x=load(),i=+b.dataset.watchEdit,w=x[i];if(!w)return;editingIndex=i;$('aiWatchArea').value=w.area;$('aiWatchInterest').value=w.interest;$('aiWatchKeywords').value=w.keywords||'';$('saveAiWatchBtn').textContent='Save Changes';$('aiWatchStatus').textContent='Editing this Watch.';$('aiWatchForm').hidden=false;$('aiWatchForm').scrollIntoView({behavior:'smooth',block:'nearest'});$('aiWatchInterest').focus()});
  box.querySelectorAll('[data-watch-toggle]').forEach(b=>b.onclick=()=>{const x=load(),i=+b.dataset.watchToggle;x[i].active=!x[i].active;save(x);render()});
  box.querySelectorAll('[data-watch-delete]').forEach(b=>b.onclick=()=>{const x=load(),i=+b.dataset.watchDelete;x.splice(i,1);save(x);if(editingIndex===i){resetForm();$('aiWatchForm').hidden=true}else if(editingIndex!==null&&i<editingIndex)editingIndex--;render()});
  }
+ window.DSharioRenderAiWatches=render;
  function init(){if(!$('addAiWatchBtn'))return;render();$('addAiWatchBtn').onclick=()=>{resetForm();$('aiWatchForm').hidden=false;$('aiWatchInterest').focus()};$('cancelAiWatchBtn').onclick=()=>{resetForm();$('aiWatchForm').hidden=true};$('saveAiWatchBtn').onclick=()=>{const interest=$('aiWatchInterest').value.trim();if(!interest){$('aiWatchStatus').textContent='Please describe what you want to watch.';return}const a=load(), item={area:$('aiWatchArea').value,interest,keywords:$('aiWatchKeywords').value.trim(),active:true,updated:new Date().toISOString()};if(editingIndex!==null&&a[editingIndex]){item.active=a[editingIndex].active;item.created=a[editingIndex].created||item.updated;a[editingIndex]=item}else{item.created=item.updated;a.unshift(item)}save(a);resetForm();$('aiWatchForm').hidden=true;render()}}
  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init);else init();
 })();
@@ -8343,7 +8344,7 @@ document.getElementById("rc96SignOut")?.addEventListener("click",function(){
  const ENDPOINT=SUPABASE_URL+'/functions/v1/ai-watch';
  const $=id=>document.getElementById(id);
  const esc=v=>String(v||'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
- const load=()=>{try{return JSON.parse(localStorage.getItem('dshario_ai_watch_v1')||'[]')}catch{return []}};
+ const load=()=>{try{return JSON.parse(localStorage.getItem(user?.id?('dshario_ai_watch_v2:'+user.id):'dshario_ai_watch_v2:signed-out')||'[]')}catch{return []}};
  async function token(){const {data}=await sb.auth.getSession();return data?.session?.access_token||''}
  function toast(t){
    let e=$('aiWatchToast');
@@ -8521,9 +8522,10 @@ document.getElementById("rc96SignOut")?.addEventListener("click",function(){
 <!-- RC123: legacy RC113 refresh restorer disabled; replaced by unified refresh state. -->
 <script id="rc116-ai-watch-supabase-sync">
 (()=>{
- const K='dshario_ai_watch_v1', norm=v=>String(v||'').trim();
- const get=()=>{try{return JSON.parse(localStorage.getItem(K)||'[]')}catch{return []}};
- const put=a=>localStorage.setItem(K,JSON.stringify(a));
+ const norm=v=>String(v||'').trim();
+ const key=u=>u?.id?('dshario_ai_watch_v2:'+u.id):'dshario_ai_watch_v2:signed-out';
+ const get=u=>{try{return JSON.parse(localStorage.getItem(key(u))||'[]')}catch{return []}};
+ const put=(u,a)=>localStorage.setItem(key(u),JSON.stringify(a));
  let syncing=false, last='', interval=null;
 
  function status(msg,kind='info'){
@@ -8540,7 +8542,8 @@ document.getElementById("rc96SignOut")?.addEventListener("click",function(){
    const {data,error}=await sb.from('ai_watches').select('id,area,interest,keywords,active,created_at').eq('user_id',u.id).order('created_at',{ascending:true});
    if(error) throw error;
    if(data?.length){
-     put(data.map(x=>({id:x.id,area:x.area,interest:x.interest,keywords:x.keywords||'',active:x.active!==false})));
+     put(u,data.map(x=>({id:x.id,area:x.area,interest:x.interest,keywords:x.keywords||'',active:x.active!==false})));
+     window.DSharioRenderAiWatches?.();
    }
  }
  async function syncNow(){
@@ -8549,7 +8552,7 @@ document.getElementById("rc96SignOut")?.addEventListener("click",function(){
    try{
      const u=await currentUser();
      if(!u){status('AI Watch server sync: waiting for sign-in…');return}
-     const watches=get();
+     const watches=get(u);
      status('AI Watch server sync: syncing…');
      if(!watches.length){
        await pull(u);
@@ -8561,7 +8564,8 @@ document.getElementById("rc96SignOut")?.addEventListener("click",function(){
          if(error) throw error;
          if(data?.id) w.id=data.id;
        }
-       put(watches);
+       put(u,watches);
+       window.DSharioRenderAiWatches?.();
        const keep=new Set(watches.map(w=>norm(w.interest)).filter(Boolean));
        const {data:serverRows,error:listErr}=await sb.from('ai_watches').select('id,interest').eq('user_id',u.id);
        if(listErr) throw listErr;
@@ -8574,7 +8578,7 @@ document.getElementById("rc96SignOut")?.addEventListener("click",function(){
      }
      const {count,error:countErr}=await sb.from('ai_watches').select('*',{count:'exact',head:true}).eq('user_id',u.id);
      if(countErr) throw countErr;
-     last=localStorage.getItem(K)||'[]';
+     last=localStorage.getItem(key(u))||'[]';
      status(`✓ AI Watch server sync complete — ${count||0} Watch${count===1?'':'es'} stored`, 'ok');
    }catch(e){
      console.error('RC116 AI Watch sync error',e);
@@ -8584,12 +8588,17 @@ document.getElementById("rc96SignOut")?.addEventListener("click",function(){
  function begin(){
    syncNow();
    if(!interval)interval=setInterval(()=>{
-     const now=localStorage.getItem(K)||'[]';
-     if(now!==last)syncNow();
+     currentUser().then(u=>{
+       const now=localStorage.getItem(key(u))||'[]';
+       if(now!==last)syncNow();
+     }).catch(()=>{});
    },1500);
  }
  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',()=>setTimeout(begin,500));else setTimeout(begin,500);
- sb.auth.onAuthStateChange((event,session)=>{if(session?.user)setTimeout(syncNow,250)});
+ sb.auth.onAuthStateChange((event,session)=>{
+   window.DSharioRenderAiWatches?.();
+   if(session?.user)setTimeout(syncNow,250);
+ });
  window.addEventListener('pageshow',()=>setTimeout(syncNow,500));
 })();
 </script>
